@@ -1,0 +1,78 @@
+{{if .Userinfo.LoggedIn}}
+{{template "header2"}}
+{{end}}
+{{if not .Userinfo.LoggedIn}}
+{{template "header"}}
+{{end}}
+<h1>Welcome to Our Forum!</h1>
+
+{{if .Userinfo.LoggedIn}}
+<h3>Filter by author</h3>
+<form method="get">
+    <label for="author">Please choose an author:</label>
+    <select name="author-filter" id="author">
+        <option value="">-Please choose an author</option>
+    {{range .ForumUnames}}
+        <option value="{{.}}">{{.}}</option>
+    {{end}}
+    </select>
+    <button type="submit">Filter Results</button>
+</form>
+
+<h3>All liked post</h3>
+<form method="get">
+    <button name="liked-post" value="liked-post">See All Liked Post</button>
+</form>
+{{end}}
+<form method="get">
+    <button type="submit">Remove filter</button>
+</form>
+<h2>Message Board</h2>
+{{if .Userinfo.LoggedIn}}
+{{range .Posts}}
+<div class="forum-post">
+    <form action="/postpage" method="GET">
+        <ul><input type="hidden" name="postdetails" class="titleclass" value={{.PostID}}>
+   <li> <input type="submit" class="postbutton" name="postdetails" value={{.Title}}></li>
+   </ul>
+    </form>
+    <p style="white-space: pre-line">{{.Content}}</p>
+    <p>{{.Category}}</p>
+    <p>{{.PostTimeStr}}</p>
+    <p>by {{.Author}}</p>
+     <form method="post">
+        <button type="submit" name="po-like" class="Like" value="{{.PostID}}-{{.Likes}}">&#x2661</button>
+        <span>{{.Likes}}</span> 
+    </form>
+    <form method="post">
+        <button type="submit" name="po-dislike" class="Dlike" value="{{.PostID}}-{{.Dislikes}}">&#8681</button>
+        <span>{{.Dislikes}}</span>
+    </form>
+</div>
+{{end}}
+{{end}}
+
+{{if not .Userinfo.LoggedIn}}
+{{range .Posts}}
+<div class="forum-post">
+    <form action="/postpage" method="GET">
+        <ul><input type="hidden" name="postdetails" class="titleclass" value={{.PostID}}>
+   <li> <input type="submit" class="postbutton" name="postdetails" value={{.Title}}></li>
+   </ul>
+    </form>
+    <p style="white-space: pre-line"{{.Content}}</p>
+    <p>{{.Category}}</p>
+    <p>{{.PostTimeStr}}</p>
+    <p>by {{.Author}}</p>
+    <form action="/login" method="GET">
+ <button type="submit" class="Like">&#x2661</button></a>
+        <span>{{.Likes}}</span> 
+    </form>
+    <form action="/login" method="GET">
+        <button type="submit" class="Dlike">&#8681</button>
+        <span>{{.Dislikes}}</span>
+    </form>
+</div>
+{{end}}
+{{end}}
+{{template "footer"}}

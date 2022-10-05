@@ -1,0 +1,52 @@
+
+{{template "header"}}
+<h1>Welcome to Our Forum!</h1>
+
+
+
+
+<h3>Filter by category</h3>
+<form method="get">
+<label for="category">Please choose a category:</label>
+<select name="category-filter" id="category">
+    <option value="">-Please choose a category</option>
+    <option value="AI">AI</option>
+    <option value="Blockchain">Blockchain</option>
+    <option value="Cybersecurity">Cybersecurity</option>
+    <option value="Mobile">Mobile Development</option>
+    <option value="Videogames">Videogames</option>
+</select>
+<button class="basicButton" type="submit">Filter Results</button>
+</form>
+
+<form method="get">
+    <button type="submit">Remove filter</button>
+</form>
+<h2>Message Board</h2>
+
+
+
+{{range .Posts}}
+<div class="forum-post">
+    <form action="/postpage" method="GET">
+        <ul><input type="hidden" name="postdetails" class="titleclass" value={{.PostID}}>
+   <li> <input type="submit" class="postbutton" name="postdetails" value={{.Title}}></li>
+   </ul>
+    </form>
+    <p class="contentofPost">{{.Content}}</p>
+    <p>{{.Category}}</p>
+    <p>{{.PostTimeStr}}</p>
+    <p>by {{.Author}}</p>
+    <form action="/login" method="GET">
+ <button type="submit" id="likebutton" class="Like">
+ <i class="fa-solid fa-heart"></i></button>
+        <span>{{.Likes}}</span> 
+    </form>
+    <form action="/login" method="GET">
+        <button type="submit" id="Dlikebutton" class="Dlike"><i class="fa-solid fa-heart-crack"></i></button>
+        <span>{{.Dislikes}}</span>
+    </form>
+</div>
+
+{{end}}
+{{template "footer"}}

@@ -1,0 +1,9 @@
+
+{{template "header2"}}
+
+
+<h1>Welcome to Notifications!</h1>
+{{ range $key, $value := .NotifMessageShow }}
+   <li><strong>{{ $key }}</strong>: <a href="{{ $value }}" target="_blank">Go To Post</a></li>
+{{ end }}
+{{template "footer"}}
