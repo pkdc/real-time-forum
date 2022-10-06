@@ -1,6 +1,4 @@
-const regForm = document.createElement("form");
-
-regForm.classList.add("show");
+const loginForm = document.createElement("form");
 
 // login form
 // name label
@@ -32,5 +30,7 @@ pwInput.setAttribute("name", "pw");
 pwInput.setAttribute("id", "pw");
 pwInputDiv.append(pwInput);
 
-regForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv);
-export default regForm;
+loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv);
+
+
+export default loginForm;
