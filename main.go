@@ -18,7 +18,7 @@ func main() {
 
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets"))))
 	http.HandleFunc("/", forum.HomeHandler)
-	// http.HandleFunc("/login", forum.LoginHandler)
+	http.HandleFunc("/login/", forum.LoginHandler)
 	// http.HandleFunc("/register", forum.RegisterHandler)
 	// http.HandleFunc("/logout", forum.LogoutHandler)
 	// http.HandleFunc("/postpage", forum.PostPageHandler)

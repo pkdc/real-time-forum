@@ -1,6 +1,7 @@
 package forum
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 )
@@ -36,6 +37,34 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = tpl.ExecuteTemplate(w, "index.html", nil)
+}
+
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("logged in", loggedIn(r))
+	if r.Method != http.MethodGet && r.Method != http.MethodPost {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+	}
+	if loggedIn(r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	// if r.Method == "GET" {
+	// 	tpl, err := template.ParseFiles("./templates/header.gohtml", "./templates/footer.gohtml", "./templates/login.gohtml")
+	// 	if err != nil {
+	// 		http.Error(w, "Parsing Error", http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	err = tpl.ExecuteTemplate(w, "login.gohtml", nil)
+	// 	if err != nil {
+	// 		http.Error(w, "Executing Error", http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// }
+	if r.Method == http.MethodPost {
+		fmt.Printf("----login-POST-----\n")
+		processLogin(w, r)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 }
 
 // // func HomeHandler(w http.ResponseWriter, r *http.Request) {

@@ -1,15 +1,17 @@
 package forum
 
 import (
+	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net"
 	"net/http"
-
-	uuid "github.com/satori/go.uuid"
-	"golang.org/x/crypto/bcrypt"
 )
+
+type loginData struct {
+	Name     string `json:"name"`
+	Password string `json:"pw"`
+}
 
 func loggedIn(r *http.Request) bool {
 	c, err := r.Cookie("session")
@@ -34,97 +36,94 @@ func loggedIn(r *http.Request) bool {
 }
 
 func processLogin(w http.ResponseWriter, r *http.Request) {
-	// get login data from form
-	err := r.ParseForm()
-	if err != nil {
-		log.Fatal(err)
-	}
-	uname := r.PostForm.Get("username")
-	pw := r.PostForm.Get("password")
-	fmt.Printf("login u: %s: , login pw: %s\n", uname, pw)
+	// get login data from request
+	var loginPayload loginData
+	_ = json.NewDecoder(r.Body).Decode(&loginPayload)
 
-	// get user data from db
-	var unameDB string
-	var hashDB []byte
+	fmt.Printf("login u: %s: , login pw: %s\n", loginPayload.Name, loginPayload.Password)
 
-	fmt.Printf("%s trying to Login\n", uname)
-	rows, err := db.Query("SELECT username, password FROM users WHERE username = ?;", uname)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&unameDB, &hashDB)
-	}
+	// // get user data from db
+	// var unameDB string
+	// var hashDB []byte
 
-	// test hash
-	hash, err := bcrypt.GenerateFromPassword([]byte(pw), 10)
-	fmt.Printf("unameDB: %s , hashDB: %s\n", unameDB, hashDB)
+	// fmt.Printf("%s trying to Login\n", uname)
+	// rows, err := db.Query("SELECT username, password FROM users WHERE username = ?;", uname)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer rows.Close()
+	// for rows.Next() {
+	// 	rows.Scan(&unameDB, &hashDB)
+	// }
 
-	// compare pw
-	err = bcrypt.CompareHashAndPassword(hashDB, []byte(pw))
-	// fmt.Printf("DB pw: %s, entered: %s\n", hashDB, pw)
-	fmt.Printf("DB pw: %s, entered: %s\n", hashDB, hash)
-	if err != nil {
-		// http.Error(w, "Username or Password not matched, please try again", http.StatusForbidden)
-		tpl, err := template.ParseFiles("./templates/failedLogin.gohtml")
-		if err != nil {
-			http.Error(w, "Parsing Error", http.StatusInternalServerError)
-		}
-		tpl.Execute(w, nil)
-		return
-	}
-	fmt.Printf("%s (name from DB) Login successfully\n", unameDB)
+	// // test hash
+	// hash, err := bcrypt.GenerateFromPassword([]byte(pw), 10)
+	// fmt.Printf("unameDB: %s , hashDB: %s\n", unameDB, hashDB)
 
-	// allow each user to have only one opened session
-	var loggedInUname string
-	rows, err = db.Query("SELECT username FROM sessions WHERE username = ?;", unameDB)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&loggedInUname)
-	}
-	// if the uname can be found in session table, remove that row (should only have 1 row)
-	if loggedInUname != "" {
-		stmt, err := db.Prepare("DELETE FROM sessions WHERE username = ?;")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer stmt.Close()
-		stmt.Exec(loggedInUname)
-	}
+	// // compare pw
+	// err = bcrypt.CompareHashAndPassword(hashDB, []byte(pw))
+	// // fmt.Printf("DB pw: %s, entered: %s\n", hashDB, pw)
+	// fmt.Printf("DB pw: %s, entered: %s\n", hashDB, hash)
+	// if err != nil {
+	// 	// http.Error(w, "Username or Password not matched, please try again", http.StatusForbidden)
+	// 	tpl, err := template.ParseFiles("./templates/failedLogin.gohtml")
+	// 	if err != nil {
+	// 		http.Error(w, "Parsing Error", http.StatusInternalServerError)
+	// 	}
+	// 	tpl.Execute(w, nil)
+	// 	return
+	// }
+	// fmt.Printf("%s (name from DB) Login successfully\n", unameDB)
 
-	// assign a cookie
-	sid := uuid.NewV4()
-	fmt.Printf("login sid: %s\n", sid)
-	http.SetCookie(w, &http.Cookie{
-		Name:   "session",
-		Value:  sid.String(),
-		MaxAge: 900, // 15mins
-	})
+	// // allow each user to have only one opened session
+	// var loggedInUname string
+	// rows, err = db.Query("SELECT username FROM sessions WHERE username = ?;", unameDB)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer rows.Close()
+	// for rows.Next() {
+	// 	rows.Scan(&loggedInUname)
+	// }
+	// // if the uname can be found in session table, remove that row (should only have 1 row)
+	// if loggedInUname != "" {
+	// 	stmt, err := db.Prepare("DELETE FROM sessions WHERE username = ?;")
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	defer stmt.Close()
+	// 	stmt.Exec(loggedInUname)
+	// }
 
-	// forumUser.Username = unameDB
-	// forumUser.Access = 1
-	// forumUser.LoggedIn = true
-	// fmt.Printf("%s forum User Login\n", forumUser.Username)
+	// // assign a cookie
+	// sid := uuid.NewV4()
+	// fmt.Printf("login sid: %s\n", sid)
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:   "session",
+	// 	Value:  sid.String(),
+	// 	MaxAge: 900, // 15mins
+	// })
 
-	// update the user's login status
-	stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE username = ?;")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-	stmt.Exec(true, unameDB)
+	// // forumUser.Username = unameDB
+	// // forumUser.Access = 1
+	// // forumUser.LoggedIn = true
+	// // fmt.Printf("%s forum User Login\n", forumUser.Username)
 
-	// insert a record into session table
-	stmt, err = db.Prepare("INSERT INTO sessions (sessionID, username) VALUES (?, ?);")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-	stmt.Exec(sid.String(), unameDB)
+	// // update the user's login status
+	// stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE username = ?;")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer stmt.Close()
+	// stmt.Exec(true, unameDB)
+
+	// // insert a record into session table
+	// stmt, err = db.Prepare("INSERT INTO sessions (sessionID, username) VALUES (?, ?);")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer stmt.Close()
+	// stmt.Exec(sid.String(), unameDB)
 
 	//test
 	// var whichUser string

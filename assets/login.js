@@ -1,4 +1,25 @@
+
+const loginURL = "http://localhost:8080/login/";
+
+const loginHandler = function(e) {
+    e.preventDefault();
+    console.log("handle login data");
+
+    const loginFormFields = new FormData(e.target);
+    const loginPayload = Object.fromEntries(loginFormFields.entries());
+
+    const reqOptions = {
+        method: "POST",
+        body: JSON.stringify(loginPayload)
+    };
+    console.log(reqOptions);
+    fetch(loginURL, reqOptions)
+    .then((resp) => console.log(resp))
+};
+
+
 const loginForm = document.createElement("form");
+loginForm.addEventListener("submit", loginHandler);
 
 // login form
 // name label
@@ -30,7 +51,13 @@ pwInput.setAttribute("name", "pw");
 pwInput.setAttribute("id", "pw");
 pwInputDiv.append(pwInput);
 
-loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv);
+const loginSubmitDiv = document.createElement('div');
+const loginSubmit = document.createElement("button");
+loginSubmit.textContent = "Login";
+loginSubmit.setAttribute("type", "submit");
+loginSubmitDiv.append(loginSubmit);
+
+loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
 
 
 export default loginForm;
