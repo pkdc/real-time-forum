@@ -14,7 +14,10 @@ const loginHandler = function(e) {
     };
     console.log(reqOptions);
     fetch(loginURL, reqOptions)
-    .then((resp) => console.log(resp))
+    .then((resp) => {
+        console.log(resp)
+        
+    })
 };
 
 
