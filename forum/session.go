@@ -6,12 +6,13 @@ import (
 	"log"
 	"net/http"
 
+	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type loginData struct {
-	Name     string `json:"name"`
-	Password string `json:"pw"`
+	NicknameEmail string `json:"name"`
+	Password      string `json:"pw"`
 }
 
 type loginResponse struct {
@@ -45,23 +46,23 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	var loginPayload loginData
 	_ = json.NewDecoder(r.Body).Decode(&loginPayload)
 
-	fmt.Printf("login u: %s: , login pw: %s\n", loginPayload.Name, loginPayload.Password)
+	fmt.Printf("login u: %s: , login pw: %s\n", loginPayload.NicknameEmail, loginPayload.Password)
 
 	// // get user data from db
-	var nameDB string
+	var nicknameEmailDB string
 	var hashDB []byte
 
-	fmt.Printf("%s trying to Login\n", loginPayload.Name)
+	fmt.Printf("%s trying to Login\n", loginPayload.NicknameEmail)
 	rows, err := db.Query(`SELECT nickname, email, password 
 							FROM users
 							WHERE nickname = ?
-							OR email = ?`, loginPayload.Name, loginPayload.Name)
+							OR email = ?`, loginPayload.NicknameEmail, loginPayload.NicknameEmail)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		rows.Scan(&nameDB, &hashDB)
+		rows.Scan(&nicknameEmailDB, &hashDB)
 	}
 
 	// // test hash
@@ -91,7 +92,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 		// tpl.Execute(w, nil)
 		// return
 	}
-	fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.Name)
+	fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)
 
 	// // allow each user to have only one opened session
 	// var loggedInUname string
@@ -114,34 +115,33 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	// // assign a cookie
-	// sid := uuid.NewV4()
-	// fmt.Printf("login sid: %s\n", sid)
-	// http.SetCookie(w, &http.Cookie{
-	// 	Name:   "session",
-	// 	Value:  sid.String(),
-	// 	MaxAge: 900, // 15mins
-	// })
+	sid := uuid.NewV4()
+	fmt.Printf("login sid: %s\n", sid)
+	http.SetCookie(w, &http.Cookie{
+		Name:   "session",
+		Value:  sid.String(),
+		MaxAge: 900, // 15mins
+	})
 
 	// // forumUser.Username = unameDB
-	// // forumUser.Access = 1
 	// // forumUser.LoggedIn = true
 	// // fmt.Printf("%s forum User Login\n", forumUser.Username)
 
 	// // update the user's login status
-	// stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE username = ?;")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer stmt.Close()
-	// stmt.Exec(true, unameDB)
+	stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE username = ?;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	stmt.Exec(true, unameDB)
 
 	// // insert a record into session table
-	// stmt, err = db.Prepare("INSERT INTO sessions (sessionID, username) VALUES (?, ?);")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer stmt.Close()
-	// stmt.Exec(sid.String(), unameDB)
+	stmt, err = db.Prepare("INSERT INTO sessions (sessionID, userID) VALUES (?, ?);")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	stmt.Exec(sid.String(), unameDB)
 
 	//test
 	// var whichUser string
