@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	forum.InitDB()2
+	forum.InitDB()
 	// forum.ClearUsers()
 	// forum.ClearPosts()
 	// forum.ClearComments()
@@ -18,7 +18,7 @@ func main() {
 
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets"))))
 	http.HandleFunc("/", forum.HomeHandler)
-	http.HandleFunc("/ws", forum.WsEndpoint)
+	http.HandleFunc("/ws/", forum.WsEndpoint)
 	// http.HandleFunc("/login", forum.LoginHandler)
 	// http.HandleFunc("/register", forum.RegisterHandler)
 	// http.HandleFunc("/logout", forum.LogoutHandler)

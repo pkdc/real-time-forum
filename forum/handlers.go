@@ -67,7 +67,8 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Connected")
 
 	var response WsResponse
-	response.Content = "Greeting from server"
+	response.Label = "Greet"
+	response.Content = "Welcome to the Forum!"
 
 	conn.WriteJSON(response)
 
