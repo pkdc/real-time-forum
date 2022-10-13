@@ -67,7 +67,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 	// // test hash
 	// hash, err := bcrypt.GenerateFromPassword([]byte(pw), 10)
-	// fmt.Printf("unameDB: %s , hashDB: %s\n", unameDB, hashDB)
+	// fmt.Printf("nicknameEmailDB: %s , hashDB: %s\n", nicknameEmailDB, hashDB)
 
 	// // compare pw
 	err = bcrypt.CompareHashAndPassword(hashDB, []byte(loginPayload.Password))
@@ -96,7 +96,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 	// // allow each user to have only one opened session
 	// var loggedInUname string
-	// rows, err = db.Query("SELECT username FROM sessions WHERE username = ?;", unameDB)
+	// rows, err = db.Query("SELECT username FROM sessions WHERE username = ?;", nicknameEmailDB)
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
@@ -123,17 +123,17 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 		MaxAge: 900, // 15mins
 	})
 
-	// // forumUser.Username = unameDB
+	// // forumUser.Username = nicknameEmailDB
 	// // forumUser.LoggedIn = true
 	// // fmt.Printf("%s forum User Login\n", forumUser.Username)
 
 	// // update the user's login status
-	stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE username = ?;")
+	stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE userID = ?;")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-	stmt.Exec(true, unameDB)
+	stmt.Exec(true, nicknameEmailDB)
 
 	// // insert a record into session table
 	stmt, err = db.Prepare("INSERT INTO sessions (sessionID, userID) VALUES (?, ?);")
@@ -141,12 +141,12 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-	stmt.Exec(sid.String(), unameDB)
+	stmt.Exec(sid.String(), nicknameEmailDB)
 
 	//test
 	// var whichUser string
 	// var logInOrNot bool
-	// rows, err = db.Query("SELECT username, loggedIn FROM users WHERE username = ?;", unameDB)
+	// rows, err = db.Query("SELECT username, loggedIn FROM users WHERE username = ?;", nicknameEmailDB)
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }

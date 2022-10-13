@@ -3,51 +3,18 @@ package forum
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
 )
-
-// import (
-// 	"fmt"
-// 	"html/template"
-// 	"log"
-// 	"net/http"
-// 	"os"
-// 	"strconv"
-// 	"strings"
-// 	"time"
-// )
-
-// type mainPageData struct {
-// 	Userinfo    user
-// 	Posts       []post
-// 	ForumUnames []string
-// }
-
-// var (
-// 	urlPost     string
-// 	duplicateIP bool
-// 	changingPos bool
-// 	changingCom bool
-// )
-
-type WsResponse struct {
-	Label   string `json:"label"`
-	Content string `json:"content"`
-}
-type WsPayload struct {
-	Label   string `json:"label"`
-	Content string `json:"content"`
-	Conn    *websocket.Conn
-}
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin:     func(r *http.Request) bool { return true },
 }
+
+var loginPayloadChan = make(chan WsLoginPayload)
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("./assets/index.html")
@@ -56,43 +23,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = tpl.ExecuteTemplate(w, "index.html", nil)
-}
-func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	fmt.Println("Connected")
-	var response WsResponse
-	response.Label = "Greet"
-	response.Content = "Welcome to the Forum!"
-	conn.WriteJSON(response)
-	// insert conn into db with empty userID, fill in the userID when registered or logged in
-	stmt, err := db.Prepare(`INSERT INTO websockets (userID, websocketAdd) VALUES (?, ?);`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-	stmt.Exec("", conn)
-	listenToWs(conn)
-}
-
-var payloadChan = make(chan WsPayload)
-
-func listenToWs(conn *websocket.Conn) {
-	defer func() {
-		fmt.Println("Ws Conn Closed")
-	}()
-	var payload WsPayload
-	for {
-		err := conn.ReadJSON(&payload)
-		if err == nil {
-			payload.Conn = conn
-			fmt.Printf("payload: %v/n", payload)
-			payloadChan <- payload
-		}
-	}
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -114,50 +44,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("----login-POST-----\n")
 		processLogin(w, r)
 		// http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
-}
-
-func WsEndpoint(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	fmt.Println("Connected")
-
-	var response WsResponse
-	response.Label = "Greet"
-	response.Content = "Welcome to the Forum!"
-
-	conn.WriteJSON(response)
-
-	// insert conn into db with empty userID, fill in the userID when registered or logged in
-	stmt, err := db.Prepare(`INSERT INTO websockets (userID, websocketAdd) VALUES (?, ?);`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-	stmt.Exec("", conn)
-
-	listenToWs(conn)
-}
-
-var payloadChan = make(chan WsPayload)
-
-func listenToWs(conn *websocket.Conn) {
-	defer func() {
-		fmt.Println("Ws Conn Closed")
-	}()
-
-	var payload WsPayload
-
-	for {
-		err := conn.ReadJSON(&payload)
-		if err == nil {
-			payload.Conn = conn
-			fmt.Printf("payload: %v/n", payload)
-			payloadChan <- payload
-		}
 	}
 }
 

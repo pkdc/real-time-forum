@@ -1,6 +1,4 @@
 
-// const loginURL = "http://localhost:8080/login/";
-
 let loginSocket = null; 
 document.addEventListener("DOMContentLoaded", function() {
     loginSocket = new WebSocket("ws://localhost:8080/loginWs/");
@@ -24,23 +22,6 @@ const loginHandler = function(e) {
     payloadObj["label"] = "login";
     console.log({payloadObj});
     loginSocket.send(JSON.stringify(payloadObj));
-
-    // e.preventDefault();
-    // console.log("handle login data");
-
-    // const loginFormFields = new FormData(e.target);
-    // const loginPayload = Object.fromEntries(loginFormFields.entries());
-
-    // const reqOptions = {
-    //     method: "POST",
-    //     body: JSON.stringify(loginPayload)
-    // };
-    // console.log(reqOptions);
-    // fetch(loginURL, reqOptions)
-    // .then((resp) => {
-    //     console.log(resp)
-        
-    // })
 };
 
 
@@ -82,11 +63,6 @@ const loginSubmit = document.createElement("button");
 loginSubmit.textContent = "Login";
 loginSubmit.setAttribute("type", "submit");
 loginSubmitDiv.append(loginSubmit);
-<<<<<<< HEAD
-
-loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
-=======
->>>>>>> 11-websocket-connection
 
 loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
 
