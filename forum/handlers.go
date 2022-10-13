@@ -41,6 +41,7 @@ type WsResponse struct {
 type WsPayload struct {
 	Label   string `json:"label"`
 	Content string `json:"content"`
+	Conn    *websocket.Conn
 }
 
 var upgrader = websocket.Upgrader{
@@ -72,13 +73,34 @@ func WsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	conn.WriteJSON(response)
 
-	// insert conn into db
-	// stmt, err := db.Prepare(`INSERT INTO websockets (websocketAdd, userID) VALUES (?, ?);`)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer stmt.Close()
-	// stmt.Exec(conn, )
+	// insert conn into db with empty userID, fill in the userID when registered or logged in
+	stmt, err := db.Prepare(`INSERT INTO websockets (userID, websocketAdd) VALUES (?, ?);`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	stmt.Exec("", conn)
+
+	listenToWs(conn)
+}
+
+var payloadChan = make(chan WsPayload)
+
+func listenToWs(conn *websocket.Conn) {
+	defer func() {
+		fmt.Println("Ws Conn Closed")
+	}()
+
+	var payload WsPayload
+
+	for {
+		err := conn.ReadJSON(&payload)
+		if err == nil {
+			payload.Conn = conn
+			fmt.Printf("payload: %v/n", payload)
+			payloadChan <- payload
+		}
+	}
 }
 
 // // func HomeHandler(w http.ResponseWriter, r *http.Request) {

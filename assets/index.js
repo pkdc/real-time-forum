@@ -24,4 +24,15 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(resp.content);
         }
     }
+
+    // can send smth back
+    // const loginForm = document.querySelector("#login-form");
+    loginForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const formFields = new FormData(e.target);
+        const payloadObj = Object.fromEntries(formFields.entries());
+        payloadObj["label"] = "login";
+        console.log({payloadObj});
+        socket.send(JSON.stringify(payloadObj));
+    })
 });

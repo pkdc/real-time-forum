@@ -1,4 +1,5 @@
 const loginForm = document.createElement("form");
+// loginForm.setAttribute("id", "login-form");
 
 // login form
 // name label
@@ -30,7 +31,12 @@ pwInput.setAttribute("name", "pw");
 pwInput.setAttribute("id", "pw");
 pwInputDiv.append(pwInput);
 
-loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv);
+const loginSubmitDiv = document.createElement('div');
+const loginSubmit = document.createElement("button");
+loginSubmit.textContent = "Login";
+loginSubmit.setAttribute("type", "submit");
+loginSubmitDiv.append(loginSubmit);
 
+loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
 
 export default loginForm;
