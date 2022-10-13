@@ -1,23 +1,46 @@
 
-const loginURL = "http://localhost:8080/login/";
+// const loginURL = "http://localhost:8080/login/";
+
+let loginSocket = null; 
+document.addEventListener("DOMContentLoaded", function() {
+    loginSocket = new WebSocket("ws://localhost:8080/loginWs/");
+    console.log("JS attempt to connect");
+    loginSocket.onopen = () => console.log("connected");
+    loginSocket.onclose = () => console.log("Bye");
+    loginSocket.onerror = (err) => console.log("Error!");
+    loginSocket.onmessage = (msg) => {
+        const resp = JSON.parse(msg.data);
+        console.log({resp});
+        if (resp.label === "Greet") {
+            console.log(resp.content);
+        }
+    }
+});
 
 const loginHandler = function(e) {
     e.preventDefault();
-    console.log("handle login data");
+    const formFields = new FormData(e.target);
+    const payloadObj = Object.fromEntries(formFields.entries());
+    payloadObj["label"] = "login";
+    console.log({payloadObj});
+    loginSocket.send(JSON.stringify(payloadObj));
 
-    const loginFormFields = new FormData(e.target);
-    const loginPayload = Object.fromEntries(loginFormFields.entries());
+    // e.preventDefault();
+    // console.log("handle login data");
 
-    const reqOptions = {
-        method: "POST",
-        body: JSON.stringify(loginPayload)
-    };
-    console.log(reqOptions);
-    fetch(loginURL, reqOptions)
-    .then((resp) => {
-        console.log(resp)
+    // const loginFormFields = new FormData(e.target);
+    // const loginPayload = Object.fromEntries(loginFormFields.entries());
+
+    // const reqOptions = {
+    //     method: "POST",
+    //     body: JSON.stringify(loginPayload)
+    // };
+    // console.log(reqOptions);
+    // fetch(loginURL, reqOptions)
+    // .then((resp) => {
+    //     console.log(resp)
         
-    })
+    // })
 };
 
 
