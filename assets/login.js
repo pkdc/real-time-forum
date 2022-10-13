@@ -82,8 +82,12 @@ const loginSubmit = document.createElement("button");
 loginSubmit.textContent = "Login";
 loginSubmit.setAttribute("type", "submit");
 loginSubmitDiv.append(loginSubmit);
+<<<<<<< HEAD
 
 loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
+=======
+>>>>>>> 11-websocket-connection
 
+loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
 
 export default loginForm;
