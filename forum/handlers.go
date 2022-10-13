@@ -26,23 +26,23 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("logged in", loggedIn(r))
+	// fmt.Println("logged in", loggedIn(r))
 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
 		http.Error(w, "Bad request", http.StatusBadRequest)
 	}
-	if loggedIn(r) {
-		// http.Redirect(w, r, "/", http.StatusSeeOther)
-		// return
-		// w.Header().Set("Content-Type", "application/json")
-		// w.WriteHeader(http.StatusOK)
-		// w.Write(js)
-	}
+	// if loggedIn(r) {
+	// http.Redirect(w, r, "/", http.StatusSeeOther)
+	// return
+	// w.Header().Set("Content-Type", "application/json")
+	// w.WriteHeader(http.StatusOK)
+	// w.Write(js)
+	// }
 	// if r.Method == "GET" {
 
 	// }
 	if r.Method == http.MethodPost {
 		fmt.Printf("----login-POST-----\n")
-		processLogin(w, r)
+		// processLogin(w, r)
 		// http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
