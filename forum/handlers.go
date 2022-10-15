@@ -1,7 +1,6 @@
 package forum
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -14,8 +13,6 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
-var loginPayloadChan = make(chan WsLoginPayload)
-
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("./assets/index.html")
 	if err != nil {
@@ -25,27 +22,27 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	err = tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println("logged in", loggedIn(r))
-	if r.Method != http.MethodGet && r.Method != http.MethodPost {
-		http.Error(w, "Bad request", http.StatusBadRequest)
-	}
-	// if loggedIn(r) {
-	// http.Redirect(w, r, "/", http.StatusSeeOther)
-	// return
-	// w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusOK)
-	// w.Write(js)
-	// }
-	// if r.Method == "GET" {
+// func LoginHandler(w http.ResponseWriter, r *http.Request) {
+// 	// fmt.Println("logged in", loggedIn(r))
+// 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
+// 		http.Error(w, "Bad request", http.StatusBadRequest)
+// 	}
+// 	// if loggedIn(r) {
+// 	// http.Redirect(w, r, "/", http.StatusSeeOther)
+// 	// return
+// 	// w.Header().Set("Content-Type", "application/json")
+// 	// w.WriteHeader(http.StatusOK)
+// 	// w.Write(js)
+// 	// }
+// 	// if r.Method == "GET" {
 
-	// }
-	if r.Method == http.MethodPost {
-		fmt.Printf("----login-POST-----\n")
-		// processLogin(w, r)
-		// http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
-}
+// 	// }
+// 	if r.Method == http.MethodPost {
+// 		fmt.Printf("----login-POST-----\n")
+// 		// processLogin(w, r)
+// 		// http.Redirect(w, r, "/", http.StatusSeeOther)
+// 	}
+// }
 
 // // func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // // 	if r.URL.Path != "/" {
