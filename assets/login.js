@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log({resp});
         if (resp.label === "Greet") {
             console.log(resp.content);
+        } else if (resp.label === "login") {
+            console.log(resp.content);
         }
     }
 });
