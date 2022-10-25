@@ -30,8 +30,8 @@ func createUsersTable() {
 func createSessionsTable() {
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS sessions 
 	(sessionID VARCHAR(30) PRIMARY KEY,
-	userID INTEGER,
-	FOREIGN KEY(userID) REFERENCES users(userID));`)
+		userID INTEGER,
+		FOREIGN KEY(userID) REFERENCES users(userID));`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,7 +73,8 @@ func createCommentsTable() {
 
 func createMessageTable() {
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS messages
-	(senderID INTEGER,
+	(messageID INTEGER PRIMARY KEY AUTOINCREMENT,
+		senderID INTEGER,
 		receiverID INTEGER,
 		messageTIme DATETIME,
 		content VARCHAR(2000),
@@ -88,9 +89,10 @@ func createMessageTable() {
 
 func createWebsocketsTable() {
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS websockets
-	(websocketAdd VARCHAR(8),
-	userID INTEGER,
-	FOREIGN KEY(userID) REFERENCES users(userID));`)
+	(websocketID INTEGER PRIMARY KEY AUTOINCREMENT,
+		userID INTEGER,
+		websocketAdd VARCHAR(8),
+		FOREIGN KEY(userID) REFERENCES users(userID));`)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -3,31 +3,15 @@ package forum
 import (
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
-// import (
-// 	"fmt"
-// 	"html/template"
-// 	"log"
-// 	"net/http"
-// 	"os"
-// 	"strconv"
-// 	"strings"
-// 	"time"
-// )
-
-// type mainPageData struct {
-// 	Userinfo    user
-// 	Posts       []post
-// 	ForumUnames []string
-// }
-
-// var (
-// 	urlPost     string
-// 	duplicateIP bool
-// 	changingPos bool
-// 	changingCom bool
-// )
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin:     func(r *http.Request) bool { return true },
+}
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("./assets/index.html")
@@ -37,6 +21,28 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	err = tpl.ExecuteTemplate(w, "index.html", nil)
 }
+
+// func LoginHandler(w http.ResponseWriter, r *http.Request) {
+// 	// fmt.Println("logged in", loggedIn(r))
+// 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
+// 		http.Error(w, "Bad request", http.StatusBadRequest)
+// 	}
+// 	// if loggedIn(r) {
+// 	// http.Redirect(w, r, "/", http.StatusSeeOther)
+// 	// return
+// 	// w.Header().Set("Content-Type", "application/json")
+// 	// w.WriteHeader(http.StatusOK)
+// 	// w.Write(js)
+// 	// }
+// 	// if r.Method == "GET" {
+
+// 	// }
+// 	if r.Method == http.MethodPost {
+// 		fmt.Printf("----login-POST-----\n")
+// 		// processLogin(w, r)
+// 		// http.Redirect(w, r, "/", http.StatusSeeOther)
+// 	}
+// }
 
 // // func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // // 	if r.URL.Path != "/" {
