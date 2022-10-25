@@ -137,5 +137,5 @@ func testLogin() {
 	}
 	testpw := "supersecret"
 	testpwHash, err := bcrypt.GenerateFromPassword([]byte(testpw), 10)
-	stmt.Exec(007, "doubleOh7", 42, 1, "James", "Bond", "secretagent@mi5.com", testpwHash, false)
+	stmt.Exec(7, "doubleOh7", 42, 1, "James", "Bond", "secretagent@mi5.com", testpwHash, false)
 }
