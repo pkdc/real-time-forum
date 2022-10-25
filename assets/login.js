@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (resp.label === "Greet") {
             console.log(resp.content);
         } else if (resp.label === "login") {
-            console.log(resp.content);
+            console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
         }
     }
 });
