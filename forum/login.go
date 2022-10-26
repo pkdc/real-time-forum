@@ -35,9 +35,9 @@ func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	fmt.Println("Connected")
+	fmt.Println("Login WS Connected")
 	var firstResponse WsLoginResponse
-	firstResponse.Label = "Greet"
+	firstResponse.Label = "greet"
 	firstResponse.Content = "Please login to the Forum"
 	conn.WriteJSON(firstResponse)
 	// insert conn into db with empty userID, fill in the userID when registered or logged in

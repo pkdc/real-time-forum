@@ -20,7 +20,7 @@ func main() {
 	http.HandleFunc("/", forum.HomeHandler)
 	http.HandleFunc("/loginWs/", forum.LoginWsEndpoint)
 	// http.HandleFunc("/register", forum.RegisterHandler)
-	// http.HandleFunc("/logout", forum.LogoutHandler)
+	http.HandleFunc("/logout", forum.LogoutHandler)
 	// http.HandleFunc("/postpage", forum.PostPageHandler)
 	// http.HandleFunc("/notifications", forum.NotiPageHandler)
 	// http.HandleFunc("/activity", forum.ActivityPageHandler)

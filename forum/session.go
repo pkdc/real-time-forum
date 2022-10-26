@@ -80,3 +80,5 @@ func genCookie(conn *websocket.Conn, uid int) SessionCookie {
 
 	return cookieResp
 }
+
+
