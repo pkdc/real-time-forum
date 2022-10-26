@@ -27,22 +27,23 @@ type WsLogoutResponse struct {
 // }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Logout handler reached")
 	c, err := r.Cookie("session")
-	var logoutUname string
+	var logoutUid int
 
 	if err == nil {
-		// get the username of the logout user
-		rows, err := db.Query("SELECT username FROM sessions WHERE sessionID = ?;", c.Value)
+		// get the uid of the logout user
+		rows, err := db.Query("SELECT userID FROM sessions WHERE sessionID = ?;", c.Value)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer rows.Close()
 		for rows.Next() {
-			rows.Scan(&logoutUname)
+			rows.Scan(&logoutUid)
 		}
-		fmt.Printf("Found user %s wants to logout", logoutUname)
+		fmt.Printf("Found userID %d wants to logout\n", logoutUid)
 
-		// delete sessionID from sessions db table
+		// 	// delete sessionID from sessions db table
 		stmt, err := db.Prepare("DELETE FROM sessions WHERE sessionID=?")
 		if err != nil {
 			log.Fatal(err)
@@ -52,15 +53,16 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("cookie sid removed (have value): %s\n", c.Value)
 	}
 
-	// test
-	var sessionID string
-	rows, err := db.Query("SELECT * FROM sessions")
-	for rows.Next() {
-		rows.Scan(&sessionID)
-	}
-	fmt.Printf("cookie sid removed (should be empty): %s\n", sessionID) // empty is correct
+	// // test
+	// var sessionID string
+	// rows, err := db.Query("SELECT * FROM sessions")
+	// for rows.Next() {
+	// 	rows.Scan(&sessionID)
+	// }
+	// fmt.Printf("cookie sid removed (should be empty): %s\n", sessionID) // empty is correct
 
-	// delete browser's cookie
+	// // delete browser's cookie
+	// dosen't delete browser's cookie
 	_, err = r.Cookie("session")
 	if err == nil {
 		http.SetCookie(w, &http.Cookie{
@@ -69,12 +71,12 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 			MaxAge: -1,
 		})
 	}
-	fmt.Printf("%s Logout\n", logoutUname)
+	fmt.Printf("%d Logout\n", logoutUid)
 
-	stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE username = ?;")
+	stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE userID = ?;")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-	stmt.Exec(false, logoutUname)
+	stmt.Exec(false, logoutUid)
 }

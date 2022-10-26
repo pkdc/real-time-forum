@@ -1,9 +1,11 @@
 const logoutUrl = location.origin + "/logout/";
 console.log(logoutUrl);
 const logoutHandler = function() {
-    fetch(logoutUrl).then(() => {
+    fetch(logoutUrl)
+    .then(() => {       
         // document.cookie = "";
         // browser.cookies.remove
+        console.log("LogOut");
     })
 }
 

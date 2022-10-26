@@ -260,7 +260,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // 	//	if loggedIn(r) {
 // 	processLogout(w, r)
 // 	//	}
-// 	http.Redirect(w, r, "/", http.StatusSeeOther)
 // }
 
 // func PostPageHandler(w http.ResponseWriter, r *http.Request) {
