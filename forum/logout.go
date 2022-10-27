@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+func processLogout(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Logout handler reached")
 	c, err := r.Cookie("session")
 	var logoutUid int
