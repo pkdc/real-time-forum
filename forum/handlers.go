@@ -23,11 +23,11 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // func LoginHandler(w http.ResponseWriter, r *http.Request) {
-// 	// fmt.Println("logged in", loggedIn(r))
+// 	// fmt.Println("logged in", loggedInCheck(r))
 // 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
 // 		http.Error(w, "Bad request", http.StatusBadRequest)
 // 	}
-// 	// if loggedIn(r) {
+// 	// if loggedInCheck(r) {
 // 	// http.Redirect(w, r, "/", http.StatusSeeOther)
 // 	// return
 // 	// w.Header().Set("Content-Type", "application/json")
@@ -199,11 +199,11 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // // }
 
 // func LoginHandler(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Println("logged in", loggedIn(r))
+// 	fmt.Println("logged in", loggedInCheck(r))
 // 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
 // 		http.Error(w, "Bad request", http.StatusBadRequest)
 // 	}
-// 	if loggedIn(r) {
+// 	if loggedInCheck(r) {
 // 		http.Redirect(w, r, "/", http.StatusSeeOther)
 // 		return
 // 	}
@@ -229,7 +229,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
 // 		http.Error(w, "Bad request", http.StatusBadRequest)
 // 	}
-// 	if loggedIn(r) {
+// 	if loggedInCheck(r) {
 // 		http.Redirect(w, r, "/", http.StatusSeeOther)
 // 		return
 // 	}
@@ -257,7 +257,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // 		http.Error(w, "Bad request", http.StatusBadRequest)
 // 		return
 // 	}
-// 	//	if loggedIn(r) {
+// 	//	if loggedInCheck(r) {
 // 	processLogout(w, r)
 // 	//	}
 // }

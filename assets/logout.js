@@ -3,8 +3,7 @@ console.log(logoutUrl);
 const logoutHandler = function() {
     fetch(logoutUrl)
     .then(() => {       
-        // document.cookie = "";
-        // browser.cookies.remove
+        document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         console.log("LogOut");
     })
 }

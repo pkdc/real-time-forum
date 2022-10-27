@@ -3,6 +3,7 @@ package forum
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gorilla/websocket"
 	uuid "github.com/satori/go.uuid"
@@ -81,4 +82,25 @@ func genCookie(conn *websocket.Conn, uid int) SessionCookie {
 	return cookieResp
 }
 
+func loggedInCheck(r *http.Request) bool {
+	c, err := r.Cookie("session")
+	if err != nil {
+		return false
+	}
 
+	// check if the uuid exists in the session table
+	var uidTryingToLogin int
+	var sid string
+	rows, err := db.Query("SELECT userID, sessionID FROM sessions WHERE sessionID = ?;", c.Value)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&uidTryingToLogin, &sid)
+	}
+	if uidTryingToLogin == 0 && sid == "" {
+		return false
+	}
+	return true
+}
