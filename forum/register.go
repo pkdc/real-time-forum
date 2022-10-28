@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -104,22 +103,5 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) {
 		for rows3.Next() {
 			rows3.Scan(&userID)
 		}
-
 	}
-}
-
-func createSession(w http.ResponseWriter, userID int) {
-	sid := uuid.NewV4()
-	http.SetCookie(w, &http.Cookie{
-		Name:   "session",
-		Value:  sid.String(),
-		MaxAge: 1800,
-	})
-	fmt.Printf("reg sid: %s\n", sid)
-	stmt, err := db.Prepare("INSERT INTO sessions (sessionID, userID) VALUES (?,?);")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-	stmt.Exec(sid.String(), userID)
 }
