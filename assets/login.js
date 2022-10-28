@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
     loginSocket.onmessage = (msg) => {
         const resp = JSON.parse(msg.data);
         console.log({resp});
-        if (resp.label === "Greet") {
+        if (resp.label === "greet") {
             console.log(resp.content);
         } else if (resp.label === "login") {
             console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
-            document.cookie = `session=${resp.cookie.sid}`;
+            document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
         }
     }
 });
