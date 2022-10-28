@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	"forum/forum"
 	"log"
 	"net/http"
 	"os/exec"
-
-	"forum/forum"
 )
 
 func main() {
@@ -15,10 +14,11 @@ func main() {
 	// forum.ClearPosts()
 	// forum.ClearComments()
 	exec.Command("xdg-open", "http://localhost:8080/").Start()
-
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets"))))
 	http.HandleFunc("/", forum.HomeHandler)
-	// http.HandleFunc("/login", forum.LoginHandler)
+	http.HandleFunc("/loginWs/", forum.LoginWsEndpoint)
+	http.HandleFunc("/regWs/", forum.RegWsEndpoint)
+	http.HandleFunc("/postWs/", forum.PostWsEndpoint)
 	// http.HandleFunc("/register", forum.RegisterHandler)
 	// http.HandleFunc("/logout", forum.LogoutHandler)
 	// http.HandleFunc("/postpage", forum.PostPageHandler)

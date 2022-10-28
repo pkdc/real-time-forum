@@ -1,6 +1,33 @@
-const RegisterForm = document.createElement("form");
+let regSocket = null; 
+document.addEventListener("DOMContentLoaded", function() {
+    regSocket = new WebSocket("ws://localhost:8080/regWs/");
+    console.log("JS attempt to connect");
+    regSocket.onopen = () => console.log("connected-reg");
+    regSocket.onclose = () => console.log("Bye-reg");
+    regSocket.onerror = (err) => console.log("Error!-reg",err);
+    regSocket.onmessage = (msg) => {
+        const resp = JSON.parse(msg.data);
+        console.log({resp});
+        if (resp.label === "Greet") {
+            console.log(resp.content);
+        } else if (resp.label === "reg") {
+            console.log(resp.content);
+        }
+    }
+});
+
+const regHandler = function(e) {
+    e.preventDefault();
+    const formFields = new FormData(e.target);
+    const payloadObj = Object.fromEntries(formFields.entries());
+    payloadObj["label"] = "reg";
+    console.log({payloadObj});
+    regSocket.send(JSON.stringify(payloadObj));
+};
 
 // login form//
+const RegisterForm = document.createElement("form");
+RegisterForm.addEventListener("submit", regHandler);
 
 
 // name label
@@ -132,8 +159,14 @@ RgenderOptionDiv.append(
     RgenderInputOpt2,RgenderLabelOpt2,
     RgenderInputOpt3,RgenderLabelOpt3,
     RgenderInputOpt4,RgenderLabelOpt4);
+
 RgenderOptionDiv.setAttribute("id", "gender");
 
+const regSubmitDiv = document.createElement('div');
+const regSubmit = document.createElement("button");
+regSubmit.textContent = "Register";
+regSubmit.setAttribute("type", "submit");
+regSubmitDiv.append(regSubmit);
 //append
 RegisterForm.append(RnameLabelDiv,
     RnameInputDiv,
@@ -148,5 +181,6 @@ RegisterForm.append(RnameLabelDiv,
     RpwLabelDiv,
     RpwInputDiv,
     RgenderDiv,
-    RgenderOptionDiv);
+    RgenderOptionDiv,
+    regSubmitDiv);
 export default RegisterForm;

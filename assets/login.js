@@ -1,4 +1,34 @@
+
+let loginSocket = null; 
+document.addEventListener("DOMContentLoaded", function() {
+    loginSocket = new WebSocket("ws://localhost:8080/loginWs/");
+    console.log("JS attempt to connect");
+    loginSocket.onopen = () => console.log("connected-login");
+    loginSocket.onclose = () => console.log("Bye-login");
+    loginSocket.onerror = (err) => console.log("Error!-login", err);
+    loginSocket.onmessage = (msg) => {
+        const resp = JSON.parse(msg.data);
+        console.log({resp});
+        if (resp.label === "Greet") {
+            console.log(resp.content);
+        } else if (resp.label === "login") {
+            console.log(resp.content);
+        }
+    }
+});
+
+const loginHandler = function(e) {
+    e.preventDefault();
+    const formFields = new FormData(e.target);
+    const payloadObj = Object.fromEntries(formFields.entries());
+    payloadObj["label"] = "login";
+    console.log({payloadObj});
+    loginSocket.send(JSON.stringify(payloadObj));
+};
+
+
 const loginForm = document.createElement("form");
+loginForm.addEventListener("submit", loginHandler);
 
 // login form
 // name label
@@ -30,7 +60,12 @@ pwInput.setAttribute("name", "pw");
 pwInput.setAttribute("id", "pw");
 pwInputDiv.append(pwInput);
 
-loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv);
+const loginSubmitDiv = document.createElement('div');
+const loginSubmit = document.createElement("button");
+loginSubmit.textContent = "Login";
+loginSubmit.setAttribute("type", "submit");
+loginSubmitDiv.append(loginSubmit);
 
+loginForm.append(nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
 
 export default loginForm;
