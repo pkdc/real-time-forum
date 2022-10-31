@@ -12,9 +12,10 @@ import (
 )
 
 type WsRegisterResponse struct {
-	Label   string `json:"label"`
-	Content string `json:"content"`
-	Pass    bool   `json:"pass"`
+	Label   string        `json:"label"`
+	Content string        `json:"content"`
+	Pass    bool          `json:"pass"`
+	Cookie  SessionCookie `json:"cookie"`
 }
 
 type WsRegisterPayload struct {
@@ -36,16 +37,19 @@ func RegWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	fmt.Println("Connected")
+	fmt.Println("Reg Connected")
 	var firstResponse WsLoginResponse
-	firstResponse.Label = "Greet"
+	firstResponse.Label = "greet"
 	firstResponse.Content = "Please register to the Forum"
 	conn.WriteJSON(firstResponse)
-	listenToRegWs(conn)
-	createSession(w, userID)
+
+	regSuccess := false
+	for !regSuccess {
+		regSuccess = listenToRegWs(conn)
+	}
 }
 
-func listenToRegWs(conn *websocket.Conn) {
+func listenToRegWs(conn *websocket.Conn) bool {
 	defer func() {
 		fmt.Println("Ws Conn Closed")
 	}()
@@ -56,12 +60,13 @@ func listenToRegWs(conn *websocket.Conn) {
 		err := conn.ReadJSON(&regPayload)
 		if err == nil {
 			fmt.Printf("payload received: %v\n", regPayload)
-			ProcessAndReplyReg(conn, regPayload)
+			regSuccess := ProcessAndReplyReg(conn, regPayload)
+			return regSuccess
 		}
 	}
 }
 
-func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) {
+func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool {
 	dob, err := time.Parse("2006-01-02", regPayload.Age)
 	if err != nil {
 		log.Fatal(err)
@@ -86,22 +91,35 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) {
 		}
 		defer rows.Close()
 		rows.Exec(regPayload.NickName, ageStr, regPayload.Gender, regPayload.FirstName, regPayload.LastName, regPayload.Email, cryptPw, true)
+		if regPayload.NickName != "" && ageStr != "" && regPayload.Gender != "" && regPayload.FirstName != "" && regPayload.LastName != "" && regPayload.Email != "" && cryptPw != nil {
 
-		fmt.Println("Register successfully")
+			fmt.Println("Register successfully")
 
-		var successResponse WsRegisterResponse
-		successResponse.Label = "reg"
-		successResponse.Content = fmt.Sprintf("%s Login successfully", regPayload.NickName)
-		successResponse.Pass = true
-		conn.WriteJSON(successResponse)
+			var successResponse WsRegisterResponse
+			successResponse.Label = "reg"
+			successResponse.Content = fmt.Sprintf("%s Login successfully", regPayload.NickName)
+			successResponse.Pass = true
 
-		rows3, err := db.Query(`SELECT userID FROM users WHERE nickname = ?`, regPayload.NickName)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer rows3.Close()
-		for rows3.Next() {
-			rows3.Scan(&userID)
+			rows3, err := db.Query(`SELECT userID FROM users WHERE nickname = ?`, regPayload.NickName)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer rows3.Close()
+			for rows3.Next() {
+				rows3.Scan(&userID)
+			}
+
+			successResponse.Cookie = genCookie(conn, userID)
+			conn.WriteJSON(successResponse)
+
+		} else {
+			var failedResponse WsRegisterResponse
+			failedResponse.Label = "reg"
+			failedResponse.Content = fmt.Sprintf("Check the credentials")
+			failedResponse.Pass = false
+			conn.WriteJSON(failedResponse)
+			return false
 		}
 	}
+	return true
 }
