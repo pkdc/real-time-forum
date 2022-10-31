@@ -35,7 +35,7 @@ func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	fmt.Println("Login WS Connected")
+	fmt.Println("Login Connected")
 	var firstResponse WsLoginResponse
 	firstResponse.Label = "greet"
 	firstResponse.Content = "Please login to the Forum"
@@ -53,6 +53,7 @@ func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	for !loginSuccess {
 		loginSuccess = listenToLoginWs(conn)
 	}
+	conn.Close()
 }
 
 func listenToLoginWs(conn *websocket.Conn) bool {
