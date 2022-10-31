@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (resp.label === "Greet") {
             console.log(resp.content);
         } else if (resp.label === "reg") {
-            console.log(resp.content);
+            console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
+            document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
         }
     }
 });
