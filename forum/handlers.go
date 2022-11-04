@@ -41,7 +41,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func chatHandler(w http.ResponseWriter, r *http.Request) {
+func ChatHandler(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("logged in", loggedInCheck(r))
 	if r.Method != http.MethodGet {
 		http.Error(w, "Bad request", http.StatusBadRequest)

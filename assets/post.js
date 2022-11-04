@@ -2,7 +2,7 @@ let postSocket = null;
 const body = document.getElementsByTagName("BODY")[0]
 document.addEventListener("DOMContentLoaded", function () {
     postSocket = new WebSocket("ws://localhost:8080/postWs/");
-    console.log("JS attempt to connect");
+    console.log("JS attempt to connect post");
     postSocket.onopen = () => console.log("connected-postCreate");
     postSocket.onclose = () => console.log("Bye-postCreate");
     postSocket.onerror = (err) => console.log("Error!-postCreate", err);

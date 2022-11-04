@@ -29,10 +29,23 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("Login Connected")
-	var firstResponse WsChatResponse
-	firstResponse.Label = "greet"
-	firstResponse.Content = "Ready to Chat"
-	conn.WriteJSON(firstResponse)
+	var userListResponse WsChatResponse
+	userListResponse.Label = "userList"
+
+	rows, err := db.Query(`SELECT nickname FROM users`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var nicknameDBArr []string
+	for rows.Next() {
+		var nicknameDB string
+		rows.Scan(&nicknameDB)
+		nicknameDBArr = append(nicknameDBArr, nicknameDB)
+	}
+	fmt.Printf("nicknames: %v/n", nicknameDBArr)
+	userListResponse.OnlineUsers = nicknameDBArr
+	conn.WriteJSON(userListResponse)
 
 	readChatPayloadFromWs(conn)
 }

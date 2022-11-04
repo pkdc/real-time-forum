@@ -3,6 +3,7 @@ import loginForm from "./login.js";
 import PostForm from "./post.js";
 
 import logoutBtn from "./logout.js";
+import chatForm from "./chat.js";
 
 const formDiv = document.querySelector(".form-div");
 const loginBut = document.querySelector(".login-btn");
@@ -39,4 +40,8 @@ loginOrReg.append(closeButDiv)
 document.addEventListener("DOMContentLoaded", function() {
     formDiv.classList.add("show");
 });
-body.append(PostForm)
+body.append(PostForm);
+
+const chatBox = document.createElement("div")
+chatBox.append(chatForm);
+body.append(chatBox);
