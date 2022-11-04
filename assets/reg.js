@@ -1,3 +1,5 @@
+import userListSocket from "./userList.js";
+
 let regSocket = null; 
 const userList = document.querySelector(".user-list");
 

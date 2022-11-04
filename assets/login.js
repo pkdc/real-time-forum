@@ -1,4 +1,6 @@
 
+import userListSocket from "./userList.js";
+
 let loginSocket = null; 
 document.addEventListener("DOMContentLoaded", function() {
     loginSocket = new WebSocket("ws://localhost:8080/loginWs/");

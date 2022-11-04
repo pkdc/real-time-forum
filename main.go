@@ -19,7 +19,8 @@ func main() {
 	http.HandleFunc("/regWs/", forum.RegisterHandler)
 	http.HandleFunc("/postWs/", forum.PostWsEndpoint)
 	http.HandleFunc("/loginWs/", forum.LoginHandler)
-	http.HandleFunc("/chatWs/", forum.ChatHandler)
+	http.HandleFunc("/userListWs/", forum.UserListHandler)
+	// http.HandleFunc("/chatWs/", forum.ChatHandler)
 
 	// http.HandleFunc("/register", forum.RegisterHandler)
 	http.HandleFunc("/logout/", forum.LogoutHandler)

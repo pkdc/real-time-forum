@@ -9,9 +9,8 @@ import (
 )
 
 type WsChatResponse struct {
-	Label       string   `json:"label"`
-	Content     string   `json:"content"`
-	OnlineUsers []string `json:"online_users"`
+	Label   string `json:"label"`
+	Content string `json:"content"`
 }
 
 type WsChatPayload struct {
@@ -28,24 +27,7 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	fmt.Println("Login Connected")
-	var userListResponse WsChatResponse
-	userListResponse.Label = "userList"
-
-	rows, err := db.Query(`SELECT nickname FROM users`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	var nicknameDBArr []string
-	for rows.Next() {
-		var nicknameDB string
-		rows.Scan(&nicknameDB)
-		nicknameDBArr = append(nicknameDBArr, nicknameDB)
-	}
-	fmt.Printf("nicknames: %v/n", nicknameDBArr)
-	userListResponse.OnlineUsers = nicknameDBArr
-	conn.WriteJSON(userListResponse)
+	fmt.Println("Chat Connected")
 
 	readChatPayloadFromWs(conn)
 }

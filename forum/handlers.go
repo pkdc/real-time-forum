@@ -41,6 +41,16 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func UserListHandler(w http.ResponseWriter, r *http.Request) {
+	// fmt.Println("logged in", loggedInCheck(r))
+	if r.Method != http.MethodGet {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+	}
+	if r.Method == "GET" && !loggedInCheck(r) {
+		userListWsEndpoint(w, r)
+	}
+}
+
 func ChatHandler(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("logged in", loggedInCheck(r))
 	if r.Method != http.MethodGet {
