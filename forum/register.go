@@ -51,7 +51,7 @@ func RegWsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 func listenToRegWs(conn *websocket.Conn) bool {
 	defer func() {
-		fmt.Println("Ws Conn Closed")
+		fmt.Println("Reg Ws Conn Closed")
 	}()
 
 	var regPayload WsRegisterPayload

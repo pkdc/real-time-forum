@@ -27,30 +27,30 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Bad request", http.StatusBadRequest)
 	}
-
-	// return
-	// w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusOK)
-	// w.Write(js)
-	// }
 	if r.Method == "GET" && !loggedInCheck(r) {
 		LoginWsEndpoint(w, r)
 	}
-	// if r.Method == http.MethodPost {
-		// 	fmt.Printf("----login-POST-----\n")
-		// 	// processLogin(w, r)
-		// }
+}
+
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Bad request", http.StatusBadRequest)
 	}
-	
-	func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			http.Error(w, "Bad request", http.StatusBadRequest)
-		}
-		if r.Method == http.MethodGet && !loggedInCheck(r) {
-			RegWsEndpoint(w,r)
-			}
-		}
-	
+	if r.Method == http.MethodGet && !loggedInCheck(r) {
+		RegWsEndpoint(w, r)
+	}
+}
+
+func chatHandler(w http.ResponseWriter, r *http.Request) {
+	// fmt.Println("logged in", loggedInCheck(r))
+	if r.Method != http.MethodGet {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+	}
+	if r.Method == "GET" && !loggedInCheck(r) {
+		chatWsEndpoint(w, r)
+	}
+}
+
 // // func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // // 	if r.URL.Path != "/" {
 // // 		http.Error(w, "404 Page Not Found", 404)
@@ -231,10 +231,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 // 		http.Redirect(w, r, "/", http.StatusSeeOther)
 // 	}
 // }
-	// if r.Method == http.MethodPost {
-	// 	regNewUser(w, r)
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// }
+// if r.Method == http.MethodPost {
+// 	regNewUser(w, r)
+// 	http.Redirect(w, r, "/", http.StatusSeeOther)
+// }
 // }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {

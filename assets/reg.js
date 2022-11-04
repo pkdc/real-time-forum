@@ -1,7 +1,9 @@
 let regSocket = null; 
+const userList = document.querySelector(".user-list");
+
 document.addEventListener("DOMContentLoaded", function() {
     regSocket = new WebSocket("ws://localhost:8080/regWs/");
-    console.log("JS attempt to connect");
+    console.log("JS attempt to connect to reg");
     regSocket.onopen = () => console.log("connected-reg");
     regSocket.onclose = () => console.log("Bye-reg");
     regSocket.onerror = (err) => console.log("Error!-reg",err);
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (resp.label === "reg") {
             console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
+            console.log("msg: ", resp.content);
         }
     }
 });

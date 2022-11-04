@@ -54,11 +54,15 @@ func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		loginSuccess = listenToLoginWs(conn)
 	}
 	conn.Close()
+
+	// if loginSuccess {
+	// 	userIsOnline()
+	// }
 }
 
 func listenToLoginWs(conn *websocket.Conn) bool {
 	defer func() {
-		fmt.Println("Ws Conn Closed")
+		fmt.Println("Login Ws Conn Closed")
 	}()
 
 	var loginPayload WsLoginPayload
