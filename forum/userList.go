@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 type WsUserListResponse struct {
@@ -13,8 +15,9 @@ type WsUserListResponse struct {
 }
 
 type WsUserListPayload struct {
-	Label   string `json:"label"`
-	Content string `json:"content"`
+	Label   string         `json:"label"`
+	Content string         `json:"content"`
+	Conn    websocket.Conn `json:"-"`
 }
 
 type userStatus struct {
@@ -22,7 +25,7 @@ type userStatus struct {
 	LoggedIn bool   `json:"status"`
 }
 
-// var chatPayloadChan = make(chan WsChatPayload)
+var userListPayloadChan = make(chan WsUserListPayload)
 
 func userListWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -31,8 +34,36 @@ func userListWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("UL Connected")
+	updateUList(conn)
+
+	readUserListPayloadFromWs(conn)
+}
+
+func readUserListPayloadFromWs(conn *websocket.Conn) {
+	defer func() {
+		fmt.Println("UserList Ws Conn Closed")
+	}()
+
+	var userListPayload WsUserListPayload
+	for {
+		err := conn.ReadJSON(&userListPayload)
+		if err == nil {
+			fmt.Printf("Sending userListPayload thru chan: %v\n", userListPayload)
+			userListPayloadChan <- userListPayload
+		}
+	}
+}
+
+func ProcessAndReplyUserList() {
+	receivedPayload := <-userListPayloadChan
+	if receivedPayload.Label == "update" {
+		updateUList()
+	}
+}
+
+func updateUList() {
 	var userListResponse WsUserListResponse
-	userListResponse.Label = "initial"
+	userListResponse.Label = "reg"
 
 	rows, err := db.Query(`SELECT nickname, loggedIn FROM users`)
 	if err != nil {
@@ -56,22 +87,23 @@ func userListWsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("nicknames: %v\n", userStatusDBArr)
 	userListResponse.OnlineUsers = userStatusDBArr
-	conn.WriteJSON(userListResponse)
-
-	// readChatPayloadFromWs(conn)
+	broadcast(userListResponse)
+	// conn.WriteJSON(userListResponse)
 }
 
-// func readChatPayloadFromWs(conn *websocket.Conn) {
-// 	defer func() {
-// 		fmt.Println("Chat Ws Conn Closed")
-// 	}()
-
-// 	var chatPayload WsChatPayload
-// 	for {
-// 		err := conn.ReadJSON(&chatPayload)
-// 		if err == nil {
-// 			fmt.Printf("Sending chatPayload thru chan: %v\n", chatPayload)
-// 			chatPayloadChan <- chatPayload
-// 		}
-// 	}
-// }
+func broadcast(userListResponse WsUserListResponse) {
+	rows, err := db.Query(`SELECT websocketAdd FROM websockets`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var wsArr []*websocket.Conn
+	for rows.Next() {
+		var wsAdd *websocket.Conn
+		rows.Scan(&wsAdd)
+		wsArr = append(wsArr, wsAdd)
+	}
+	for _, wsAddress := range wsArr {
+		wsAddress.WriteJSON(userListResponse)
+	}
+}

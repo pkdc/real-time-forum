@@ -112,6 +112,8 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool
 			successResponse.Cookie = genCookie(conn, userID)
 			conn.WriteJSON(successResponse)
 
+			// add to session
+
 		} else {
 			var failedResponse WsRegisterResponse
 			failedResponse.Label = "reg"

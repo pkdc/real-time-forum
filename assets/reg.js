@@ -29,6 +29,11 @@ const regHandler = function(e) {
     payloadObj["label"] = "reg";
     console.log({payloadObj});
     regSocket.send(JSON.stringify(payloadObj));
+
+    let uListPayload = {};
+    uListPayload["label"] = "update";
+    console.log("reg: ", {uListPayload});
+    userListSocket.send(uListPayload);
 };
 
 // login form//

@@ -89,6 +89,7 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 	var emailDB string
 	var hashDB []byte
 
+	// auth user
 	fmt.Printf("%s trying to Login\n", loginPayload.NicknameEmail)
 	rows, err := db.Query(`SELECT userID, nickname, email, password 
 							FROM users
@@ -124,6 +125,8 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 	}
 	// Login successfully
 	fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)
+
+	// update login status in users
 
 	var successResponse WsLoginResponse
 	successResponse.Label = "login"

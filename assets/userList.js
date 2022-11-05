@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
     userListSocket.onmessage = (msg) => {
         const resp = JSON.parse(msg.data);
         console.log({resp});
-        if (resp.label === "initial") {
+        if (resp.label === "update") {
             console.log(resp.online_users);
             const uList = document.querySelector(".user-list");
             // remove list item
@@ -20,10 +20,6 @@ document.addEventListener("DOMContentLoaded", function(e) {
                 nicknameItem.textContent = `${nickname} ${status}`;
                 uList.append(nicknameItem);
             }
-        } else if (resp.label === "reg") {
-            console.log(resp.content);
-        } else if (resp.label === "login") {
-            console.log(resp.content);
         }
     }
 })

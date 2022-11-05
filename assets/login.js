@@ -27,6 +27,11 @@ const loginHandler = function(e) {
     payloadObj["label"] = "login";
     console.log({payloadObj});
     loginSocket.send(JSON.stringify(payloadObj));
+
+    let uListPayload = {};
+    uListPayload["label"] = "update";
+    console.log("login: ", {uListPayload});
+    userListSocket.send(uListPayload);
 };
 
 
