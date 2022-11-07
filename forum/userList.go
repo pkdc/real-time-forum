@@ -17,6 +17,7 @@ type WsUserListResponse struct {
 type WsUserListPayload struct {
 	Label   string         `json:"label"`
 	Content string         `json:"content"`
+	Cookie  string         `json:"cookie"`
 	Conn    websocket.Conn `json:"-"`
 }
 
@@ -34,7 +35,6 @@ func userListWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("UL Connected")
-	updateUList(conn)
 
 	readUserListPayloadFromWs(conn)
 }
@@ -49,14 +49,42 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 		err := conn.ReadJSON(&userListPayload)
 		if err == nil {
 			fmt.Printf("Sending userListPayload thru chan: %v\n", userListPayload)
+			userListPayload.Conn = *conn
 			userListPayloadChan <- userListPayload
 		}
 	}
 }
 
 func ProcessAndReplyUserList() {
-	receivedPayload := <-userListPayloadChan
-	if receivedPayload.Label == "update" {
+	receivedUserListPayload := <-userListPayloadChan
+	if receivedUserListPayload.Label == "update" {
+		// can we get the cookie from backend directly?
+
+		// // find which userID
+		// c, err := r.Cookie("session")
+		// if err != nil {
+		// 	fmt.Println("User not logged in")
+		// 	return
+		// }
+		// var loggedInUid int
+		// rows, err := db.Query("SELECT userID FROM sessions WHERE sessionID = ?;", c.Value)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer rows.Close()
+		// for rows.Next() {
+		// 	rows.Scan(&loggedInUid)
+		// }
+		// fmt.Printf("loggedInUid UL %d \n", loggedInUid)
+		// // store conn in websockets table
+		// stmt, err := db.Prepare(`INSERT INTO websockets
+		// 					(userID, websocketAdd, usage)
+		// 					VALUES (?, ?, ?);`)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer stmt.Close()
+		// stmt.Exec(loggedInUid, receivedUserListPayload.Conn, "userlist")
 		updateUList()
 	}
 }

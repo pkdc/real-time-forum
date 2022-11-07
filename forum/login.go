@@ -72,7 +72,7 @@ func listenToLoginWs(conn *websocket.Conn) bool {
 		if err == nil {
 			// loginPayload.Conn = conn
 			fmt.Printf("payload received: %v\n", loginPayload)
-			testLogin() // just for testing, can be removed in production
+			// testLogin() // just for testing, can be removed in production
 			loginSuccess := ProcessAndReplyLogin(conn, loginPayload)
 			return loginSuccess
 		}
@@ -138,12 +138,12 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 	return true
 }
 
-func testLogin() {
-	stmt, err := db.Prepare("INSERT INTO users (userID, nickname, age, gender, firstname, lastname, email, password, loggedIn) VALUES (?,?,?,?,?,?,?,?,?);")
-	if err != nil {
-		log.Fatal(err)
-	}
-	testpw := "supersecret"
-	testpwHash, err := bcrypt.GenerateFromPassword([]byte(testpw), 10)
-	stmt.Exec(7, "doubleOh7", 42, 1, "James", "Bond", "secretagent@mi5.com", testpwHash, false)
-}
+// func testLogin() {
+// 	stmt, err := db.Prepare("INSERT INTO users (userID, nickname, age, gender, firstname, lastname, email, password, loggedIn) VALUES (?,?,?,?,?,?,?,?,?);")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	testpw := "supersecret"
+// 	testpwHash, err := bcrypt.GenerateFromPassword([]byte(testpw), 10)
+// 	stmt.Exec(7, "doubleOh7", 42, 1, "James", "Bond", "secretagent@mi5.com", testpwHash, false)
+// }

@@ -1,5 +1,5 @@
 import userListSocket from "./userList.js";
-
+console.log(userListSocket);
 let regSocket = null; 
 const userList = document.querySelector(".user-list");
 
@@ -32,6 +32,11 @@ const regHandler = function(e) {
 
     let uListPayload = {};
     uListPayload["label"] = "update";
+    const sessionCookie = document.cookie.split(";").find(row => row.startsWith("session="));
+    if (sessionCookie) {
+        const cookieVal = sessionCookie.split("=")[1];
+        uListPayload["cookie"] = cookieVal;
+    }
     console.log("reg: ", {uListPayload});
     userListSocket.send(uListPayload);
 };

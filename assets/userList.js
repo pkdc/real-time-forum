@@ -1,7 +1,7 @@
-let userListSocket = null;
+const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
 
 document.addEventListener("DOMContentLoaded", function(e) {
-    userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
+    // userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
     console.log("JS attempt to connect to user list");
     userListSocket.onopen = () => console.log("user list connected");
     userListSocket.onclose = () => console.log("Bye user list");

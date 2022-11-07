@@ -1,6 +1,5 @@
-
 import userListSocket from "./userList.js";
-
+console.log(userListSocket);
 let loginSocket = null; 
 document.addEventListener("DOMContentLoaded", function() {
     loginSocket = new WebSocket("ws://localhost:8080/loginWs/");
@@ -30,7 +29,15 @@ const loginHandler = function(e) {
 
     let uListPayload = {};
     uListPayload["label"] = "update";
-    console.log("login: ", {uListPayload});
+    // still haven't got the cookie!!
+    // const sessionCookie = document.cookie.split(";").find(row => row.startsWith("session="));
+    // console.log({sessionCookie});
+    // if (sessionCookie) {
+    //     const cookieVal = sessionCookie.split("=")[1];
+    //     console.log({cookieVal});
+    //     uListPayload["cookie"] = cookieVal;
+    // }
+    console.log("login UL: ", {uListPayload});
     userListSocket.send(uListPayload);
 };
 
