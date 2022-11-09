@@ -10,9 +10,11 @@ import (
 
 func main() {
 	forum.InitDB()
+	go forum.ProcessAndReplyUserList()
 	// forum.ClearUsers()
 	// forum.ClearPosts()
 	// forum.ClearComments()
+	// forum.ClearWebsockets()
 	exec.Command("xdg-open", "http://localhost:8080/").Start()
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets"))))
 	http.HandleFunc("/", forum.HomeHandler)

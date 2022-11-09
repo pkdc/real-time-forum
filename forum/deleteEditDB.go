@@ -70,6 +70,15 @@ func ClearUsers() {
 	stmt.Exec()
 }
 
+func ClearWebsockets() {
+	stmt, err := db.Prepare("DROP TABLE IF EXISTS websockets;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	stmt.Exec()
+}
+
 func DeleteOnePost(postID int) {
 	stmt, err := db.Prepare("DELETE FROM posts WHERE postID=?;")
 	if err != nil {

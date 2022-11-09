@@ -92,7 +92,7 @@ func createWebsocketsTable() {
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS websockets
 	(websocketID INTEGER PRIMARY KEY AUTOINCREMENT,
 		userID INTEGER,
-		websocketAdd VARCHAR(8),
+		websocketAdd VARCHAR(2000),
 		usage VARCHAR(10),
 		FOREIGN KEY(userID) REFERENCES users(userID));`)
 	if err != nil {

@@ -27,6 +27,7 @@ type userStatus struct {
 }
 
 var userListPayloadChan = make(chan WsUserListPayload)
+var userListWsMap = make(map[*websocket.Conn]int)
 
 func userListWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -53,43 +54,49 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 			userListPayload.Conn = *conn
 			userListPayloadChan <- userListPayload
 		}
-
 	}
 }
 
 func ProcessAndReplyUserList() {
-	receivedUserListPayload := <-userListPayloadChan
-	if receivedUserListPayload.Label == "update" {
-		// can we get the cookie val from backend directly?
-		// but will that be stateful?
+	for {
+		receivedUserListPayload := <-userListPayloadChan
+		if receivedUserListPayload.Label == "update" {
+			// can we get the cookie val from backend directly?
+			// but will that be stateful?
 
-		// find which userID
-		var loggedInUid int
-		rows, err := db.Query("SELECT userID FROM sessions WHERE sessionID = ?;", receivedUserListPayload.CookieValue)
-		if err != nil {
-			log.Fatal(err)
+			// find which userID
+			var loggedInUid int
+			rows, err := db.Query("SELECT userID FROM sessions WHERE sessionID = ?;", receivedUserListPayload.CookieValue)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer rows.Close()
+			for rows.Next() {
+				rows.Scan(&loggedInUid)
+			}
+			fmt.Printf("loggedInUid UL %d \n", loggedInUid)
+			// store conn in websockets table
+			// stmt, err := db.Prepare(`INSERT INTO websockets
+			// 					(userID, websocketAdd, usage)
+			// 					VALUES (?, ?, ?);`)
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+			// defer stmt.Close()
+			// fmt.Printf("uid: %d, Conn: %v, usage %s \n", loggedInUid, receivedUserListPayload.Conn, "userlist")
+			// stmt.Exec(loggedInUid, receivedUserListPayload.Conn, "userlist")
+
+			// store conn in map
+			userListWsMap[&receivedUserListPayload.Conn] = loggedInUid
+			fmt.Printf("current map: %v", userListWsMap)
+			updateUList()
 		}
-		defer rows.Close()
-		for rows.Next() {
-			rows.Scan(&loggedInUid)
-		}
-		fmt.Printf("loggedInUid UL %d \n", loggedInUid)
-		// store conn in websockets table
-		stmt, err := db.Prepare(`INSERT INTO websockets
-							(userID, websocketAdd, usage)
-							VALUES (?, ?, ?);`)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer stmt.Close()
-		stmt.Exec(loggedInUid, receivedUserListPayload.Conn, "userlist")
-		updateUList()
 	}
 }
 
 func updateUList() {
 	var userListResponse WsUserListResponse
-	// userListResponse.Label = "reg"
+	userListResponse.Label = "update"
 
 	rows, err := db.Query(`SELECT nickname, loggedIn FROM users`)
 	if err != nil {
@@ -114,22 +121,24 @@ func updateUList() {
 	fmt.Printf("UL nicknames: %v\n", userStatusDBArr)
 	userListResponse.OnlineUsers = userStatusDBArr
 	broadcast(userListResponse)
-	// conn.WriteJSON(userListResponse)
 }
 
 func broadcast(userListResponse WsUserListResponse) {
-	rows, err := db.Query(`SELECT websocketAdd FROM websockets`)
-	if err != nil {
-		log.Fatal(err)
+	for userListWs := range userListWsMap {
+		userListWs.WriteJSON(userListResponse)
 	}
-	defer rows.Close()
-	var wsArr []*websocket.Conn
-	for rows.Next() {
-		var wsAdd *websocket.Conn
-		rows.Scan(&wsAdd)
-		wsArr = append(wsArr, wsAdd)
-	}
-	for _, wsAddress := range wsArr {
-		wsAddress.WriteJSON(userListResponse)
-	}
+	// rows, err := db.Query(`SELECT websocketAdd FROM websockets`) // WHERE usage = userlist
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer rows.Close()
+	// var wsArr []*websocket.Conn
+	// for rows.Next() {
+	// 	var wsAdd *websocket.Conn
+	// 	rows.Scan(&wsAdd)
+	// 	wsArr = append(wsArr, wsAdd)
+	// }
+	// for _, wsAddress := range wsArr {
+	// 	wsAddress.WriteJSON(userListResponse)
+	// }
 }
