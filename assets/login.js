@@ -15,6 +15,14 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (resp.label === "login") {
             console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
+
+            // update user list after a user login
+            let uListPayload = {};
+            uListPayload["label"] = "update";
+            uListPayload["cookie_value"] = resp.cookie.sid;
+            // uListPayload["cookie_value"] = "testing";
+            console.log("login UL sending: ", uListPayload);
+            userListSocket.send(JSON.stringify(uListPayload));
         }
     }
 });
@@ -26,19 +34,6 @@ const loginHandler = function(e) {
     payloadObj["label"] = "login";
     console.log({payloadObj});
     loginSocket.send(JSON.stringify(payloadObj));
-
-    let uListPayload = {};
-    uListPayload["label"] = "update";
-    // still haven't got the cookie!!
-    // const sessionCookie = document.cookie.split(";").find(row => row.startsWith("session="));
-    // console.log({sessionCookie});
-    // if (sessionCookie) {
-    //     const cookieVal = sessionCookie.split("=")[1];
-    //     console.log({cookieVal});
-    //     uListPayload["cookie"] = cookieVal;
-    // }
-    console.log("login UL: ", {uListPayload});
-    userListSocket.send(uListPayload);
 };
 
 

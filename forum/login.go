@@ -71,7 +71,7 @@ func listenToLoginWs(conn *websocket.Conn) bool {
 		err := conn.ReadJSON(&loginPayload)
 		if err == nil {
 			// loginPayload.Conn = conn
-			fmt.Printf("payload received: %v\n", loginPayload)
+			fmt.Printf("login payload received: %v\n", loginPayload)
 			// testLogin() // just for testing, can be removed in production
 			loginSuccess := ProcessAndReplyLogin(conn, loginPayload)
 			return loginSuccess
