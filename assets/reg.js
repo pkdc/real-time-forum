@@ -18,6 +18,13 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
             console.log("msg: ", resp.content);
+
+            // update user list after a user reg
+            let uListPayload = {};
+            uListPayload["label"] = "update";
+            uListPayload["cookie_value"] = resp.cookie.sid;
+            console.log("reg UL sending: ", uListPayload);
+            userListSocket.send(JSON.stringify(uListPayload));
         }
     }
 });
@@ -29,16 +36,6 @@ const regHandler = function(e) {
     payloadObj["label"] = "reg";
     console.log({payloadObj});
     regSocket.send(JSON.stringify(payloadObj));
-
-    let uListPayload = {};
-    uListPayload["label"] = "update";
-    const sessionCookie = document.cookie.split(";").find(row => row.startsWith("session="));
-    if (sessionCookie) {
-        const cookieVal = sessionCookie.split("=")[1];
-        uListPayload["cookie"] = cookieVal;
-    }
-    console.log("reg: ", {uListPayload});
-    userListSocket.send(uListPayload);
 };
 
 // login form//
