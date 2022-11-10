@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function() {
             let uListPayload = {};
             uListPayload["label"] = "update";
             uListPayload["cookie_value"] = resp.cookie.sid;
-            // uListPayload["cookie_value"] = "testing";
             console.log("login UL sending: ", uListPayload);
             userListSocket.send(JSON.stringify(uListPayload));
         }

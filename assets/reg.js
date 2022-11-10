@@ -38,7 +38,7 @@ const regHandler = function(e) {
     regSocket.send(JSON.stringify(payloadObj));
 };
 
-// login form//
+// reg form//
 const RegisterForm = document.createElement("form");
 RegisterForm.addEventListener("submit", regHandler);
 
