@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -60,10 +61,15 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 func ProcessAndReplyUserList() {
 	for {
 		receivedUserListPayload := <-userListPayloadChan
-		if receivedUserListPayload.Label == "update" {
-			// can we get the cookie val from backend directly?
-			// but will that be stateful?
+		payloadLabels := strings.Split(receivedUserListPayload.Label, "-")
 
+		// close and remove conn from map if logout
+		if len(payloadLabels) > 1 && payloadLabels[1] == "logout" {
+			_ = receivedUserListPayload.Conn.Close()
+			delete(userListWsMap, &receivedUserListPayload.Conn)
+		}
+
+		if len(payloadLabels) == 1 && payloadLabels[0] == "update" {
 			// find which userID
 			var loggedInUid int
 			rows, err := db.Query("SELECT userID FROM sessions WHERE sessionID = ?;", receivedUserListPayload.CookieValue)
@@ -89,8 +95,8 @@ func ProcessAndReplyUserList() {
 			// store conn in map
 			userListWsMap[&receivedUserListPayload.Conn] = loggedInUid
 			fmt.Printf("current map: %v", userListWsMap)
-			updateUList()
 		}
+		updateUList()
 	}
 }
 
