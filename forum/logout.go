@@ -23,7 +23,7 @@ func processLogout(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Printf("Found userID %d wants to logout\n", logoutUid)
 
-		// 	// delete sessionID from sessions db table
+		// delete sessionID from sessions db table
 		stmt, err := db.Prepare("DELETE FROM sessions WHERE sessionID=?")
 		if err != nil {
 			log.Fatal(err)

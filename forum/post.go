@@ -68,7 +68,7 @@ func PostWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	fmt.Println("Connected")
+	fmt.Println("Post Connected")
 	var firstResponse WsPostResponse
 	firstResponse.Label = "Greet"
 	allPosts := findAllPosts()
@@ -79,7 +79,7 @@ func PostWsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 func listenToPostWs(conn *websocket.Conn) {
 	defer func() {
-		fmt.Println("Ws Conn Closed")
+		fmt.Println("Post Ws Conn Closed")
 	}()
 
 	var postPayload WsPostPayload

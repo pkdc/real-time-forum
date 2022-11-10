@@ -54,11 +54,15 @@ func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		loginSuccess = listenToLoginWs(conn)
 	}
 	conn.Close()
+
+	// if loginSuccess {
+	// 	userIsOnline()
+	// }
 }
 
 func listenToLoginWs(conn *websocket.Conn) bool {
 	defer func() {
-		fmt.Println("Ws Conn Closed")
+		fmt.Println("Login Ws Conn Closed")
 	}()
 
 	var loginPayload WsLoginPayload
@@ -67,8 +71,8 @@ func listenToLoginWs(conn *websocket.Conn) bool {
 		err := conn.ReadJSON(&loginPayload)
 		if err == nil {
 			// loginPayload.Conn = conn
-			fmt.Printf("payload received: %v\n", loginPayload)
-			testLogin() // just for testing, can be removed in production
+			fmt.Printf("login payload received: %v\n", loginPayload)
+			// testLogin() // just for testing, can be removed in production
 			loginSuccess := ProcessAndReplyLogin(conn, loginPayload)
 			return loginSuccess
 		}
@@ -85,6 +89,7 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 	var emailDB string
 	var hashDB []byte
 
+	// auth user
 	fmt.Printf("%s trying to Login\n", loginPayload.NicknameEmail)
 	rows, err := db.Query(`SELECT userID, nickname, email, password 
 							FROM users
@@ -121,6 +126,8 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 	// Login successfully
 	fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)
 
+	// update login status in users
+
 	var successResponse WsLoginResponse
 	successResponse.Label = "login"
 	successResponse.Content = fmt.Sprintf("%s Login successfully", nicknameDB)
@@ -131,12 +138,12 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 	return true
 }
 
-func testLogin() {
-	stmt, err := db.Prepare("INSERT INTO users (userID, nickname, age, gender, firstname, lastname, email, password, loggedIn) VALUES (?,?,?,?,?,?,?,?,?);")
-	if err != nil {
-		log.Fatal(err)
-	}
-	testpw := "supersecret"
-	testpwHash, err := bcrypt.GenerateFromPassword([]byte(testpw), 10)
-	stmt.Exec(7, "doubleOh7", 42, 1, "James", "Bond", "secretagent@mi5.com", testpwHash, false)
-}
+// func testLogin() {
+// 	stmt, err := db.Prepare("INSERT INTO users (userID, nickname, age, gender, firstname, lastname, email, password, loggedIn) VALUES (?,?,?,?,?,?,?,?,?);")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	testpw := "supersecret"
+// 	testpwHash, err := bcrypt.GenerateFromPassword([]byte(testpw), 10)
+// 	stmt.Exec(7, "doubleOh7", 42, 1, "James", "Bond", "secretagent@mi5.com", testpwHash, false)
+// }

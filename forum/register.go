@@ -51,7 +51,7 @@ func RegWsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 func listenToRegWs(conn *websocket.Conn) bool {
 	defer func() {
-		fmt.Println("Ws Conn Closed")
+		fmt.Println("Reg Ws Conn Closed")
 	}()
 
 	var regPayload WsRegisterPayload
@@ -85,12 +85,12 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool
 			ageStr, regPayload.Email, cryptPw, regPayload.Gender)
 
 		fmt.Printf("%s creating user\n", regPayload.NickName)
-		rows, err := db.Prepare("INSERT INTO users(nickname,age,gender,firstname,lastname,email,password, loggedIn) VALUES(?,?,?,?,?,?,?,?);")
+		stmt, err := db.Prepare("INSERT INTO users(nickname,age,gender,firstname,lastname,email,password, loggedIn) VALUES(?,?,?,?,?,?,?,?);")
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer rows.Close()
-		rows.Exec(regPayload.NickName, ageStr, regPayload.Gender, regPayload.FirstName, regPayload.LastName, regPayload.Email, cryptPw, true)
+		defer stmt.Close()
+		stmt.Exec(regPayload.NickName, ageStr, regPayload.Gender, regPayload.FirstName, regPayload.LastName, regPayload.Email, cryptPw, true)
 		if regPayload.NickName != "" && ageStr != "" && regPayload.Gender != "" && regPayload.FirstName != "" && regPayload.LastName != "" && regPayload.Email != "" && cryptPw != nil {
 
 			fmt.Println("Register successfully")
@@ -111,6 +111,8 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool
 
 			successResponse.Cookie = genCookie(conn, userID)
 			conn.WriteJSON(successResponse)
+
+			// add to session
 
 		} else {
 			var failedResponse WsRegisterResponse
