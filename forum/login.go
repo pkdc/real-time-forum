@@ -118,7 +118,7 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 		fmt.Println("Failed")
 		var failedResponse WsLoginResponse
 		failedResponse.Label = "login"
-		failedResponse.Content = "record cannot be found"
+		failedResponse.Content = "Please check your credentials"
 		failedResponse.Pass = false
 		conn.WriteJSON(failedResponse)
 		return false

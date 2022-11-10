@@ -20,11 +20,13 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("msg: ", resp.content);
 
             // update user list after a user reg
-            let uListPayload = {};
-            uListPayload["label"] = "update";
-            uListPayload["cookie_value"] = resp.cookie.sid;
-            console.log("reg UL sending: ", uListPayload);
-            userListSocket.send(JSON.stringify(uListPayload));
+            if (resp.pass) {
+                let uListPayload = {};
+                uListPayload["label"] = "update";
+                uListPayload["cookie_value"] = resp.cookie.sid;
+                console.log("reg UL sending: ", uListPayload);
+                userListSocket.send(JSON.stringify(uListPayload));
+            }
         }
     }
 });

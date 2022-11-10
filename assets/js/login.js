@@ -17,11 +17,14 @@ document.addEventListener("DOMContentLoaded", function() {
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
 
             // update user list after a user login
-            let uListPayload = {};
-            uListPayload["label"] = "update";
-            uListPayload["cookie_value"] = resp.cookie.sid;
-            console.log("login UL sending: ", uListPayload);
-            userListSocket.send(JSON.stringify(uListPayload));
+            if (resp.pass) {
+                let uListPayload = {};
+                uListPayload["label"] = "update";
+                uListPayload["cookie_value"] = resp.cookie.sid;
+                console.log("login UL sending: ", uListPayload);
+                userListSocket.send(JSON.stringify(uListPayload));
+            }
+            
         }
     }
 });

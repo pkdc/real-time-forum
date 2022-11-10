@@ -117,7 +117,7 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool
 		} else {
 			var failedResponse WsRegisterResponse
 			failedResponse.Label = "reg"
-			failedResponse.Content = fmt.Sprintf("Check the credentials")
+			failedResponse.Content = fmt.Sprintf("Please check your credentials")
 			failedResponse.Pass = false
 			conn.WriteJSON(failedResponse)
 			return false
