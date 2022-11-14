@@ -1,66 +1,256 @@
-@media screen and (max-height: 450px) {
-    .form-div {overflow-y: auto;}
-  }
-.form-div {
-    display: block;
-    /* height: 100%; */
-    width: 100%;
-    opacity: 0;
-    position: relative;
-    top: 0;
+/*------------------------------------------------------------ MAIN PAGE PAGE --------------------------------------*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /*THIS CSS SECTION IS FOR THE BODY OF THE MAIN PAGE*/
+    /* margin: 20px; */
+    /* align-items: center; */
+    /* flex-direction: column; */
+    /* padding: 10px; */
+    /* margin: 0px; */
+    height: 100%;
+    /* overflow: hidden; */
+    background-color: rgb(250, 234, 214);
+    /* For browsers that don't support gradients*/
+    background: grey;
+    /* for safari 5.1 to 6.0 */
+    background: -webkit-linear-gradient(bottom right, rgba(190, 186, 182, 0.5), rgb(199, 150, 91));
+    /* for Firefox 3.6 to 15 */
+    background: -moz-linear-gradient(to bottom right, rgba(190, 186, 182, 0.5), rgb(199, 150, 91));
+    /* for Opera 11.1 to 12.0 */
+    background: -o-linear-gradient(to bottom right, rgba(190, 186, 182, 0.5), rgb(199, 150, 91));
+    /* for standard syntax */
+    background: linear-gradient(to bottom right, rgba(190, 186, 182, 0.5), rgb(199, 150, 91))
     
+}
+
+.nav-bar {
+    padding: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
     text-align: center;
-    /*----------------------------------
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+/* THIS FILD IS NOT READY FOR USE YET */
+.comment {   
     height: 0%;
     width: 100%;
-    position: fixed;
+    /* position: fixed; */
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.9);
-    overflow-y: hidden;
-    transition: 0.5s; */
-}
-.form-page{
-   
-        height: 0%;
-        width: 100%;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        left: 0;
-        background-color: green;
-        overflow-y: hidden;
-        transition: 0.5s;
-      
-}
-.comment{
-    height: 0%;
-    width: 100%;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: green;
+    background-color: rgb(140, 9, 24);
     overflow-y: hidden;
     transition: 0.5s;
-  
 }
-#openButDiv{
+
+#membershipButton {
+    /*THIS CSS SECTION IS FOR THE BUTTON TO THE MEMBERSHIP AND REGISTRATION PAGE*/
     align-items: center;
     display: flex;
     justify-content: center;
 }
-.login-btn{
-    float:left
-}
-.reg-btn{
-    float:right
-}
+
 .show {
     opacity: 0.7;
 }
-/* .hide {
-    opacity: 0;
+
+#curentPost {
+    width: 50%;
+    padding-top: 1vh;
+    padding-left: 9vh;
+    /* border-radius: 20px */
+    /* border-style: dotted; */
+    filter: drop-shadow(18px +8px 15px #454442);
+    /* background: rgb(129, 119, 80); */
+    background: linear-gradient(30deg, rgba(221, 216, 197, 1) 0%, rgba(201, 117, 49, 1) 38%, rgba(241, 241, 234, .1) 100%);
+}
+
+.curentPostTitle {
+    text-align: center;
+    border-radius: 30px;
+    width: 30%;
+    border-style: solid;
+    background-color: rgb(239, 231, 231);
+}
+
+.PostContent {
+    width: 90%;
+    padding-left: 0.5%;
+    border-style: solid;
+    background-color: rgb(209, 207, 207);
+    display: flex;
+}
+
+.PostContent>p {
+
+    margin-top: 0;
+    margin-bottom: 0;
+}
+#category {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+#category > div {
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+}
+#category > div > input {
+    margin: 10px;
+}
+#category > div > label {
+    margin: 10px;
+}
+
+.PostCategory {
+    width: 90%;
+    padding-left: 0.5%;
+    /* margin-bottom: 12px; */
+    border-style: solid;
+    /* text-align: center; */
+    background-color: rgb(209, 207, 207);
+    margin-top: 2px;
+}
+
+/* .PostCategory>p {
+    margin-top: 0;
+    margin-bottom: 0;
 } */
+
+
+
+
+/*--------------------------------------------------- LOGIN AND REGISTRATION PAGE POPUP BOX ------------------------------*/
+
+.userPopUpP {
+    display: none;
+    position: fixed;
+    z-index: 8;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.userPopUpP-content {
+    margin: 50px auto;
+    border: 1px solid #999;
+    width: 60%;
+    border: #a99567;
+}
+
+h2,
+p {
+    margin: 0 0 20px;
+    font-weight: 400;
+    color: #999;
+}
+
+span {
+    color: #666;
+    display: block;
+    padding: 0 0 5px;
+}
+
+.formPage {
+    padding: 25px;
+    margin: 25px;
+    box-shadow: 0 2px 5px #f5f5f5;
+    background: #eee;
+}
+
+input,
+textarea {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #1c87c9;
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.administrationForm button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #1c87c9;
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+}
+
+button:hover {
+    background: #2371a0;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button.button {
+    background: none;
+    border-top: none;
+    outline: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: #02274a 1px solid;
+    padding: 0 0 3px 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button.button:hover {
+    border-bottom: #a99567 1px solid;
+    color: #a99567;
+}
+
+
+.form-page {
+    display: none;
+}
+
+
+/* --------------- */
+
+.user-list {
+    display: block;
+    height: 30px;
+}

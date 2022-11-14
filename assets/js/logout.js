@@ -30,8 +30,10 @@ const logoutHandler = function() {
 }
 
 
-const logoutBtn = document.createElement("div");
+const logoutBtn = document.createElement("button");
 logoutBtn.textContent = "Logout";
+const logoutDiv = document.querySelector("#logout");
+logoutDiv.append(logoutBtn);
 logoutBtn.addEventListener("click", logoutHandler);
 
 export default logoutBtn;

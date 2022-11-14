@@ -29,7 +29,30 @@ type WsRegisterPayload struct {
 	Gender    string `json:"gender_option"`
 }
 
-var userID int
+type User struct {
+	UserId    int
+	Nickname  string
+	Age       int
+	Gender    string
+	FirstName string
+	LastName  string
+	Email     string
+	LoggedIn  bool
+}
+
+var (
+	userID  int
+	curUser User
+)
+
+func findCurUser(userid int) {
+	rows3, err := db.Query(`SELECT nickname, age, gender, firstname, lastname,email, loggedIn FROM users WHERE userID = ?`, userid)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows3.Close()
+	rows3.Scan(&curUser.Nickname, curUser.Age, curUser.Gender, curUser.FirstName, curUser.LastName, curUser.Email, curUser.LoggedIn)
+}
 
 func RegWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -67,6 +90,7 @@ func listenToRegWs(conn *websocket.Conn) bool {
 }
 
 func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool {
+	var emailCheck string
 	dob, err := time.Parse("2006-01-02", regPayload.Age)
 	if err != nil {
 		log.Fatal(err)
@@ -83,7 +107,19 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool
 		fmt.Printf("reg- FirstN: %s, LastN: %s, NickN : %s, age: %s, email %s, pw: %s, gender: %s\n",
 			regPayload.FirstName, regPayload.LastName, regPayload.NickName,
 			ageStr, regPayload.Email, cryptPw, regPayload.Gender)
-
+		// checking duplicate
+		rows2, err := db.Query(`SELECT email FROM users WHERE email = ?`, regPayload.Email)
+		if err != nil {
+			log.Fatal(err)
+			return false
+		}
+		defer rows2.Close()
+		rows2.Scan(&emailCheck)
+		if emailCheck != "" {
+			fmt.Println("already registered")
+			return false
+		}
+		// insert newuser  into database
 		fmt.Printf("%s creating user\n", regPayload.NickName)
 		stmt, err := db.Prepare("INSERT INTO users(nickname,age,gender,firstname,lastname,email,password, loggedIn) VALUES(?,?,?,?,?,?,?,?);")
 		if err != nil {

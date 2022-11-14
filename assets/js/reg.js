@@ -42,6 +42,7 @@ const regHandler = function(e) {
 
 // reg form//
 const RegisterForm = document.createElement("form");
+RegisterForm.className = "formPage"
 RegisterForm.addEventListener("submit", regHandler);
 
 
