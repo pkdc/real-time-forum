@@ -5,24 +5,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="text/css" rel="stylesheet" href="./assets/css/styles.css">
+    <link type="text/css" rel="stylesheet" href="../assets/css/styles.css">
     <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
 </head>
 
 <body>
-    <div class="form-page">
-        <div class="form-div">
-            <div class="login-or-reg">
-                <div class="login-btn">Login</div>
-                <div class="reg-btn">Register</div>
-            </div>
+    <!---header--->
+    <header>
+        <ul class="nav-bar">
+            <li>
+                <p><a button class="button" data-userPopUpP="userPopUpPOne">Sign In</button></a></p>
+            </li>
+            <li>
+                <p><a button class="button" data-userPopUpP="userPopUpPTwo">Register</button></a></p>
+            </li>
+        <li><div class= "logout" id="logout"></div></li>
+        </ul>
+    </header>
+
+    <!---home--->
+    <div class="form-page"></div>
+    <!-- popup page -->
+    <div id="userPopUpPOne" class="userPopUpP">
+        <div class="userPopUpP-content">
+            <a class="close">&times;</a>
         </div>
     </div>
-    <div class = "comment"></div>
-    <div>
-        <ul class="user-list"></ul>
+    <div id="userPopUpPTwo" class="userPopUpP">
+        <div class="userPopUpP-content">
+            <span class="close">&times;</span>
+        </div>
     </div>
+    <!-- end popup page -->
+<div class="comment"></div>
+<ul class="user-list"></ul>
     <script type="module" src="../assets/js/index.js"></script>
+    <script src="../assets/js/popupform.js"></script>
 </body>
 
 </html>

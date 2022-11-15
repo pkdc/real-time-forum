@@ -29,6 +29,13 @@ type WsLoginPayload struct {
 	// Conn          *websocket.Conn `json:"-"`
 }
 
+var (
+	userIDDB   int
+	nicknameDB string
+	emailDB    string
+	hashDB     []byte
+)
+
 func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -80,7 +87,6 @@ func listenToLoginWs(conn *websocket.Conn) bool {
 }
 
 func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) bool {
-
 	fmt.Printf("login u: %s: , login pw: %s\n", loginPayload.NicknameEmail, loginPayload.Password)
 
 	// // get user data from db
