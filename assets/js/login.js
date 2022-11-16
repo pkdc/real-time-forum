@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
 
             if (resp.pass) {
+                // hide the login and reg btn, show the logout btn
                 navbar.children[0].style.display = "none"
                 navbar.children[1].style.display = "none"
                 navbar.children[2].style.display = "block"
