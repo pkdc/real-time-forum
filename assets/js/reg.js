@@ -2,6 +2,7 @@ import userListSocket from "./userList.js";
 console.log(userListSocket);
 let regSocket = null; 
 const userList = document.querySelector(".user-list");
+const navbar = document.querySelector(".navbar")
 
 document.addEventListener("DOMContentLoaded", function() {
     regSocket = new WebSocket("ws://localhost:8080/regWs/");
@@ -14,13 +15,20 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log({resp});
         if (resp.label === "Greet") {
             console.log(resp.content);
+            navbar.children[0].style.display = "block"
+            navbar.children[1].style.display = "block"
+            navbar.children[2].style.display = "none"
         } else if (resp.label === "reg") {
             console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
             console.log("msg: ", resp.content);
 
-            // update user list after a user reg
             if (resp.pass) {
+                navbar.children[0].style.display = "none"
+                navbar.children[1].style.display = "none"
+                navbar.children[2].style.display = "block"
+
+                // update user list after a user reg
                 let uListPayload = {};
                 uListPayload["label"] = "update";
                 uListPayload["cookie_value"] = resp.cookie.sid;

@@ -54,20 +54,22 @@ func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	// }
 	// defer stmt.Close()
 	// stmt.Exec("", conn)
-	loginSuccess := false
 
-	// keep running until login success
-	for !loginSuccess {
-		loginSuccess = listenToLoginWs(conn)
-	}
-	conn.Close()
+	// loginSuccess := false
+	// // keep running until login success
+	// for !loginSuccess {
+	// loginSuccess = listenToLoginWs(conn)
+	// }
+	// conn.Close()
 
 	// if loginSuccess {
 	// 	userIsOnline()
 	// }
+
+	listenToLoginWs(conn)
 }
 
-func listenToLoginWs(conn *websocket.Conn) bool {
+func listenToLoginWs(conn *websocket.Conn) {
 	defer func() {
 		fmt.Println("Login Ws Conn Closed")
 	}()
@@ -80,13 +82,14 @@ func listenToLoginWs(conn *websocket.Conn) bool {
 			// loginPayload.Conn = conn
 			fmt.Printf("login payload received: %v\n", loginPayload)
 			// testLogin() // just for testing, can be removed in production
-			loginSuccess := ProcessAndReplyLogin(conn, loginPayload)
-			return loginSuccess
+			// loginSuccess := ProcessAndReplyLogin(conn, loginPayload)
+			// return loginSuccess
+			ProcessAndReplyLogin(conn, loginPayload)
 		}
 	}
 }
 
-func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) bool {
+func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 	fmt.Printf("login u: %s: , login pw: %s\n", loginPayload.NicknameEmail, loginPayload.Password)
 
 	// // get user data from db
@@ -127,7 +130,7 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 		failedResponse.Content = "Please check your credentials"
 		failedResponse.Pass = false
 		conn.WriteJSON(failedResponse)
-		return false
+		// return false
 	}
 	// Login successfully
 	fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)
@@ -141,7 +144,7 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) boo
 	successResponse.Cookie = genCookie(conn, userIDDB)
 	conn.WriteJSON(successResponse)
 
-	return true
+	// return true
 }
 
 // func testLogin() {

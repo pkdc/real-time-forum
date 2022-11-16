@@ -66,13 +66,14 @@ func RegWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	firstResponse.Content = "Please register to the Forum"
 	conn.WriteJSON(firstResponse)
 
-	regSuccess := false
-	for !regSuccess {
-		regSuccess = listenToRegWs(conn)
-	}
+	// regSuccess := false
+	// for !regSuccess {
+	// 	regSuccess = listenToRegWs(conn)
+	// }
+	listenToRegWs(conn)
 }
 
-func listenToRegWs(conn *websocket.Conn) bool {
+func listenToRegWs(conn *websocket.Conn) {
 	defer func() {
 		fmt.Println("Reg Ws Conn Closed")
 	}()
@@ -83,13 +84,14 @@ func listenToRegWs(conn *websocket.Conn) bool {
 		err := conn.ReadJSON(&regPayload)
 		if err == nil {
 			fmt.Printf("payload received: %v\n", regPayload)
-			regSuccess := ProcessAndReplyReg(conn, regPayload)
-			return regSuccess
+			// regSuccess := ProcessAndReplyReg(conn, regPayload)
+			// return regSuccess
+			ProcessAndReplyReg(conn, regPayload)
 		}
 	}
 }
 
-func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool {
+func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) {
 	var emailCheck string
 	dob, err := time.Parse("2006-01-02", regPayload.Age)
 	if err != nil {
@@ -111,13 +113,13 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool
 		rows2, err := db.Query(`SELECT email FROM users WHERE email = ?`, regPayload.Email)
 		if err != nil {
 			log.Fatal(err)
-			return false
+			// return false
 		}
 		defer rows2.Close()
 		rows2.Scan(&emailCheck)
 		if emailCheck != "" {
 			fmt.Println("already registered")
-			return false
+			// return false
 		}
 		// insert newuser  into database
 		fmt.Printf("%s creating user\n", regPayload.NickName)
@@ -153,8 +155,8 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) bool
 			failedResponse.Content = fmt.Sprintf("Please check your credentials")
 			failedResponse.Pass = false
 			conn.WriteJSON(failedResponse)
-			return false
+			// return false
 		}
 	}
-	return true
+	// return true
 }

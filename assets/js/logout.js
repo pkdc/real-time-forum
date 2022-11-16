@@ -22,9 +22,15 @@ const logoutHandler = function() {
             console.log("logout UL sending: ", uListPayload);
             userListSocket.send(JSON.stringify(uListPayload));
 
-            // empty list
+            // empty user list
             const uList = document.querySelector(".user-list");
             uList.textContent = "";
+
+            // display login and reg
+            const navbar = document.querySelector(".navbar")
+            navbar.children[0].style.display = "block"
+            navbar.children[1].style.display = "block"
+            navbar.children[2].style.display = "none"
         }
     })
 }

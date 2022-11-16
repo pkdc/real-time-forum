@@ -3,7 +3,7 @@ let loginSocket = null;
 let nameInput = null;
 let pwInput = null;
 const navbar = document.querySelector(".navbar")
-const logout = document.querySelector("#logout")
+// const logout = document.querySelector("#logout")
 console.log(userListSocket);
 document.addEventListener("DOMContentLoaded", function() {
     loginSocket = new WebSocket("ws://localhost:8080/loginWs/");
@@ -21,15 +21,17 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (resp.label === "login") {
             console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
-            if (resp.pass== true){
-            navbar.children[0].style.display = "none"
-            navbar.children[1].style.display = "none"
-            navbar.children[2].style.display = "block"
-            nameInput.value = "";
-            pwInput.value = "";
-            }
-            // update user list after a user login
+
             if (resp.pass) {
+                navbar.children[0].style.display = "none"
+                navbar.children[1].style.display = "none"
+                navbar.children[2].style.display = "block"
+
+                // clear input fields
+                nameInput.value = "";
+                pwInput.value = "";
+
+                // update user list after a user login
                 let uListPayload = {};
                 uListPayload["label"] = "update";
                 uListPayload["cookie_value"] = resp.cookie.sid;
