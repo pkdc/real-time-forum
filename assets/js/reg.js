@@ -53,9 +53,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 RgenderInputOpt3.checked = 0;
                 RgenderInputOpt4.checked = 0;
 
+                // close the popup
+                const regPopup = document.querySelector("#userPopUpPTwo");
+                regPopup.style.display = "none";
+                
                 // update user list after a user reg
                 let uListPayload = {};
-                uListPayload["label"] = "update";
+                uListPayload["label"] = "login-reg-update";
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("reg UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));

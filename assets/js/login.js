@@ -32,9 +32,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 nameInput.value = "";
                 pwInput.value = "";
 
+                // close the popup
+                const loginPopup = document.querySelector("#userPopUpPOne");
+                loginPopup.style.display = "none";
+
                 // update user list after a user login
                 let uListPayload = {};
-                uListPayload["label"] = "update";
+                uListPayload["label"] = "login-reg-update";
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("login UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));

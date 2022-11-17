@@ -130,20 +130,22 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 		failedResponse.Content = "Please check your credentials"
 		failedResponse.Pass = false
 		conn.WriteJSON(failedResponse)
+		return // v important
 		// return false
+	} else {
+		// Login successfully
+		fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)
+
+		// update login status in users
+
+		var successResponse WsLoginResponse
+		successResponse.Label = "login"
+		successResponse.Content = fmt.Sprintf("%s Login successfully", nicknameDB)
+		successResponse.Pass = true
+		successResponse.Cookie = genCookie(conn, userIDDB)
+		conn.WriteJSON(successResponse)
+		return
 	}
-	// Login successfully
-	fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)
-
-	// update login status in users
-
-	var successResponse WsLoginResponse
-	successResponse.Label = "login"
-	successResponse.Content = fmt.Sprintf("%s Login successfully", nicknameDB)
-	successResponse.Pass = true
-	successResponse.Cookie = genCookie(conn, userIDDB)
-	conn.WriteJSON(successResponse)
-
 	// return true
 }
 
