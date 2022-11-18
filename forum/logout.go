@@ -24,13 +24,14 @@ func processLogout(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Found userID %d wants to logout\n", logoutUid)
 
 		// delete sessionID from sessions db table
-		stmt, err := db.Prepare("DELETE FROM sessions WHERE sessionID=?")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer stmt.Close()
-		stmt.Exec(c.Value)
-		fmt.Printf("cookie sid removed (have value): %s\n", c.Value)
+		// still need sessionID record for removing logout user from user list
+		// stmt, err := db.Prepare("DELETE FROM sessions WHERE sessionID=?")
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer stmt.Close()
+		// stmt.Exec(c.Value)
+		// fmt.Printf("cookie sid removed (have value): %s\n", c.Value)
 	}
 
 	// // test
