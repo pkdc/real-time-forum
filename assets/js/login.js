@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 displayMsg.textContent = `${resp.content}`;
                 displayMsgDiv.append(displayMsg);
             }
-            
         }
     }
 });
