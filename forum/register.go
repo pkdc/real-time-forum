@@ -63,7 +63,7 @@ func RegWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Reg Connected")
 	var firstResponse WsLoginResponse
 	firstResponse.Label = "greet"
-	firstResponse.Content = "Please register to the Forum"
+	// firstResponse.Content = "Please register to the Forum"
 	conn.WriteJSON(firstResponse)
 
 	// regSuccess := false
@@ -135,7 +135,8 @@ func ProcessAndReplyReg(conn *websocket.Conn, regPayload WsRegisterPayload) {
 
 			var successResponse WsRegisterResponse
 			successResponse.Label = "reg"
-			successResponse.Content = fmt.Sprintf("%s Login successfully", regPayload.NickName)
+			// no need the form is closed after success
+			// successResponse.Content = fmt.Sprintf("%s Login successfully", regPayload.NickName)
 			successResponse.Pass = true
 
 			rows3, err := db.Query(`SELECT userID FROM users WHERE nickname = ?`, regPayload.NickName)

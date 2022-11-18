@@ -45,7 +45,7 @@ func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Login Connected")
 	var firstResponse WsLoginResponse
 	firstResponse.Label = "greet"
-	firstResponse.Content = "Please login to the Forum"
+	// firstResponse.Content = "Please login to the Forum"
 	conn.WriteJSON(firstResponse)
 	// insert conn into db with empty userID, fill in the userID when registered or logged in
 	// stmt, err := db.Prepare(`INSERT INTO websockets (userID, websocketAdd) VALUES (?, ?);`)
@@ -140,7 +140,8 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 
 		var successResponse WsLoginResponse
 		successResponse.Label = "login"
-		successResponse.Content = fmt.Sprintf("%s Login successfully", nicknameDB)
+		// no need the form is closed after success
+		// successResponse.Content = fmt.Sprintf("%s Login successfully", nicknameDB)
 		successResponse.Pass = true
 		successResponse.Cookie = genCookie(conn, userIDDB)
 		conn.WriteJSON(successResponse)

@@ -1,8 +1,10 @@
 import userListSocket from "./userList.js";
-console.log(userListSocket);
+// console.log(userListSocket);
 let regSocket = null; 
 const userList = document.querySelector(".user-list");
 const navbar = document.querySelector(".navbar")
+const displayMsgDiv = document.createElement("div");
+const displayMsg = document.createElement("h2");
 
 let RnameInput = null;
 let RLastnameInput = null;
@@ -25,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
     regSocket.onmessage = (msg) => {
         const resp = JSON.parse(msg.data);
         console.log({resp});
+
         if (resp.label === "Greet") {
             console.log(resp.content);
             navbar.children[0].style.display = "block"
@@ -63,6 +66,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("reg UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));
+            } else {
+                displayMsgDiv.classList.add("display-msg");
+                displayMsg.id = "reg-msg";
+                displayMsg.textContent = `${resp.content}`;
+                displayMsgDiv.append(displayMsg);
             }
         }
     }
@@ -75,13 +83,14 @@ const regHandler = function(e) {
     payloadObj["label"] = "reg";
     console.log({payloadObj});
     regSocket.send(JSON.stringify(payloadObj));
+
+    displayMsg.textContent = "";
 };
 
 // reg form//
 const RegisterForm = document.createElement("form");
 RegisterForm.className = "formPage"
 RegisterForm.addEventListener("submit", regHandler);
-
 
 // name label
 const RnameLabelDiv = document.createElement('div');
@@ -221,7 +230,9 @@ regSubmit.textContent = "Register";
 regSubmit.setAttribute("type", "submit");
 regSubmitDiv.append(regSubmit);
 //append
-RegisterForm.append(RnameLabelDiv,
+RegisterForm.append(
+    displayMsgDiv,
+    RnameLabelDiv,
     RnameInputDiv,
     RLastnameLabelDiv,
     RLastnameInputDiv,
