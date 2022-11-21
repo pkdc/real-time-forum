@@ -71,7 +71,7 @@ func createCommentsTable() {
 	stmt.Exec()
 }
 
-func createMessageTable() {
+func createMessagesTable() {
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS messages
 	(messageID INTEGER PRIMARY KEY AUTOINCREMENT,
 		senderID INTEGER,
@@ -88,13 +88,14 @@ func createMessageTable() {
 	stmt.Exec()
 }
 
-// func createWebsocketsTable() {
-// 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS websockets
-// 	(websocketID INTEGER PRIMARY KEY AUTOINCREMENT,
-// 		userID INTEGER,
-// 		websocketAdd VARCHAR(2000),
-// 		usage VARCHAR(10),
-// 		FOREIGN KEY(userID) REFERENCES users(userID));`)
+// func createRoomsTable() {
+// 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS rooms
+// 	(roomID INTEGER PRIMARY KEY AUTOINCREMENT,
+// 		roomname VARCHAR(50),
+// 		senderID INTEGER,
+// 		receiverID INTEGER,
+// 		FOREIGN KEY(senderID) REFERENCES users(userID),
+// 		FOREIGN KEY(receiverID) REFERENCES users(userID));`)
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
@@ -111,6 +112,6 @@ func InitDB() {
 	createUsersTable()
 	createPostsTable()
 	createCommentsTable()
-	createMessageTable()
-	// createWebsocketsTable()
+	createMessagesTable()
+	// createRoomsTable()
 }
