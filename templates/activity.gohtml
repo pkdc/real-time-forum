@@ -1,0 +1,38 @@
+{{template "header2"}}
+<h3>Liked Post</h3>
+{{range .LikedPost}}
+<ul>
+ <li>{{.Title}}<a href= "{{.URL}}" target= "_blank">Go To Post</a></li>
+</ul>
+{{end}} 
+<h3>Disliked Post</h3>
+{{range .DlikedPost}}
+<ul>
+  <li>{{.Title}}<a href= "{{.URL}}" target= "_blank">Go To Post</a></li>
+</ul>
+{{end}} 
+<h3>Liked Comments</h3>
+{{range .LikedCom}}
+<ul>
+<li>{{.Content}}<a href= "{{.URL}}" target= "_blank">Go To Post</a></li>
+</ul>
+{{end}} 
+<h3>Disliked Comments</h3>
+{{range .DlikedCom}}
+<ul>
+<li>{{.Content}}<a href= "{{.URL}}" target= "_blank">Go To Post</a></li>
+</ul>
+{{end}} 
+<h3>Created Posts</h3>
+{{range .Post}}
+<ul>
+<li>{{.Title}}<a href= "{{.URL}}" target= "_blank">Go To Post</a></li>
+</ul>
+{{end}} 
+<h3>Created Comments</h3>
+{{range .Com}}
+<ul>
+<li>{{.Content}}<a href= "{{.URL}}" target= "_blank">Go To Post</a></li>
+</ul>
+{{end}} 
+{{template "footer"}}

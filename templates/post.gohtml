@@ -1,0 +1,51 @@
+ 
+{{template "header"}}
+
+{{range .Posts}}
+<div class="forum-postPage">
+   
+    <p class="titleofPost">{{.Title}}</p>
+    <p class="contentofPost">{{.Content}}</p>
+       <form action="/category" method="GET">
+        <input type="submit" name="categoryAllPosts" class="categoryclass" value={{.Category}}>
+        </form>
+         
+  <img src={{.Image}} alt="">
+  <span >{{.Author}}</span>
+
+       <p class= "timeOfpost">{{.PostTimeStr}}</p>
+     <p class="views">views:{{.View}}</p>
+    <form action="/login" method="get">
+        <button type="submit" name="po-like" value="{{.PostID}}-{{.Likes}}">Like</button>
+        <span>{{.Likes}}</span> 
+    </form>
+    <form action="/login" method="get">
+        <button type="submit" name="po-dislike" value="{{.PostID}}-{{.Dislikes}}">Dislike</button>
+        <span>{{.Dislikes}}</span>
+    </form>
+     </div>
+    {{range .Comments}}
+    <div class="forum-comment"> 
+      <p> {{.Content}}</p>    
+       <p>{{.Author}}</p>
+       <p class= "timeOfpost">{{.CommentTimeStr}}</p>
+        <form action="/login" method="get">
+            <button type="submit" name="com-like" value="{{.PostID}}-{{.CommentID}}-{{.Likes}}">Like</button>
+            <span>{{.Likes}}</span>
+        </form>
+        <form action="/login" method="get">
+            <button type="submit" name="com-dislike" value="{{.PostID}}-{{.CommentID}}-{{.Dislikes}}">Dislike</button>
+            <span>{{.Dislikes}}</span>
+        </form>
+        </ul>
+   </div>
+    {{end}}
+    <div class="commentInput">
+    <form action="/login" method="get">
+        <label for="comment">comment: </label>
+        <textarea type="text" id="comment" name="comment" rows="1" cols="30"></textarea>
+        <button type="submit" name="post-id" value="{{.PostID}}">Comment</button>
+    </form>
+</div>
+{{end}}
+{{template "footer"}}
