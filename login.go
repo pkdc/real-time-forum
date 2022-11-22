@@ -1,4 +1,4 @@
-package forum
+package main
 
 import (
 	"fmt"

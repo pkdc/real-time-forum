@@ -1,4 +1,4 @@
-package forum
+package main
 
 import (
 	"fmt"
@@ -52,7 +52,7 @@ func readChatPayloadFromWs(conn *websocket.Conn) {
 			} else {
 				findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
 			}
-			findRoom(findRoomName)
+			hub.findRoom(findRoomName)
 
 			// load the msg
 
