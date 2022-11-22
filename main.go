@@ -9,10 +9,11 @@ import (
 )
 
 func main() {
+	println("started")
 	forum.InitDB()
 	go forum.ProcessAndReplyUserList()
-	hub := forum.NewHub()
-	hub.Run()
+	// hub := forum.NewHub()
+	// hub.Run()
 	// forum.ClearUsers()
 	// forum.ClearPosts()
 	// forum.ClearComments()
