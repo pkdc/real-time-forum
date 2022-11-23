@@ -33,6 +33,7 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("Chat Connected %v", conn)
 
+	// create hub if none
 	fmt.Printf("hub before %v", ChatHub)
 	if (*ChatHub).rooms == nil { // if map not made
 		ChatHub = newHub()
@@ -54,6 +55,7 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		rows.Scan(&currentUserId)
 	}
+	// or get currentUserId by matching conn in userListWsMap
 
 	client := &Client{
 		receiverRooms: make(map[int]*Room),
@@ -67,36 +69,36 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 }
 
 // go into readPump?
-func readChatPayloadFromWs(conn *websocket.Conn) {
-	defer func() {
-		fmt.Println("Chat Ws Conn Closed")
-	}()
+// func readChatPayloadFromWs(conn *websocket.Conn) {
+// 	defer func() {
+// 		fmt.Println("Chat Ws Conn Closed")
+// 	}()
 
-	var chatPayload WsChatPayload
-	for {
-		err := conn.ReadJSON(&chatPayload)
-		if err == nil {
+// 	var chatPayload WsChatPayload
+// 	for {
+// 		err := conn.ReadJSON(&chatPayload)
+// 		if err == nil {
 
-		}
-	}
-}
+// 		}
+// 	}
+// }
 
 // -----------------------Hub-------------------------------
 // Hub to create rooms
 // key roomname
 type hub struct {
-	rooms map[string]Room
+	rooms map[string]*Room // key: roomname
 }
 
 func newHub() *hub {
 	return &hub{
-		rooms: make(map[string]Room),
+		rooms: make(map[string]*Room),
 	}
 }
 
 type roomRequest struct {
-	clientA Client
-	clientB Client
+	clientA *Client
+	clientB *Client
 }
 
 var createRoomChan = make(chan roomRequest)
@@ -113,9 +115,10 @@ func (h *hub) Run() {
 			roomName = strconv.Itoa(participants.clientB.userID) + "-and-" + strconv.Itoa(participants.clientA.userID)
 		}
 		rm := newRoom(roomName, participants)
-		h.rooms[roomName] = *rm
-		// add room to reciverRooms of both clients
-		// client.receiverRooms[participants.clientB.userID] = *rm
+		h.rooms[roomName] = rm
+		// add room to reciverRooms (map) of clientA (c of c.readPump), feasible coz linked to c
+		participants.clientA.receiverRooms[participants.clientB.userID] = rm
+		// what if clientB initiate convo? // prev checked if there is a room of this name? Add to clientB receiverRooms there?
 		// h.rooms = append(h.rooms, *rm)
 	}
 }
@@ -123,7 +126,7 @@ func (h *hub) Run() {
 func (h *hub) findRoom(roomname string) *Room {
 	elem, ok := ChatHub.rooms[roomname]
 	if ok {
-		return &elem
+		return elem
 	}
 	return nil
 }
@@ -131,8 +134,8 @@ func (h *hub) findRoom(roomname string) *Room {
 // -----------------------Room-------------------------------
 type Room struct {
 	roomName string // eg: "1-and-2"
-	clientA  Client
-	clientB  Client
+	clientA  *Client
+	clientB  *Client
 	intoRoom chan WsChatPayload
 }
 
@@ -176,8 +179,6 @@ func (c *Client) readPump() {
 		err := c.conn.ReadJSON(&chatPayload)
 		if err == nil {
 
-			// find out which room
-			// choose path based on label?
 			// create room
 			if chatPayload.Label == "room" {
 				// find the right room
@@ -188,17 +189,22 @@ func (c *Client) readPump() {
 					findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
 				}
 				rightChatRoom := ChatHub.findRoom(findRoomName)
+
 				if rightChatRoom == nil {
 					// if no record of the room
 					var rmReq roomRequest
-					rmReq.clientA.userID = chatPayload.SenderId
-					rmReq.clientB.userID = chatPayload.ReceiverId
-					userListWsMap[rmReq.clientA.userID] = rmReq.clientA.conn
-					userListWsMap[rmReq.clientB.userID] = rmReq.clientB.conn
+					rmReq.clientA = c // link c and rmReq.clientA
+					// dereference clientB and get the userID or conn field
+					(*(rmReq.clientB)).userID = chatPayload.ReceiverId
+					(*(rmReq.clientB)).conn = userListWsMap[chatPayload.ReceiverId]
 					createRoomChan <- rmReq
-				} else {
-					// load the msg into rightChatRoom
+					// may need to move create room here
 				}
+
+				// load the msg into rightChatRoom
+				// c.receiverRooms[chatPayload.ReceiverId]
+
+				// reply? roomname?
 
 			} else if chatPayload.Label == "chat" {
 				fmt.Printf("Sending chatPayload thru chan: %v\n", chatPayload)
