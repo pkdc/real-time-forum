@@ -33,56 +33,50 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("Chat Connected %v", conn)
 
-	readChatPayloadFromWs(conn)
-
-}
-
-func readChatPayloadFromWs(conn *websocket.Conn) {
-	defer func() {
-		fmt.Println("Chat Ws Conn Closed")
-	}()
-
 	fmt.Printf("hub before %v", ChatHub)
 	if (*ChatHub).rooms == nil { // if map not made
 		ChatHub = newHub()
 	}
 	fmt.Printf("hub after %v", ChatHub)
 
+	// find userID
+	c, err := r.Cookie("session")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	var currentUserId int
+	rows, err := db.Query("SELECT userID, sessionID FROM sessions WHERE sessionID = ?;", c.Value)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&currentUserId)
+	}
+
+	client := &Client{
+		receiverRooms: make(map[int]*Room),
+		userID:        currentUserId,
+		conn:          conn,
+		send:          make(chan WsChatPayload),
+	}
+	// readChatPayloadFromWs(conn)
+	go client.readPump()
+
+}
+
+// go into readPump?
+func readChatPayloadFromWs(conn *websocket.Conn) {
+	defer func() {
+		fmt.Println("Chat Ws Conn Closed")
+	}()
+
 	var chatPayload WsChatPayload
 	for {
 		err := conn.ReadJSON(&chatPayload)
 		if err == nil {
-			// find the right room
-			var findRoomName string
-			if chatPayload.SenderId < chatPayload.ReceiverId {
-				findRoomName = strconv.Itoa(chatPayload.SenderId) + "-and-" + strconv.Itoa(chatPayload.ReceiverId)
-			} else {
-				findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
-			}
-			rightChatRoom := ChatHub.findRoom(findRoomName)
-			if rightChatRoom == nil {
-				// if no record of the room
-				var rmReq roomRequest
-				rmReq.clientA.userID = chatPayload.SenderId
-				rmReq.clientB.userID = chatPayload.ReceiverId
-				userListWsMap[rmReq.clientA.userID] = rmReq.clientA.conn
-				userListWsMap[rmReq.clientB.userID] = rmReq.clientB.conn
-				createRoomChan <- rmReq
-			} else {
-				// load the msg into rightChatRoom
-			}
 
-			fmt.Printf("Sending chatPayload thru chan: %v\n", chatPayload)
-			if chatPayload.Online {
-				//  receiver online
-				// if chatPayload.Label == "create-room" {
-
-				// }
-			} else {
-				// receiver offline
-			}
-			// listeningChat(conn, chatPayload)
-			// chatPayloadChan <- chatPayload
 		}
 	}
 }
@@ -120,6 +114,8 @@ func (h *hub) Run() {
 		}
 		rm := newRoom(roomName, participants)
 		h.rooms[roomName] = *rm
+		// add room to reciverRooms of both clients
+		// client.receiverRooms[participants.clientB.userID] = *rm
 		// h.rooms = append(h.rooms, *rm)
 	}
 }
@@ -179,13 +175,45 @@ func (c *Client) readPump() {
 	for {
 		err := c.conn.ReadJSON(&chatPayload)
 		if err == nil {
-			// find out which room
-			receivingRoom := *(c.receiverRooms[chatPayload.ReceiverId])
-			receivingRoom.intoRoom <- chatPayload
 
+			// find out which room
+			// choose path based on label?
+			// create room
+			if chatPayload.Label == "room" {
+				// find the right room
+				var findRoomName string
+				if chatPayload.SenderId < chatPayload.ReceiverId {
+					findRoomName = strconv.Itoa(chatPayload.SenderId) + "-and-" + strconv.Itoa(chatPayload.ReceiverId)
+				} else {
+					findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
+				}
+				rightChatRoom := ChatHub.findRoom(findRoomName)
+				if rightChatRoom == nil {
+					// if no record of the room
+					var rmReq roomRequest
+					rmReq.clientA.userID = chatPayload.SenderId
+					rmReq.clientB.userID = chatPayload.ReceiverId
+					userListWsMap[rmReq.clientA.userID] = rmReq.clientA.conn
+					userListWsMap[rmReq.clientB.userID] = rmReq.clientB.conn
+					createRoomChan <- rmReq
+				} else {
+					// load the msg into rightChatRoom
+				}
+
+			} else if chatPayload.Label == "chat" {
+				fmt.Printf("Sending chatPayload thru chan: %v\n", chatPayload)
+				if chatPayload.Online {
+					// receiver online
+					// send msg into room
+					// finding the correct room
+					receivingRoom := *(c.receiverRooms[chatPayload.ReceiverId])
+					receivingRoom.intoRoom <- chatPayload
+				} else {
+					// receiver offline
+				}
+			}
 		}
 	}
-
 }
 
 func (c *Client) writePump() {

@@ -9,6 +9,9 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+func getUserId() int {
+
+}
 func genCookie(conn *websocket.Conn, uid int) SessionCookie {
 	// assign a cookie
 	sid := uuid.NewV4()
@@ -27,6 +30,7 @@ func genCookie(conn *websocket.Conn, uid int) SessionCookie {
 	// })
 
 	// allow each user to have only one opened session
+	// simply checking if the user has an entry in sessions table, not really looking for the uid
 	var loggedInUid int
 	rows, err := db.Query("SELECT userID FROM sessions WHERE userID = ?;", uid)
 	if err != nil {
