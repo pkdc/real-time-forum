@@ -13,7 +13,7 @@ func main() {
 	forum.InitDB()
 	go forum.ProcessAndReplyUserList()
 	// hub := forum.NewHub()
-	// hub.Run()
+	go forum.ChatHub.Run()
 	// forum.ClearUsers()
 	// forum.ClearPosts()
 	// forum.ClearComments()
