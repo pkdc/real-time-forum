@@ -1,9 +1,11 @@
 package forum
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -19,15 +21,21 @@ type WsUserListPayload struct {
 	Content     string         `json:"content"`
 	CookieValue string         `json:"cookie_value"`
 	Conn        websocket.Conn `json:"-"`
+	ContactID   int            `json:"contactID"`
+	UserID      int            `json:"userID"`
 }
 
 type userStatus struct {
 	Nickname string `json:"nickname"`
 	LoggedIn bool   `json:"status"`
+	UserID   int    `json:"userID"`
 }
 
-var userListPayloadChan = make(chan WsUserListPayload)
-var userListWsMap = make(map[int]*websocket.Conn)
+var (
+	userListPayloadChan = make(chan WsUserListPayload)
+	userListWsMap       = make(map[int]*websocket.Conn)
+	loggedInUid         int
+)
 
 func userListWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -49,7 +57,16 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 	for {
 		// fmt.Print("ul ")
 		err := conn.ReadJSON(&userListPayload)
-		if err == nil {
+		fmt.Println("Label", userListPayload.Label)
+		fmt.Println(err)
+		if err == nil && userListPayload.Label == "createChat" {
+			fmt.Println("----contact", userListPayload.ContactID, "----userID", userListPayload.UserID)
+			var creatingChatResponse WsUserListResponse
+			// creatingChatResponse.Label= "using"
+			creatingChatResponse.Label = "chatBox"
+			creatingChatResponse.Content = sortMessages(userListPayload.UserID, userListPayload.ContactID)
+			conn.WriteJSON(creatingChatResponse)
+		} else if err == nil {
 			fmt.Printf("Sending userListPayload thru chan: %v\n", userListPayload)
 			userListPayload.Conn = *conn
 			userListPayloadChan <- userListPayload
@@ -63,7 +80,6 @@ func ProcessAndReplyUserList() {
 		// payloadLabels := strings.Split(receivedUserListPayload.Label, "-")
 
 		// find which userID
-		var loggedInUid int
 		rows, err := db.Query("SELECT userID FROM sessions WHERE sessionID = ?;", receivedUserListPayload.CookieValue)
 		if err != nil {
 			log.Fatal(err)
@@ -121,7 +137,7 @@ func updateUList() {
 	var userListResponse WsUserListResponse
 	userListResponse.Label = "update"
 
-	rows, err := db.Query(`SELECT nickname, loggedIn FROM users`)
+	rows, err := db.Query(`SELECT nickname, loggedIn, userID   FROM users`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -130,13 +146,18 @@ func updateUList() {
 	for rows.Next() {
 		var nicknameDB string
 		var loggedInDB bool
-		rows.Scan(&nicknameDB, &loggedInDB)
+		var UserIDDB int
+
+		rows.Scan(&nicknameDB, &loggedInDB, &UserIDDB)
+		fmt.Println(UserIDDB)
 		userStatusElement := struct {
 			Nickname string `json:"nickname"`
 			LoggedIn bool   `json:"status"`
+			UserID   int    `json:"userID"`
 		}{
 			nicknameDB,
 			loggedInDB,
+			UserIDDB,
 		}
 		userStatusDBArr = append(userStatusDBArr, userStatusElement)
 	}
@@ -164,4 +185,54 @@ func broadcast(userListResponse WsUserListResponse) {
 	// for _, wsAddress := range wsArr {
 	// 	wsAddress.WriteJSON(userListResponse)
 	// }
+}
+
+func displayChatInfo(sendID, recID int) []MessageArray {
+	var allMsg MessageArray
+	var arrMsgArray []MessageArray
+	rows, err := db.Query(
+		`SELECT * 
+	FROM messages 
+	WHERE senderID = ? 
+	AND receiverID = ?`, sendID, recID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var oneMsg WsChatPayload
+		var msgTime time.Time
+		var msgID int
+		rows.Scan(&msgID, &(oneMsg.SenderId), &(oneMsg.ReceiverId), &msgTime, &(oneMsg.Content), &(oneMsg.Noti))
+		fmt.Println("dont be empty", oneMsg.Content, len(oneMsg.Content))
+		oneMsg.MessageTime = msgTime.String()
+		fmt.Println(oneMsg.SenderId, "-----", loggedInUid)
+		if oneMsg.SenderId == loggedInUid {
+			oneMsg.Right = true
+		}
+		allMsg.Index = msgID
+		allMsg.Msg = oneMsg
+		arrMsgArray = append(arrMsgArray, allMsg)
+	}
+	fmt.Println("chatinfo:", arrMsgArray)
+
+	return arrMsgArray
+}
+
+func sortMessages(sendID, recID int) string {
+	firstMes := displayChatInfo(sendID, recID)
+	secMes := displayChatInfo(recID, sendID)
+	allMes := append(firstMes, secMes...)
+	for k := 0; k < 10; k++ {
+		for i := 0; i < len(allMes)-1; i++ {
+			if allMes[i].Index > allMes[i+1].Index {
+				allMes[i], allMes[i+1] = allMes[i+1], allMes[i]
+			}
+		}
+	}
+	jsonF, err := json.Marshal(allMes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(jsonF)
 }

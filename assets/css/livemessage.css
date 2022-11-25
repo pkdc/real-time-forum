@@ -1,0 +1,142 @@
+.container {
+    position: sticky;
+    float: right;
+    top: 0px;
+    right: 0vh;
+    z-index: -0;
+    width: 50%;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    /* overflow:hidden; */
+    background-image: linear-gradient(to right, #1c00f2, #453f96);
+}
+
+.hana {
+    /* text-align:justify */
+    margin-top: 0;
+    padding-bottom: 10%;
+    text-align: justify;
+    align-items: center;
+}
+
+
+.chatbox {
+    background: #1d61c2;
+    width: 60%;
+    min-width: 250px;
+    display: flex;
+}
+
+/* The main chat area */
+
+.col-1 {
+    flex: 1;
+    display:none;
+    /* display:none; */
+}
+
+.col-2 {
+    flex-basis: 250px;
+    background: #3874c9;
+}
+
+.msg-row {
+    display: flex;
+    justify-content: flex-start;
+    /* margin: 40px;  */
+
+}
+
+.msg-text {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px, 40px;
+    border-radius: 8px;
+    flex-basis: 70%;
+    font-weight: 300;
+}
+
+.msg-text h2 {
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.msg-img {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    margin: 0 20px px;
+}
+
+.msg-row2 {
+    display:flex;
+    justify-content: flex-end;
+}
+
+.col-1 input {
+    border: 0;
+    outline: none;
+    padding: 20px 40px;
+    background: #3874c9;
+    color: #fff;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+::placeholder {
+    color: #fff;
+}
+
+
+
+.col-2 h3 {
+    text-align: center;
+    margin-top: 40px;
+    font-weight: 400;
+}
+
+.col-2 ul {
+    list-style: none;
+    padding: 30px;
+}
+
+.col-2 ul li {
+    list-style: none;
+    padding: 5px;
+}
+
+.col-2 ul li img {
+    height: 25px;
+    float: inline-end;
+    /* flex-direction: column; */
+    justify-content: center;
+    margin-top: -2%;
+
+}
+
+.col-2 ul li::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: red;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.col-2 ul li.online::before {
+    background: greenyellow;
+}
+
+.col-2 ul li.offline::before {
+    background: tomato;
+}
+
+.col-2 ul li.busy::before {
+    background: yellow;
+}

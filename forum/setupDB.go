@@ -3,6 +3,7 @@ package forum
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -71,7 +72,7 @@ func createCommentsTable() {
 	stmt.Exec()
 }
 
-func createMessagesTable() {
+func createMessageTable() {
 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS messages
 	(messageID INTEGER PRIMARY KEY AUTOINCREMENT,
 		senderID INTEGER,
@@ -88,14 +89,13 @@ func createMessagesTable() {
 	stmt.Exec()
 }
 
-// func createRoomsTable() {
-// 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS rooms
-// 	(roomID INTEGER PRIMARY KEY AUTOINCREMENT,
-// 		roomname VARCHAR(50),
-// 		senderID INTEGER,
-// 		receiverID INTEGER,
-// 		FOREIGN KEY(senderID) REFERENCES users(userID),
-// 		FOREIGN KEY(receiverID) REFERENCES users(userID));`)
+// func createWebsocketsTable() {
+// 	stmt, err := db.Prepare(`CREATE TABLE IF NOT EXISTS websockets
+// 	(websocketID INTEGER PRIMARY KEY AUTOINCREMENT,
+// 		userID INTEGER,
+// 		websocketAdd VARCHAR(2000),
+// 		usage VARCHAR(10),
+// 		FOREIGN KEY(userID) REFERENCES users(userID));`)
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
@@ -112,6 +112,22 @@ func InitDB() {
 	createUsersTable()
 	createPostsTable()
 	createCommentsTable()
-	createMessagesTable()
-	// createRoomsTable()
+	createMessageTable()
+
+	// InsertMessage(1,2, "hello")
+	// InsertMessage(2,1, "hello")
+	// InsertMessage(1,2, "how are you")
+	// InsertMessage(2,1, "thanks")
+	// InsertMessage(2,1, "i am fine and you")
+
+	// createWebsocketsTable()
+}
+
+func InsertMessage(usID, recID int, cont string) {
+	rows, err := db.Prepare("INSERT INTO messages (senderID, receiverID, messageTime,content,seen) VALUES (?,?,?,?,?);")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	rows.Exec(usID, recID, time.Now(), cont, false)
 }

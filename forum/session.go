@@ -9,9 +9,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-func getUserId() int {
-
-}
 func genCookie(conn *websocket.Conn, uid int) SessionCookie {
 	// assign a cookie
 	sid := uuid.NewV4()
