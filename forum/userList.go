@@ -64,6 +64,7 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 			var creatingChatResponse WsUserListResponse
 			// creatingChatResponse.Label= "using"
 			creatingChatResponse.Label = "chatBox"
+			// load prev msgs
 			creatingChatResponse.Content = sortMessages(userListPayload.UserID, userListPayload.ContactID)
 			conn.WriteJSON(creatingChatResponse)
 		} else if err == nil {
@@ -90,8 +91,7 @@ func ProcessAndReplyUserList() {
 		}
 		fmt.Printf("loggedInUid UL %d \n", loggedInUid)
 
-		// close and remove conn from map if logout
-		// if len(payloadLabels) > 1 && payloadLabels[1] == "logout" {
+		// remove conn from map if logout
 		if receivedUserListPayload.Label == "logout-update" {
 			// _ = receivedUserListPayload.Conn.Close()
 			delete(userListWsMap, loggedInUid)
@@ -111,21 +111,8 @@ func ProcessAndReplyUserList() {
 			fmt.Printf("cookie sid removed (have value): %s\n", receivedUserListPayload.CookieValue)
 		}
 
-		// if len(payloadLabels) == 1 && payloadLabels[0] == "update" {
 		if receivedUserListPayload.Label == "login-reg-update" {
-			// store conn in websockets table
-			// stmt, err := db.Prepare(`INSERT INTO websockets
-			// 					(userID, websocketAdd, usage)
-			// 					VALUES (?, ?, ?);`)
-			// if err != nil {
-			// 	log.Fatal(err)
-			// }
-			// defer stmt.Close()
-			// fmt.Printf("uid: %d, Conn: %v, usage %s \n", loggedInUid, receivedUserListPayload.Conn, "userlist")
-			// stmt.Exec(loggedInUid, receivedUserListPayload.Conn, "userlist")
-
-			// store conn in map
-			// userListWsMap[&receivedUserListPayload.Conn] = loggedInUid
+			// store conn in userListWsMap
 			userListWsMap[loggedInUid] = &receivedUserListPayload.Conn
 			fmt.Printf("current map: %v", userListWsMap)
 		}
@@ -220,9 +207,10 @@ func displayChatInfo(sendID, recID int) []MessageArray {
 }
 
 func sortMessages(sendID, recID int) string {
-	firstMes := displayChatInfo(sendID, recID)
-	secMes := displayChatInfo(recID, sendID)
+	firstMes := displayChatInfo(sendID, recID) // get all msg (in an array) sent by sender
+	secMes := displayChatInfo(recID, sendID)   // get all msg (in an array) sent by receiver
 	allMes := append(firstMes, secMes...)
+	// order them according to index
 	for k := 0; k < 10; k++ {
 		for i := 0; i < len(allMes)-1; i++ {
 			if allMes[i].Index > allMes[i+1].Index {

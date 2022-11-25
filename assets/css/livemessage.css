@@ -140,3 +140,22 @@
 .col-2 ul li.busy::before {
     background: yellow;
 }
+
+#chat-form {
+    border-radius: 5rem;
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#send-btn {
+    border-radius: 0.5rem;
+    background-color: #1d61c2;
+    color: white;
+    margin: 0px 3px;
+    padding: 1px;
+}
+#send-btn:hover {
+    background-color: #2278f0;
+}

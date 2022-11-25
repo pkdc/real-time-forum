@@ -1,16 +1,22 @@
 let chatSocket = null;
+
 const chatForm = document.createElement("form");
+chatForm.id = "chat-form";
 chatForm.addEventListener("submit", function(e) {
     e.preventDefault();
     // add msg
     // send msg to ws
 });
 const chatInputDiv = document.createElement("div");
+chatInputDiv.id = "chat-input-div";
 const chatInput = document.createElement("input");
 chatInputDiv.append(chatInput);
 
 const sendBtn = document.createElement("button");
+sendBtn.textContent = "Send";
+sendBtn.id = "send-btn";
 chatForm.append(chatInputDiv, sendBtn);
+
 
 document.addEventListener("DOMContentLoaded", function(e) {
     chatSocket = new WebSocket("ws://localhost:8080/chatWs/")
