@@ -8,7 +8,7 @@
     <link type="text/css" rel="stylesheet" href="../assets/css/styles.css">
     <title>Document</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
-
+    <link type="text/css" rel="stylesheet" href="../assets/css/livemessage.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
@@ -19,33 +19,53 @@
 <body>
     <!---header--->
     <header>
-        <ul class="nav-bar">
+        <ul class="navbar">
             <li>
                 <p><a button class="button" data-userPopUpP="userPopUpPOne">Sign In</button></a></p>
             </li>
             <li>
                 <p><a button class="button" data-userPopUpP="userPopUpPTwo">Register</button></a></p>
             </li>
-        <li><div class= "logout" id="logout"></div></li>
+            <li>
+                <div class="logout" id="logoutBtn"></div>
+            </li>
         </ul>
     </header>
 
     <!---home--->
-    <div class="form-page"></div>
-    <!-- popup page -->
-    <div id="userPopUpPOne" class="userPopUpP">
-        <div class="userPopUpP-content">
-            <a class="close">&times;</a>
+    <div class="postPage">
+        <!-- popup page -->
+        <div id="userPopUpPOne" class="userPopUpP">
+            <div class="userPopUpP-content">
+                <a class="close">&times;</a>
+            </div>
+        </div>
+        <div id="userPopUpPTwo" class="userPopUpP">
+            <div class="userPopUpP-content">
+                <span class="close">&times;</span>
+            </div>
+        </div>
+        <!-- end popup page -->
+        <div class="comment"></div>
+  
+    </div>
+
+    <!-- this section is for the live chat ariea -->
+    <div class="container">
+        <div class="hana">Friends contact</div>
+        <div class="chatbox">
+            <div class="col-1"> 
+                <div class = "msgArea"></div>  
+            </div>
+            <div class="col-2">
+                <h3> Friend List</h3>
+                <ul>
+                    <ul class="user-list"></ul>
+                </ul>
+            </div>
         </div>
     </div>
-    <div id="userPopUpPTwo" class="userPopUpP">
-        <div class="userPopUpP-content">
-            <span class="close">&times;</span>
-        </div>
-    </div>
-    <!-- end popup page -->
-<div class="comment"></div>
-<ul class="user-list"></ul>
+    <!-- end chat -->
     <script type="module" src="../assets/js/index.js"></script>
     <script src="../assets/js/popupform.js"></script>
 </body>

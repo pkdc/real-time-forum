@@ -3,6 +3,7 @@ package forum
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -112,5 +113,22 @@ func InitDB() {
 	createPostsTable()
 	createCommentsTable()
 	createMessageTable()
+
+
+	// InsertMessage(1,2, "hello")
+	// InsertMessage(2,1, "hello")
+	// InsertMessage(1,2, "how are you")
+	// InsertMessage(2,1, "thanks")
+	// InsertMessage(2,1, "i am fine and you")
+
 	// createWebsocketsTable()
+}
+
+func InsertMessage(usID, recID int, cont string) {
+	rows, err := db.Prepare("INSERT INTO messages (senderID, receiverID, messageTime,content,seen) VALUES (?,?,?,?,?);")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	rows.Exec(usID, recID, time.Now(), cont, false)
 }

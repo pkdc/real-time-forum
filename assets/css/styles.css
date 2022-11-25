@@ -4,13 +4,14 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'poppins', sans-serif;
 }
 
 body {
     /*THIS CSS SECTION IS FOR THE BODY OF THE MAIN PAGE*/
     /* margin: 20px; */
     /* align-items: center; */
-    /* flex-direction: column; */
+    flex-direction: column;
     /* padding: 10px; */
     /* margin: 0px; */
     height: 100%;
@@ -29,7 +30,7 @@ body {
     
 }
 
-.nav-bar {
+.navbar {
     padding: 20px;
     list-style-type: none;
     margin: 0;
@@ -38,20 +39,27 @@ body {
     background-color: #333;
 }
 
+
 li {
     float: left;
+    padding-right: 10%;
 }
 
 li a {
     display: block;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+    padding: 28px 14px 10px 24px;
     text-decoration: none;
 }
 
 li a:hover:not(.active) {
-    background-color: #111;
+    color: crimson;
+    border-radius: 20%;
+    transition: 0.7s;
+    /* transition-property: inherit; */
+    /* margin-top: 30%; */
+    background-color: #fff;
 }
 
 /* THIS FILD IS NOT READY FOR USE YET */
@@ -106,10 +114,34 @@ li a:hover:not(.active) {
 }
 
 .PostContent>p {
-
     margin-top: 0;
     margin-bottom: 0;
 }
+
+.postPage{
+    padding-left: 2%;
+    padding-right: 2%;
+    max-width: 50%;
+    overflow:hidden;
+    float: left;
+    width: 50%;
+    height: 100%;
+    /* position: sticky; */
+    /* top: 76px; */
+    /* right: 0vh; */
+    /* z-index: 1; */
+    /* display: flex; */
+    /* flex-direction:column; */
+    /* color: #fff; */
+    /* background-image: linear-gradient(to right, #1c00f2, #453f96); */
+}
+
+#allPost{
+    padding-left: 2%;
+    padding-right: 2%;
+    max-width: 50%;
+}
+
 #category {
     display: flex;
     flex-direction: column;
@@ -185,6 +217,7 @@ span {
     margin: 25px;
     box-shadow: 0 2px 5px #f5f5f5;
     background: #eee;
+    float:left
 }
 
 input,
@@ -244,7 +277,7 @@ button.button:hover {
 
 
 .form-page {
-    display: none;
+   color: red;
 }
 
 

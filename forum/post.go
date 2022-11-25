@@ -61,10 +61,8 @@ func findAllPosts() []Ind {
 		var postTime time.Time
 		rows.Scan(&id, &(po.Title), &(po.Content), &(po.Category), &postTime)
 		po.PostTime = postTime.Format("Mon 02-01-2006 15:04:05")
-		fmt.Println(postTime)
 		po.CommentOfPost = findAllComments(id)
 		pos = append(pos, po)
-		fmt.Println("THIS IS POST", po)
 	}
 	for i := 0; i < len(pos); i++ {
 		var singlePost Ind
@@ -193,7 +191,6 @@ func findAllComments(postID int) string {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-	fmt.Println(postID, "check this post ID")
 	var com []WsComPayload
 	var everyCom []IndCom
 	var timeofCom time.Time
@@ -209,7 +206,6 @@ func findAllComments(postID int) string {
 		rows.Scan(&(co.Comment), timeofCom)
 		co.ComTime = timeofCom.Format("Mon 02-01-2006 15:04:05")
 		com = append(com, co)
-		fmt.Println("THIS IS comments", co)
 	}
 	for i := 0; i < len(com); i++ {
 		var singleCom IndCom
