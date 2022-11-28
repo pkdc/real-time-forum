@@ -1,9 +1,32 @@
-import { chatSocket } from "./chat";
+// import chatForm from "./chat.js";
+
+let chatSocket = null;
 const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
-const chatBox = document.querySelector(".col-1")
 const msgArea = document.querySelector(".msgArea")
 let recUsID
 let open = false
+
+const chatBox = document.querySelector(".col-1")
+const chatForm = document.createElement("form");
+chatForm.id = "chat-form";
+chatForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    // add msg
+
+    // send msg to ws
+
+});
+const chatInputDiv = document.createElement("div");
+chatInputDiv.id = "chat-input-div";
+const chatInput = document.createElement("input");
+chatInputDiv.append(chatInput);
+
+const sendBtn = document.createElement("button");
+sendBtn.textContent = "Send";
+sendBtn.id = "send-btn";
+chatForm.append(chatInputDiv, sendBtn);
+chatBox.append(chatForm)
+
 document.addEventListener("DOMContentLoaded", function (e) {
     // userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
     console.log("JS attempt to connect to user list");
@@ -25,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 const chatBoxButton = document.createElement("button")
                 chatBoxButton.classList = "nameButtons"
                 const chatBoxForm = document.createElement("form")
-
 
                 chatBoxForm.addEventListener("submit", showChatHandler)
                 chatBoxButton.setAttribute("type", "submit")
@@ -106,11 +128,30 @@ const showChatHandler = function (e) {
     payloadObj["contactID"] = parseInt(recUsID)
     userListSocket.send(JSON.stringify(payloadObj));
     
+    chatSocket = new WebSocket("ws://localhost:8080/chatWs/")
+    console.log("chat socket created: ",chatSocket);
+    console.log("JS attempt to connect to chat");
+    chatSocket.onopen = () => console.log("chat connected");
+    chatSocket.onclose = () => console.log("Bye chat");
+    chatSocket.onerror = (err) => console.log("chat ws Error!");
+    chatSocket.onmessage = (msg) => {
+        const resp = JSON.parse(msg.data);
+        console.log({resp});
+        if (resp.label === "created_room") {
+            console.log(resp);
+            
+        } else if (resp.label === "chat") {
+            console.log(resp.content);
+        }
+    }
+
     let chatPayloadObj = {};
     chatPayloadObj["label"] = "room";
     chatPayloadObj["sender_id"] = 1 /* after login change to loggedUserID */
     chatPayloadObj["receiver_id"] = parseInt(recUsID)
-    chatSocket.send(JSON.stringify(payloadObj));
+    console.log("chat payload: ", chatPayloadObj);
+    chatSocket.send(JSON.stringify(chatPayloadObj));
+    // setTimeout(()=> chatSocket.send(JSON.stringify(chatPayloadObj)), 2000);
 };
 
 // const chatBox = document.createElement("form");

@@ -41,14 +41,14 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	fmt.Printf("Chat Connected %v", conn)
+	fmt.Println("Chat Connected")
 
 	// create hub if none
-	fmt.Printf("hub before %v", ChatHub)
-	if (*ChatHub).rooms == nil { // if map not made
+	fmt.Printf("hub before %v\n", ChatHub)
+	if ChatHub == nil { // if map not made
 		ChatHub = newHub()
 	}
-	fmt.Printf("hub after %v", ChatHub)
+	fmt.Printf("hub after %v\n", ChatHub)
 
 	// find userID
 	c, err := r.Cookie("session")
@@ -73,6 +73,7 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		conn:          conn,
 		send:          make(chan WsChatPayload),
 	}
+	fmt.Printf("Cleint created: %v\n", client)
 	//go readChatPayloadFromWs(conn)
 	go client.readPump()
 	go client.writePump()
@@ -118,6 +119,7 @@ var createRoomChan = make(chan roomRequest)
 func (h *hub) Run() {
 	for {
 		participants := <-createRoomChan
+		fmt.Printf("the received room req for: %v\n", participants)
 		var roomName string
 		// keep roomname in asc order
 		if participants.clientA.userID < participants.clientB.userID {
@@ -126,12 +128,21 @@ func (h *hub) Run() {
 			roomName = strconv.Itoa(participants.clientB.userID) + "-and-" + strconv.Itoa(participants.clientA.userID)
 		}
 		rm := newRoom(roomName, participants)
+		fmt.Printf("created room name: %v\n", roomName)
 		h.rooms[roomName] = rm
+		fmt.Printf("rooms in hub: %v\n", h.rooms)
 		// add room to reciverRooms (map) of clientA (c of c.readPump), feasible coz linked to c
 		participants.clientA.receiverRooms[participants.clientB.userID] = rm
+		fmt.Printf("%v has receiverRooms: %v\n", participants.clientA, participants.clientA.receiverRooms)
 		// what if clientB initiate convo?
 		// Now only clientA has this record, clientB doesn't have
 		// prev checked if there is a room of this name? Add to clientB receiverRooms there?
+
+		var createdRoomPayload WsChatPayload
+		createdRoomPayload.Label = "created_room"
+		createdRoomPayload.SenderId = participants.clientA.userID
+		createdRoomPayload.ReceiverId = participants.clientB.userID
+		rm.intoRoom <- createdRoomPayload
 	}
 }
 
@@ -186,11 +197,12 @@ func (c *Client) readPump() {
 		fmt.Println("readPump failed")
 	}()
 
+	fmt.Println("read pump running")
 	var chatPayload WsChatPayload
 	for {
 		err := c.conn.ReadJSON(&chatPayload)
 		if err == nil {
-
+			fmt.Printf("reading payload %v from %v", chatPayload, c)
 			// create room
 			if chatPayload.Label == "room" {
 				// find the right room
@@ -201,6 +213,7 @@ func (c *Client) readPump() {
 					findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
 				}
 				rightChatRoom := ChatHub.findRoom(findRoomName)
+				fmt.Printf("the right room is: %v", rightChatRoom)
 
 				if rightChatRoom == nil {
 					// if no record of the room, create one
@@ -209,8 +222,8 @@ func (c *Client) readPump() {
 					// dereference clientB and put the userID or conn field into it
 					(*(rmReq.clientB)).userID = chatPayload.ReceiverId
 					(*(rmReq.clientB)).conn = userListWsMap[chatPayload.ReceiverId]
+					fmt.Printf("sending rmReq: %v\n", rmReq)
 					createRoomChan <- rmReq
-					// may need to move create room here
 				}
 
 				// load the msg into rightChatRoom
@@ -246,8 +259,10 @@ func (c *Client) writePump() {
 	defer func() {
 		fmt.Println("writePump failed")
 	}()
+	fmt.Println("write pump running")
 	for {
 		chatPayload := <-c.send
+		fmt.Printf("sneding payload %v to client", chatPayload)
 		c.conn.WriteJSON(chatPayload)
 	}
 }
