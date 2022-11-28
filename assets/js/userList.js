@@ -1,3 +1,4 @@
+import { chatSocket } from "./chat";
 const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
 const chatBox = document.querySelector(".col-1")
 const msgArea = document.querySelector(".msgArea")
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
             closeChatBox.textContent = "X"
             closeChatBox.classList = "closeChat"
             chatBox.append(closeChatBox)
-        } else if (resp.label == "chatBox") {
+        } else if (resp.label == "chatBox") { // resp for "createChat"
             let js = JSON.parse(resp.content)
             if (js != null) {
                 console.log("check content:", js)
@@ -104,6 +105,12 @@ const showChatHandler = function (e) {
     payloadObj["userID"] = 1 /* after login change to loggedUserID */
     payloadObj["contactID"] = parseInt(recUsID)
     userListSocket.send(JSON.stringify(payloadObj));
+    
+    let chatPayloadObj = {};
+    chatPayloadObj["label"] = "room";
+    chatPayloadObj["sender_id"] = 1 /* after login change to loggedUserID */
+    chatPayloadObj["receiver_id"] = parseInt(recUsID)
+    chatSocket.send(JSON.stringify(payloadObj));
 };
 
 // const chatBox = document.createElement("form");
