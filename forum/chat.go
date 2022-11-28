@@ -76,7 +76,6 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Cleint created: %v\n", client)
 	//go readChatPayloadFromWs(conn)
 	go client.readPump()
-	go client.writePump()
 
 }
 
@@ -177,7 +176,7 @@ func (r *Room) run() {
 		select {
 		case chatRoomPayload = <-r.intoRoom:
 			fmt.Printf("in room chatRoomPayload: %v", chatRoomPayload)
-			// send to both clients when room receives msg
+			// send to both
 			r.clientA.send <- chatRoomPayload
 			r.clientB.send <- chatRoomPayload
 		}
@@ -216,10 +215,10 @@ func (c *Client) readPump() {
 				fmt.Printf("the right room is: %v", rightChatRoom)
 
 				if rightChatRoom == nil {
-					// if no record of the room, create one
+					// if no record of the room
 					var rmReq roomRequest
 					rmReq.clientA = c // link c and rmReq.clientA
-					// dereference clientB and put the userID or conn field into it
+					// dereference clientB and get the userID or conn field
 					(*(rmReq.clientB)).userID = chatPayload.ReceiverId
 					(*(rmReq.clientB)).conn = userListWsMap[chatPayload.ReceiverId]
 					fmt.Printf("sending rmReq: %v\n", rmReq)
@@ -227,14 +226,6 @@ func (c *Client) readPump() {
 				}
 
 				// load the msg into rightChatRoom
-				fmt.Println("----receiver", chatPayload.ReceiverId, "----sender", chatPayload.SenderId)
-				var creatingChatResponse WsChatResponse
-				// creatingChatResponse.Label= "using"
-				creatingChatResponse.Label = "prevMsgs"
-				// load prev msgs
-				creatingChatResponse.Content = sortMessages(chatPayload.SenderId, chatPayload.ReceiverId)
-				// just loading for the sender!!
-				c.conn.WriteJSON(creatingChatResponse)
 				// c.receiverRooms[chatPayload.ReceiverId]
 
 				// reply? roomname?

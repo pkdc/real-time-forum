@@ -66,7 +66,6 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 			creatingChatResponse.Label = "chatBox"
 			// load prev msgs
 			creatingChatResponse.Content = sortMessages(userListPayload.UserID, userListPayload.ContactID)
-			// // just loading for the sender!!
 			conn.WriteJSON(creatingChatResponse)
 		} else if err == nil {
 			fmt.Printf("Sending userListPayload thru chan: %v\n", userListPayload)

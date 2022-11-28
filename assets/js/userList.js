@@ -1,6 +1,3 @@
-// import chatForm from "./chat.js";
-
-let chatSocket = null;
 const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
 const msgArea = document.querySelector(".msgArea")
 let recUsID
@@ -97,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
             closeChatBox.textContent = "X"
             closeChatBox.classList = "closeChat"
             chatBox.append(closeChatBox)
-        } else if (resp.label == "chatBox") { // resp for "createChat"
+        } else if (resp.label == "chatBox") {
             let js = JSON.parse(resp.content)
             if (js != null) {
                 console.log("check content:", js)
@@ -128,29 +125,29 @@ const showChatHandler = function (e) {
     payloadObj["contactID"] = parseInt(recUsID)
     userListSocket.send(JSON.stringify(payloadObj));
     
-    chatSocket = new WebSocket("ws://localhost:8080/chatWs/")
-    console.log("chat socket created: ",chatSocket);
-    console.log("JS attempt to connect to chat");
-    chatSocket.onopen = () => console.log("chat connected");
-    chatSocket.onclose = () => console.log("Bye chat");
-    chatSocket.onerror = (err) => console.log("chat ws Error!");
-    chatSocket.onmessage = (msg) => {
-        const resp = JSON.parse(msg.data);
-        console.log({resp});
-        if (resp.label === "created_room") {
-            console.log(resp);
+    // chatSocket = new WebSocket("ws://localhost:8080/chatWs/")
+    // console.log("chat socket created: ",chatSocket);
+    // console.log("JS attempt to connect to chat");
+    // chatSocket.onopen = () => console.log("chat connected");
+    // chatSocket.onclose = () => console.log("Bye chat");
+    // chatSocket.onerror = (err) => console.log("chat ws Error!");
+    // chatSocket.onmessage = (msg) => {
+    //     const resp = JSON.parse(msg.data);
+    //     console.log({resp});
+    //     if (resp.label === "created_room") {
+    //         console.log(resp);
             
-        } else if (resp.label === "chat") {
-            console.log(resp.content);
-        }
-    }
+    //     } else if (resp.label === "chat") {
+    //         console.log(resp.content);
+    //     }
+    // }
 
-    let chatPayloadObj = {};
-    chatPayloadObj["label"] = "room";
-    chatPayloadObj["sender_id"] = 1 /* after login change to loggedUserID */
-    chatPayloadObj["receiver_id"] = parseInt(recUsID)
-    console.log("chat payload: ", chatPayloadObj);
-    chatSocket.send(JSON.stringify(chatPayloadObj));
+    // let chatPayloadObj = {};
+    // chatPayloadObj["label"] = "room";
+    // chatPayloadObj["sender_id"] = 1 /* after login change to loggedUserID */
+    // chatPayloadObj["receiver_id"] = parseInt(recUsID)
+    // console.log("chat payload: ", chatPayloadObj);
+    // chatSocket.send(JSON.stringify(chatPayloadObj));
     // setTimeout(()=> chatSocket.send(JSON.stringify(chatPayloadObj)), 2000);
 };
 
