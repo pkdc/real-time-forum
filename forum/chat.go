@@ -32,8 +32,10 @@ type WsChatPayload struct {
 	Right       bool   `json:"right_side"`
 }
 
-var chatPayloadChan = make(chan WsChatPayload)
-var ChatHub *hub
+var (
+	chatPayloadChan = make(chan WsChatPayload)
+	ChatHub         *hub
+)
 
 func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -74,9 +76,9 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		send:          make(chan WsChatPayload),
 	}
 	fmt.Printf("Cleint created: %v\n", client)
-	//go readChatPayloadFromWs(conn)
+	// go readChatPayloadFromWs(conn)
 	go client.readPump()
-
+	go client.writePump()
 }
 
 // go into readPump?
@@ -128,6 +130,7 @@ func (h *hub) Run() {
 		}
 		rm := newRoom(roomName, participants)
 		fmt.Printf("created room name: %v\n", roomName)
+		rm.run()
 		h.rooms[roomName] = rm
 		fmt.Printf("rooms in hub: %v\n", h.rooms)
 		// add room to reciverRooms (map) of clientA (c of c.readPump), feasible coz linked to c
@@ -176,7 +179,7 @@ func (r *Room) run() {
 		select {
 		case chatRoomPayload = <-r.intoRoom:
 			fmt.Printf("in room chatRoomPayload: %v", chatRoomPayload)
-			// send to both
+			// send to both clients when room receives msg
 			r.clientA.send <- chatRoomPayload
 			r.clientB.send <- chatRoomPayload
 		}
@@ -215,10 +218,10 @@ func (c *Client) readPump() {
 				fmt.Printf("the right room is: %v", rightChatRoom)
 
 				if rightChatRoom == nil {
-					// if no record of the room
+					// if no record of the room, create one
 					var rmReq roomRequest
 					rmReq.clientA = c // link c and rmReq.clientA
-					// dereference clientB and get the userID or conn field
+					// dereference clientB and put the userID or conn field into it
 					(*(rmReq.clientB)).userID = chatPayload.ReceiverId
 					(*(rmReq.clientB)).conn = userListWsMap[chatPayload.ReceiverId]
 					fmt.Printf("sending rmReq: %v\n", rmReq)
@@ -226,6 +229,14 @@ func (c *Client) readPump() {
 				}
 
 				// load the msg into rightChatRoom
+				fmt.Println("----receiver", chatPayload.ReceiverId, "----sender", chatPayload.SenderId)
+				var creatingChatResponse WsChatResponse
+				// creatingChatResponse.Label= "using"
+				creatingChatResponse.Label = "prevMsgs"
+				// load prev msgs
+				creatingChatResponse.Content = sortMessages(chatPayload.SenderId, chatPayload.ReceiverId)
+				// just loading for the sender!!
+				c.conn.WriteJSON(creatingChatResponse)
 				// c.receiverRooms[chatPayload.ReceiverId]
 
 				// reply? roomname?
