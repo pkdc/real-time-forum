@@ -30,11 +30,14 @@ type WsChatPayload struct {
 	MessageTime string `json:"message_time"`
 	Noti        bool   `json:"noti"`
 	Right       bool   `json:"right_side"`
+	CookieValue string `json:"cookie_value"`
 }
 
 var (
 	chatPayloadChan = make(chan WsChatPayload)
 	ChatHub         *hub
+	// chatWsMap       = make(map[*websocket.Conn]int)
+	chatWsMap = make(map[int]*websocket.Conn)
 )
 
 func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
@@ -45,6 +48,11 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Chat Connected")
 
+	// how to add client ws to chatWsMap?
+	// is it easier to just use userlist ws for chat?
+	// take up a space
+	// chatWsMap[conn] = 0
+
 	// create hub if none
 	fmt.Printf("hub before %v\n", ChatHub)
 	if ChatHub == nil { // if map not made
@@ -52,28 +60,29 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("hub after %v\n", ChatHub)
 
-	// find userID
-	c, err := r.Cookie("session")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	var currentUserId int
-	rows, err := db.Query("SELECT userID, sessionID FROM sessions WHERE sessionID = ?;", c.Value)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&currentUserId)
-	}
-	// or get currentUserId by matching conn in userListWsMap
+	// // find userID
+	// find it
+	// c, err := r.Cookie("session")
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
+	// var currentUserId int
+	// rows, err := db.Query("SELECT userID, sessionID FROM sessions WHERE sessionID = ?;", c.Value)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer rows.Close()
+	// for rows.Next() {
+	// 	rows.Scan(&currentUserId)
+	// }
+	// // or get currentUserId by matching conn in userListWsMap
 
 	client := &Client{
 		receiverRooms: make(map[int]*Room),
-		userID:        currentUserId,
-		conn:          conn,
-		send:          make(chan WsChatPayload),
+		// userID:        currentUserId,
+		conn: conn,
+		send: make(chan WsChatPayload),
 	}
 	fmt.Printf("Cleint created: %v\n", client)
 	// go readChatPayloadFromWs(conn)
@@ -189,10 +198,40 @@ func (r *Room) run() {
 // -----------------------Client-------------------------------
 type Client struct {
 	receiverRooms map[int]*Room
-	userID        int
+	userID        int // later
 	conn          *websocket.Conn
 	send          chan WsChatPayload // not added yet
 }
+
+// func idClient(conn *websocket.Conn) {
+// 	// find userID
+// 	c, err := r.Cookie("session")
+// 	if err != nil {
+// 		log.Println(err)
+// 		return
+// 	}
+// 	var currentUserId int
+// 	rows, err := db.Query("SELECT userID, sessionID FROM sessions WHERE sessionID = ?;", c.Value)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	defer rows.Close()
+// 	for rows.Next() {
+// 		rows.Scan(&currentUserId)
+// 	}
+// 	// or get currentUserId by matching conn in userListWsMap
+
+// 	client := &Client{
+// 		receiverRooms: make(map[int]*Room),
+// 		userID:        currentUserId,
+// 		conn:          conn,
+// 		send:          make(chan WsChatPayload),
+// 	}
+// 	fmt.Printf("Cleint created: %v\n", client)
+// 	// go readChatPayloadFromWs(conn)
+// 	go client.readPump()
+// 	go client.writePump()
+// }
 
 func (c *Client) readPump() {
 	defer func() {
@@ -205,6 +244,7 @@ func (c *Client) readPump() {
 		err := c.conn.ReadJSON(&chatPayload)
 		if err == nil {
 			fmt.Printf("reading payload %v from %v", chatPayload, c)
+			c.userID = chatPayload.SenderId // id here
 			// create room
 			if chatPayload.Label == "room" {
 				// find the right room
@@ -223,7 +263,7 @@ func (c *Client) readPump() {
 					rmReq.clientA = c // link c and rmReq.clientA
 					// dereference clientB and put the userID or conn field into it
 					(*(rmReq.clientB)).userID = chatPayload.ReceiverId
-					(*(rmReq.clientB)).conn = userListWsMap[chatPayload.ReceiverId]
+					(*(rmReq.clientB)).conn = chatWsMap[chatPayload.ReceiverId]
 					fmt.Printf("sending rmReq: %v\n", rmReq)
 					createRoomChan <- rmReq
 				}
@@ -243,15 +283,15 @@ func (c *Client) readPump() {
 
 			} else if chatPayload.Label == "chat" {
 				fmt.Printf("Sending chatPayload thru chan: %v\n", chatPayload)
-				if chatPayload.Online {
-					// receiver online
-					// send msg into room
-					// finding the correct room
-					receivingRoom := *(c.receiverRooms[chatPayload.ReceiverId])
-					receivingRoom.intoRoom <- chatPayload
-				} else {
-					// receiver offline
-				}
+				// if chatPayload.Online {
+				// receiver online
+				// send msg into room
+				// finding the correct room
+				receivingRoom := *(c.receiverRooms[chatPayload.ReceiverId])
+				receivingRoom.intoRoom <- chatPayload
+				// } else {
+				// receiver offline
+				// }
 			}
 		}
 	}
