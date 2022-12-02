@@ -1,4 +1,5 @@
 import userListSocket from "./userList.js";
+import { chatSocket } from "./chat.js";
 // console.log(userListSocket);
 let regSocket = null; 
 const userList = document.querySelector(".user-list");
@@ -73,6 +74,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("reg UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));
+
+                // store chatWs after a new-user reg
+                let chatPayload = {};
+                chatPayload["label"] = "new-user";
+                chatPayload["sender_id"] = resp.cookie.uid;
+                console.log("reg chat: ", chatPayload);
+                chatSocket.send(JSON.stringify(chatPayload));
             } else {
                 displayMsgDiv.classList.add("display-msg");
                 displayMsg.id = "reg-msg";

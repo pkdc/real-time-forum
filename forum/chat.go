@@ -24,8 +24,8 @@ type MessageArray struct {
 type WsChatPayload struct {
 	Label       string `json:"label"`
 	Content     string `json:"content"`
-	SenderId    int    `json:"sender_id"`
-	ReceiverId  int    `json:"receiver_id"`
+	SenderId    string `json:"sender_id"`
+	ReceiverId  string `json:"receiver_id"`
 	Online      bool   `json:"online"` // whether the receiver is online
 	MessageTime string `json:"message_time"`
 	Noti        bool   `json:"noti"`
@@ -155,8 +155,8 @@ func (h *hub) Run() {
 
 		var createdRoomPayload WsChatPayload
 		createdRoomPayload.Label = "created_room"
-		createdRoomPayload.SenderId = roomReq.clientA.userID
-		createdRoomPayload.ReceiverId = roomReq.clientB.userID
+		createdRoomPayload.SenderId = strconv.Itoa(roomReq.clientA.userID)
+		createdRoomPayload.ReceiverId = strconv.Itoa(roomReq.clientB.userID)
 		rm.intoRoom <- createdRoomPayload
 	}
 }
@@ -202,7 +202,7 @@ func (r *Room) run() {
 // -----------------------Client-------------------------------
 type Client struct {
 	receiverRooms map[int]*Room
-	userID        int // later
+	userID        int
 	conn          *websocket.Conn
 	send          chan WsChatPayload // not added yet
 }
@@ -248,18 +248,25 @@ func (c *Client) readPump() {
 		err := c.conn.ReadJSON(&chatPayload)
 		if err == nil {
 			fmt.Printf("reading payload %v of client %v\n", chatPayload, c)
-			c.userID = chatPayload.SenderId // id here, then u need to have sent a msg inorder to have uid in client? So need a map
-			fmt.Printf("client has uid: %d\n", c.userID)
 
 			fmt.Printf("Label: %s\n", chatPayload.Label)
 			// create room
-			if chatPayload.Label == "createChat" { // can add to/from userlist.go
+			if chatPayload.Label == "new-user" {
+				senderIdNum, err := strconv.Atoi(chatPayload.SenderId)
+				if err != nil {
+					log.Fatal(err)
+				}
+				c.userID = senderIdNum
+				fmt.Printf("client has uid: %d\n", c.userID)
+				chatWsMap[senderIdNum] = c.conn
+				fmt.Printf("added client ws to map, current map: %v\n", chatWsMap)
+			} else if chatPayload.Label == "createChat" { // can add to/from userlist.go
 				// find the right room
 				var findRoomName string
 				if chatPayload.SenderId < chatPayload.ReceiverId {
-					findRoomName = strconv.Itoa(chatPayload.SenderId) + "-and-" + strconv.Itoa(chatPayload.ReceiverId)
+					findRoomName = chatPayload.SenderId + "-and-" + chatPayload.ReceiverId
 				} else {
-					findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
+					findRoomName = chatPayload.ReceiverId + "-and-" + chatPayload.SenderId
 				}
 				fmt.Printf("the right room name is: %s\n", findRoomName)
 				rightChatRoom := ChatHub.findRoom(findRoomName)
@@ -274,8 +281,12 @@ func (c *Client) readPump() {
 
 					///////////////////////
 					// dereference clientB IN THE RMReq, and put the userID or conn field into it
-					(*(rmReq.clientB)).userID = chatPayload.ReceiverId          //
-					(*(rmReq.clientB)).conn = chatWsMap[chatPayload.ReceiverId] // the map is always empty atm
+					ReceiverIdNum, err := strconv.Atoi(chatPayload.ReceiverId)
+					if err != nil {
+						log.Fatal(err)
+					}
+					(*(rmReq.clientB)).userID = ReceiverIdNum          //
+					(*(rmReq.clientB)).conn = chatWsMap[ReceiverIdNum] // the map is always empty atm
 					fmt.Printf("sending rmReq: %v\n", rmReq)
 					createRoomChan <- rmReq
 				}
@@ -286,7 +297,9 @@ func (c *Client) readPump() {
 				// creatingChatResponse.Label= "using"
 				creatingChatResponse.Label = "chatBox"
 				// load prev msgs
-				creatingChatResponse.Content = sortMessages(chatPayload.SenderId, chatPayload.ReceiverId)
+				senderIdNum, _ := strconv.Atoi(chatPayload.SenderId)
+				receiverIdNum, _ := strconv.Atoi(chatPayload.ReceiverId)
+				creatingChatResponse.Content = sortMessages(senderIdNum, receiverIdNum)
 				// just loading for the sender!!
 				c.conn.WriteJSON(creatingChatResponse)
 				// c.receiverRooms[chatPayload.ReceiverId]
@@ -300,7 +313,11 @@ func (c *Client) readPump() {
 				// send msg into room
 
 				// finding the correct receiver room in the client
-				receivingRoom := *(c.receiverRooms[chatPayload.ReceiverId])
+				ReceiverIdNum, err := strconv.Atoi(chatPayload.ReceiverId)
+				if err != nil {
+					log.Fatal(err)
+				}
+				receivingRoom := *(c.receiverRooms[ReceiverIdNum])
 				receivingRoom.intoRoom <- chatPayload
 				// } else {
 				// receiver offline

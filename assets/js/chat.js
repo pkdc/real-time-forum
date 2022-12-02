@@ -1,6 +1,6 @@
-let chatSocket = null;
+export const chatSocket = new WebSocket("ws://localhost:8080/chatWs/");
 
-const chatForm = document.createElement("form");
+export const chatForm = document.createElement("form");
 chatForm.id = "chat-form";
 chatForm.addEventListener("submit", function(e) {
     e.preventDefault();
@@ -19,7 +19,7 @@ chatInputDiv.append(chatInput);
 
 
 document.addEventListener("DOMContentLoaded", function(e) {
-    chatSocket = new WebSocket("ws://localhost:8080/chatWs/")
+    // chatSocket = new WebSocket("ws://localhost:8080/chatWs/");
     console.log("JS attempt to connect to chat");
     chatSocket.onopen = () => console.log("chat connected");
     chatSocket.onclose = () => console.log("Bye chat");
@@ -50,4 +50,4 @@ document.addEventListener("DOMContentLoaded", function(e) {
 // const chatBox = document.createElement("form");
 // chatBox.id = "chat-form"
 
-export default chatForm;
+// export default chatForm;
