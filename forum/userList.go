@@ -65,7 +65,7 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 			// creatingChatResponse.Label= "using"
 			creatingChatResponse.Label = "chatBox"
 			// load prev msgs
-			creatingChatResponse.Content = sortMessages(userListPayload.UserID, userListPayload.ContactID)
+			creatingChatResponse.Content = sortMessages(userListPayload.UserID, userListPayload.ContactID) // can use senderID and receiverID
 			conn.WriteJSON(creatingChatResponse)
 		} else if err == nil {
 			fmt.Printf("Sending userListPayload thru chan: %v\n", userListPayload)
@@ -174,6 +174,7 @@ func broadcast(userListResponse WsUserListResponse) {
 	// }
 }
 
+// move to chat.go
 func displayChatInfo(sendID, recID int) []MessageArray {
 	var allMsg MessageArray
 	var arrMsgArray []MessageArray

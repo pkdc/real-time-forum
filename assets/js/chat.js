@@ -37,8 +37,11 @@ document.addEventListener("DOMContentLoaded", function(e) {
                 const nickname = document.createElement("li");
                 nickname.textContent = `${uNickname}`;
                 uList.append(nickname);
+        
             }
-        } else if (resp.label === "chat") {
+        }
+         else if (resp.label === "chat") {
+         
             console.log(resp.content);
         }
     }
