@@ -58,7 +58,7 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 	for {
 		// fmt.Print("ul ")
 		err := conn.ReadJSON(&userListPayload)
-		fmt.Println("Label", userListPayload.Label)
+		fmt.Println("UL Label", userListPayload.Label)
 		fmt.Println(err)
 		if err == nil && userListPayload.Label == "createChat" {
 			fmt.Println("----contact", userListPayload.ContactID, "----userID", userListPayload.UserID)

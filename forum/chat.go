@@ -77,7 +77,7 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	// 	rows.Scan(&currentUserId)
 	// }
 	// // or get currentUserId by matching conn in userListWsMap
-
+	// fmt.Printf("client conn in endpt: %v\n", conn)
 	client := &Client{
 		receiverRooms: make(map[int]*Room),
 		// userID:        currentUserId,
@@ -245,13 +245,13 @@ func (c *Client) readPump() {
 	fmt.Println("read pump running")
 	var chatPayload WsChatPayload
 	for {
+		// fmt.Printf("client conn in readPump: %v\n", c.conn)
 		err := c.conn.ReadJSON(&chatPayload)
 		if err == nil {
-			fmt.Printf("reading payload %v of client %v\n", chatPayload, c)
-
-			fmt.Printf("Label: %s\n", chatPayload.Label)
+			fmt.Printf("chatPayload %v with label:%s. of client %v \n", chatPayload, chatPayload.Label, c)
+			fmt.Printf("chat: %v", err)
 			// create room
-			if chatPayload.Label == "new-user" {
+			if chatPayload.Label == "online" {
 				senderIdNum, err := strconv.Atoi(chatPayload.SenderId)
 				if err != nil {
 					log.Fatal(err)
@@ -301,7 +301,7 @@ func (c *Client) readPump() {
 				receiverIdNum, _ := strconv.Atoi(chatPayload.ReceiverId)
 				creatingChatResponse.Content = sortMessages(senderIdNum, receiverIdNum)
 				// just loading for the sender!!
-				c.conn.WriteJSON(creatingChatResponse)
+				c.conn.WriteJSON(creatingChatResponse) // only writing to sender
 				// c.receiverRooms[chatPayload.ReceiverId]
 
 				// reply? roomname?

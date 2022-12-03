@@ -1,4 +1,5 @@
 import userListSocket from "./userList.js";
+import { chatSocket } from "./chat.js";
 let loginSocket = null;
 let nameInput = null;
 let pwInput = null;
@@ -53,6 +54,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("login UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));
+
+                // user is online and avalible to chat
+                let chatPayloadObj = {};
+                chatPayloadObj["label"] = "online";
+                console.log(`login chat uid: ${resp.cookie.uid}`);
+                chatPayloadObj["sender_id"] = (resp.cookie.uid).toString();
+                console.log("login chat: ", chatPayloadObj);
+                chatSocket.send(JSON.stringify(chatPayloadObj));
             } else {
                 // error msg
                 displayMsgDiv.classList.add("display-msg");

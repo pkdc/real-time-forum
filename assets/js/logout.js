@@ -1,5 +1,5 @@
 import userListSocket from "./userList.js";
-
+import { chatSocket } from "./chat.js";
 const logoutUrl = location.origin + "/logout/";
 console.log(logoutUrl);
 const logoutHandler = function() {

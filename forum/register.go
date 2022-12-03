@@ -83,7 +83,7 @@ func listenToRegWs(conn *websocket.Conn) {
 	for {
 		err := conn.ReadJSON(&regPayload)
 		if err == nil {
-			fmt.Printf("payload received: %v\n", regPayload)
+			fmt.Printf("reg payload received: %v\n", regPayload)
 			// regSuccess := ProcessAndReplyReg(conn, regPayload)
 			// return regSuccess
 			ProcessAndReplyReg(conn, regPayload)
