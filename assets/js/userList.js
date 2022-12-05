@@ -1,3 +1,4 @@
+import { chatSocket } from "./chat.js";
 const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
 const msgArea = document.querySelector(".msgArea")
 let recUsID
@@ -121,10 +122,11 @@ const showChatHandler = function (e) {
     let payloadObj = {}
     console.log("usID =", recUsID)
     payloadObj["label"] = "createChat";
-    payloadObj["userID"] = 1 /* after login change to loggedUserID */
-    payloadObj["contactID"] = parseInt(recUsID)
+    // payloadObj["sender_id"] = 1 /* after login change to loggedUserID */
+    payloadObj["receiver_id"] = parseInt(recUsID)
     userListSocket.send(JSON.stringify(payloadObj));
-    
+    chatSocket.send(JSON.stringify(payloadObj));
+
     // chatSocket = new WebSocket("ws://localhost:8080/chatWs/")
     // console.log("chat socket created: ",chatSocket);
     // console.log("JS attempt to connect to chat");
