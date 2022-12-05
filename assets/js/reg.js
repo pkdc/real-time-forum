@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 // user is online and avalible to chat
                 let chatPayloadObj = {};
-                chatPayloadObj["label"] = "online";
+                chatPayloadObj["label"] = "user-online";
                 console.log(`reg chat uid: ${resp.cookie.uid}`);
                 chatPayloadObj["sender_id"] = (resp.cookie.uid).toString();
                 console.log("reg chat: ", chatPayloadObj);

@@ -199,6 +199,10 @@ func (r *Room) run() {
 	}
 }
 
+func (r *Room) loadPrevMsgs() {
+
+}
+
 // -----------------------Client-------------------------------
 type Client struct {
 	receiverRooms map[int]*Room
@@ -249,9 +253,9 @@ func (c *Client) readPump() {
 		err := c.conn.ReadJSON(&chatPayload)
 		if err == nil {
 			fmt.Printf("chatPayload %v with label:%s. of client %v \n", chatPayload, chatPayload.Label, c)
-			fmt.Printf("chat: %v", err)
+			fmt.Printf("chat err (should be nil): %v\n ", err)
 			// create room
-			if chatPayload.Label == "online" {
+			if chatPayload.Label == "user-online" {
 				// senderIdNum, err := chatPayload.SenderId)
 				// if err != nil {
 				// 	log.Fatal(err)
@@ -260,6 +264,10 @@ func (c *Client) readPump() {
 				fmt.Printf("client has uid: %d\n", c.userID)
 				chatWsMap[chatPayload.SenderId] = c.conn
 				fmt.Printf("added client ws to map, current map: %v\n", chatWsMap)
+			} else if chatPayload.Label == "user-offline" {
+				fmt.Printf("user offline\n")
+
+				// delete(chatWsMap, logoutUid)
 			} else if chatPayload.Label == "createChat" { // can add to/from userlist.go
 				// find the right room
 				var findRoomName string

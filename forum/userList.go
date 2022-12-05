@@ -58,7 +58,7 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 		// fmt.Print("ul ")
 		err := conn.ReadJSON(&userListPayload)
 		fmt.Println("UL Label", userListPayload.Label)
-		fmt.Println(err)
+		fmt.Printf("UL readjson err (should be nil)%v", err)
 		if err == nil && userListPayload.Label == "createChat" {
 			fmt.Println("----contact", userListPayload.ContactID, "----userID", userListPayload.UserID)
 			var creatingChatResponse WsUserListResponse
