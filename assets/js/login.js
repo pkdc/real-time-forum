@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 let chatPayloadObj = {};
                 chatPayloadObj["label"] = "user-online";
                 console.log(`login chat uid: ${resp.cookie.uid}`);
-                chatPayloadObj["sender_id"] = (resp.cookie.uid).toString();
+                chatPayloadObj["sender_id"] = (resp.cookie.uid);
                 console.log("login chat: ", chatPayloadObj);
                 chatSocket.send(JSON.stringify(chatPayloadObj));
             } else {

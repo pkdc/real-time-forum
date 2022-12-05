@@ -261,13 +261,13 @@ func (c *Client) readPump() {
 				// 	log.Fatal(err)
 				// }
 				c.userID = chatPayload.SenderId
-				fmt.Printf("client has uid: %d\n", c.userID)
+				fmt.Printf("chat: client has uid: %d\n", c.userID)
 				chatWsMap[chatPayload.SenderId] = c.conn
-				fmt.Printf("added client ws to map, current map: %v\n", chatWsMap)
+				fmt.Printf("chat: added client ws to map, current map: %v\n", chatWsMap)
 			} else if chatPayload.Label == "user-offline" {
-				fmt.Printf("user offline\n")
-
-				// delete(chatWsMap, logoutUid)
+				fmt.Printf("chat: user %d offline\n", loggedInUid)
+				delete(chatWsMap, loggedInUid)
+				fmt.Printf("chat: current map %v after logout\n", chatWsMap)
 			} else if chatPayload.Label == "createChat" { // can add to/from userlist.go
 				// find the right room
 				var findRoomName string

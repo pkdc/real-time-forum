@@ -58,7 +58,7 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 		// fmt.Print("ul ")
 		err := conn.ReadJSON(&userListPayload)
 		fmt.Println("UL Label", userListPayload.Label)
-		fmt.Printf("UL readjson err (should be nil)%v", err)
+		fmt.Printf("UL readjson err (should be nil)%v\n", err)
 		if err == nil && userListPayload.Label == "createChat" {
 			fmt.Println("----contact", userListPayload.ContactID, "----userID", userListPayload.UserID)
 			var creatingChatResponse WsUserListResponse
@@ -68,7 +68,7 @@ func readUserListPayloadFromWs(conn *websocket.Conn) {
 			creatingChatResponse.Content = sortMessages(userListPayload.UserID, userListPayload.ContactID) // can use senderID and receiverID
 			conn.WriteJSON(creatingChatResponse)
 		} else if err == nil {
-			fmt.Printf("Sending userListPayload thru chan: %v\n", userListPayload)
+			// fmt.Printf("Sending userListPayload thru chan: %v\n", userListPayload)
 			userListPayload.Conn = *conn
 			userListPayloadChan <- userListPayload
 		}
@@ -114,7 +114,7 @@ func ProcessAndReplyUserList() {
 		if receivedUserListPayload.Label == "login-reg-update" {
 			// store conn in userListWsMap
 			userListWsMap[loggedInUid] = &receivedUserListPayload.Conn
-			fmt.Printf("current map: %v", userListWsMap)
+			fmt.Printf("UL: current map: %v", userListWsMap)
 		}
 		updateUList()
 	}
