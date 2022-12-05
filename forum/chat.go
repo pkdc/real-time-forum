@@ -24,8 +24,8 @@ type MessageArray struct {
 type WsChatPayload struct {
 	Label       string `json:"label"`
 	Content     string `json:"content"`
-	SenderId    string `json:"sender_id"`
-	ReceiverId  string `json:"receiver_id"`
+	SenderId    int    `json:"sender_id"`
+	ReceiverId  int    `json:"receiver_id"`
 	Online      bool   `json:"online"` // whether the receiver is online
 	MessageTime string `json:"message_time"`
 	Noti        bool   `json:"noti"`
@@ -137,9 +137,9 @@ func (h *hub) Run() {
 		// var roomName string
 		// // keep roomname in asc order
 		// if participants.clientA.userID < participants.clientB.userID {
-		// 	roomName = strconv.Itoa(participants.clientA.userID) + "-and-" + strconv.Itoa(participants.clientB.userID)
+		// 	roomName = participants.clientA.userID) + "-and-" + participants.clientB.userID)
 		// } else {
-		// 	roomName = strconv.Itoa(participants.clientB.userID) + "-and-" + strconv.Itoa(participants.clientA.userID)
+		// 	roomName = participants.clientB.userID) + "-and-" + participants.clientA.userID)
 		// }
 		rm := newRoom(roomReq.roomName, roomReq)
 		fmt.Printf("created room name: %v\n", roomReq.roomName)
@@ -155,8 +155,8 @@ func (h *hub) Run() {
 
 		var createdRoomPayload WsChatPayload
 		createdRoomPayload.Label = "created_room"
-		createdRoomPayload.SenderId = strconv.Itoa(roomReq.clientA.userID)
-		createdRoomPayload.ReceiverId = strconv.Itoa(roomReq.clientB.userID)
+		createdRoomPayload.SenderId = roomReq.clientA.userID
+		createdRoomPayload.ReceiverId = roomReq.clientB.userID
 		rm.intoRoom <- createdRoomPayload
 	}
 }
@@ -252,21 +252,21 @@ func (c *Client) readPump() {
 			fmt.Printf("chat: %v", err)
 			// create room
 			if chatPayload.Label == "online" {
-				senderIdNum, err := strconv.Atoi(chatPayload.SenderId)
-				if err != nil {
-					log.Fatal(err)
-				}
-				c.userID = senderIdNum
+				// senderIdNum, err := chatPayload.SenderId)
+				// if err != nil {
+				// 	log.Fatal(err)
+				// }
+				c.userID = chatPayload.SenderId
 				fmt.Printf("client has uid: %d\n", c.userID)
-				chatWsMap[senderIdNum] = c.conn
+				chatWsMap[chatPayload.SenderId] = c.conn
 				fmt.Printf("added client ws to map, current map: %v\n", chatWsMap)
 			} else if chatPayload.Label == "createChat" { // can add to/from userlist.go
 				// find the right room
 				var findRoomName string
 				if chatPayload.SenderId < chatPayload.ReceiverId {
-					findRoomName = chatPayload.SenderId + "-and-" + chatPayload.ReceiverId
+					findRoomName = strconv.Itoa(chatPayload.SenderId) + "-and-" + strconv.Itoa(chatPayload.ReceiverId)
 				} else {
-					findRoomName = chatPayload.ReceiverId + "-and-" + chatPayload.SenderId
+					findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
 				}
 				fmt.Printf("the right room name is: %s\n", findRoomName)
 				rightChatRoom := ChatHub.findRoom(findRoomName)
@@ -281,12 +281,12 @@ func (c *Client) readPump() {
 
 					///////////////////////
 					// dereference clientB IN THE RMReq, and put the userID or conn field into it
-					ReceiverIdNum, err := strconv.Atoi(chatPayload.ReceiverId)
-					if err != nil {
-						log.Fatal(err)
-					}
-					(*(rmReq.clientB)).userID = ReceiverIdNum          //
-					(*(rmReq.clientB)).conn = chatWsMap[ReceiverIdNum] // the map is always empty atm
+					// ReceiverIdNum, err := chatPayload.ReceiverId
+					// if err != nil {
+					// 	log.Fatal(err)
+					// }
+					(*(rmReq.clientB)).userID = chatPayload.ReceiverId          //
+					(*(rmReq.clientB)).conn = chatWsMap[chatPayload.ReceiverId] // the map is always empty atm
 					fmt.Printf("sending rmReq: %v\n", rmReq)
 					createRoomChan <- rmReq
 				}
@@ -297,9 +297,9 @@ func (c *Client) readPump() {
 				// creatingChatResponse.Label= "using"
 				creatingChatResponse.Label = "chatBox"
 				// load prev msgs
-				senderIdNum, _ := strconv.Atoi(chatPayload.SenderId)
-				receiverIdNum, _ := strconv.Atoi(chatPayload.ReceiverId)
-				creatingChatResponse.Content = sortMessages(senderIdNum, receiverIdNum)
+				// senderIdNum, _ := chatPayload.SenderId
+				// receiverIdNum, _ := chatPayload.ReceiverId
+				creatingChatResponse.Content = sortMessages(chatPayload.SenderId, chatPayload.ReceiverId)
 				// just loading for the sender!!
 				c.conn.WriteJSON(creatingChatResponse) // only writing to sender
 				// c.receiverRooms[chatPayload.ReceiverId]
@@ -313,11 +313,11 @@ func (c *Client) readPump() {
 				// send msg into room
 
 				// finding the correct receiver room in the client
-				ReceiverIdNum, err := strconv.Atoi(chatPayload.ReceiverId)
-				if err != nil {
-					log.Fatal(err)
-				}
-				receivingRoom := *(c.receiverRooms[ReceiverIdNum])
+				// ReceiverIdNum, err := strconv.Atoi(chatPayload.ReceiverId)
+				// if err != nil {
+				// 	log.Fatal(err)
+				// }
+				receivingRoom := *(c.receiverRooms[chatPayload.ReceiverId])
 				receivingRoom.intoRoom <- chatPayload
 				// } else {
 				// receiver offline

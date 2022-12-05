@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -196,11 +195,11 @@ func displayChatInfo(sendID, recID int) []MessageArray {
 		fmt.Println("dont be empty", oneMsg.Content, len(oneMsg.Content))
 		oneMsg.MessageTime = msgTime.String()
 		fmt.Println(oneMsg.SenderId, "-----", loggedInUid)
-		sendIdNum, err := strconv.Atoi(oneMsg.SenderId)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if sendIdNum == loggedInUid {
+		// sendIdNum, err := strconv.Atoi(oneMsg.SenderId)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		if oneMsg.SenderId == loggedInUid {
 			oneMsg.Right = true
 		}
 		allMsg.Index = msgID
