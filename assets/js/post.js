@@ -1,5 +1,6 @@
 let postSocket = null;
 const body = document.getElementsByTagName("BODY")[0]
+const DisplayPost = document.createElement("div")
 var commentPostId 
 let jsonFile
 document.addEventListener("DOMContentLoaded", function () {
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 function createPost(arr) {
+  
     document.querySelectorAll("#allPost").forEach(e => {
         e.remove();
     });
@@ -108,7 +110,7 @@ function createPost(arr) {
         postDiv.append(titleForm, contentDiv, categoryDiv, userIdDiv)
         allPost.append(postDiv)
     }
-    body.appendChild(allPost)
+    DisplayPost.appendChild(allPost)
 }
 const PostHandler = function (e) {
     e.preventDefault();
@@ -282,4 +284,5 @@ function CreateComments(arr, value) {
 }
 
 // }
-export default PostForm;
+export default {PostForm,DisplayPost};
+

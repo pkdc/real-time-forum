@@ -43,7 +43,7 @@ func processLogout(w http.ResponseWriter, r *http.Request) {
 	// fmt.Printf("cookie sid removed (should be empty): %s\n", sessionID) // empty is correct
 
 	fmt.Printf("%d Logout\n", logoutUid)
-
+	delete(PageMsgMap, logoutUid)
 	stmt, err := db.Prepare("UPDATE users SET loggedIn = ? WHERE userID = ?;")
 	if err != nil {
 		log.Fatal(err)

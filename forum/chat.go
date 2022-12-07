@@ -1,12 +1,10 @@
 package forum
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -17,10 +15,12 @@ type WsChatResponse struct {
 	UserID    int    `json:"userID"`
 	ContactID int    `json:"contactID"`
 }
+
 type MessageArray struct {
 	Index int           `json:"index"`
 	Msg   WsChatPayload `json:"msgInfo"`
 }
+
 type WsChatPayload struct {
 	Label       string `json:"label"`
 	Content     string `json:"content"`
@@ -55,8 +55,9 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	// create hub if none
 	fmt.Printf("hub before %v\n", ChatHub)
-	if ChatHub == nil { // if map not made
+	if ChatHub == nil { // if hub not made
 		ChatHub = newHub()
+		go ChatHub.Run()
 	}
 	fmt.Printf("hub after %v\n", ChatHub)
 
@@ -145,9 +146,10 @@ func (h *hub) Run() {
 		fmt.Printf("created room name: %v\n", roomReq.roomName)
 		go rm.run()
 		fmt.Printf("still fine\n")
-		fmt.Printf("rooms in hub (before): %v\n", h.rooms) // deref ptr error
+		fmt.Printf(" hub: %v\n", h)
+		fmt.Printf("new room in hub (before): %v\n", h.rooms[rm.roomName]) // deref ptr error
 		h.rooms[roomReq.roomName] = rm
-		fmt.Printf("rooms in hub (after): %v\n", h.rooms)
+		fmt.Printf("new room in hub (after): %v\n", h.rooms[rm.roomName])
 		// add room to reciverRooms (map) of clientA (c of c.readPump), feasible coz linked to c
 		roomReq.clientA.receiverRooms[roomReq.clientB.userID] = rm
 		fmt.Printf("%v has receiverRooms: %v\n", roomReq.clientA, roomReq.clientA.receiverRooms)
@@ -191,20 +193,19 @@ func newRoom(roomName string, participants roomRequest) *Room {
 func (r *Room) run() {
 	fmt.Printf("room %v running\n", r)
 	for {
-		var chatRoomPayload WsChatPayload
+		var chatRoomResponse WsChatPayload
 		select {
-		case chatRoomPayload = <-r.intoRoom:
-			fmt.Printf("in room chatRoomPayload: %v", chatRoomPayload)
+		case chatRoomResponse = <-r.intoRoom:
+			fmt.Printf("in room chatRoomResponse: %v", chatRoomResponse)
 			// send to both clients when room receives msg
-			r.clientA.send <- chatRoomPayload
-			r.clientB.send <- chatRoomPayload
+			r.clientA.send <- chatRoomResponse
+			r.clientB.send <- chatRoomResponse
 		}
 	}
 }
 
-func (r *Room) loadPrevMsgs() {
-
-}
+// func (r *Room) loadPrevMsgs() {
+// }
 
 // -----------------------Client-------------------------------
 type Client struct {
@@ -271,16 +272,16 @@ func (c *Client) readPump() {
 				fmt.Printf("chat: user %d offline\n", loggedInUid)
 				delete(chatWsMap, loggedInUid)
 				fmt.Printf("chat: current map %v after logout\n", chatWsMap)
-			} else if chatPayload.Label == "createChat" { // can add to/from userlist.go
+			} else if chatPayload.Label == "createChat" {
 				// find the right room
 				var findRoomName string
-				if chatPayload.SenderId < chatPayload.ReceiverId {
-					findRoomName = strconv.Itoa(chatPayload.SenderId) + "-and-" + strconv.Itoa(chatPayload.ReceiverId)
+				if c.userID < chatPayload.ReceiverId {
+					findRoomName = strconv.Itoa(c.userID) + "-and-" + strconv.Itoa(chatPayload.ReceiverId)
 				} else {
-					findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(chatPayload.SenderId)
+					findRoomName = strconv.Itoa(chatPayload.ReceiverId) + "-and-" + strconv.Itoa(c.userID)
 				}
 				fmt.Printf("the right room name is: %s\n", findRoomName)
-				rightChatRoom := ChatHub.findRoom(findRoomName)
+				rightChatRoom := ChatHub.findRoom(findRoomName) // can find right room
 				fmt.Printf("the right room is: %v\n", rightChatRoom)
 
 				if rightChatRoom == nil {
@@ -309,27 +310,35 @@ func (c *Client) readPump() {
 
 					fmt.Printf("rmReq CB ID %v \n", rmReq.clientB.userID)
 					fmt.Printf("rmReq CB conn %v \n", rmReq.clientB.conn)
+					fmt.Printf("rmReq CB %v \n", rmReq.clientB)
 					fmt.Printf("sending rmReq: %v\n", rmReq)
 					createRoomChan <- rmReq
 				}
 
-				// load the msg into rightChatRoom // not used yet
-				fmt.Println("----receiver", chatPayload.ReceiverId, "----sender", chatPayload.SenderId)
-				var creatingChatResponse WsChatResponse
-				// creatingChatResponse.Label= "using"
-				creatingChatResponse.Label = "chatBox"
-				// load prev msgs
-				// senderIdNum, _ := chatPayload.SenderId
-				// receiverIdNum, _ := chatPayload.ReceiverId
-				creatingChatResponse.Content = sortMessages(chatPayload.SenderId, chatPayload.ReceiverId)
-				// just loading for the sender!!
-				c.conn.WriteJSON(creatingChatResponse) // only writing to sender
-				// c.receiverRooms[chatPayload.ReceiverId]
+				// // load the msg into rightChatRoom // not used yet
+				// fmt.Println("----receiver", chatPayload.ReceiverId, "----sender", chatPayload.SenderId)
+				// var creatingChatResponse WsChatResponse
+				// // creatingChatResponse.Label= "using"
+				// creatingChatResponse.Label = "chatBox"
+				// // load prev msgs
+				// // senderIdNum, _ := chatPayload.SenderId
+				// // receiverIdNum, _ := chatPayload.ReceiverId
+				// creatingChatResponse.Content = sortMessages(chatPayload.SenderId, chatPayload.ReceiverId)
+				// // just loading for the sender!!
+				// c.conn.WriteJSON(creatingChatResponse) // only writing to sender
+				// // c.receiverRooms[chatPayload.ReceiverId]
 
 				// reply? roomname?
 
 			} else if chatPayload.Label == "chat" {
 				fmt.Printf("Sending chatPayload thru chan: %v\n", chatPayload)
+				var chatResponse WsChatPayload
+
+				chatResponse.Label = "chat"
+				chatResponse.Content = chatPayload.Content
+				chatResponse.SenderId = chatPayload.SenderId
+				chatResponse.ReceiverId = chatPayload.ReceiverId
+
 				// if chatPayload.Online {
 				// receiver online
 				// send msg into room
@@ -340,7 +349,8 @@ func (c *Client) readPump() {
 				// 	log.Fatal(err)
 				// }
 				receivingRoom := *(c.receiverRooms[chatPayload.ReceiverId])
-				receivingRoom.intoRoom <- chatPayload
+				fmt.Printf("chat sent to receivingRoom %v from client %v\n", receivingRoom, c)
+				receivingRoom.intoRoom <- chatResponse
 				// } else {
 				// receiver offline
 				// }
@@ -356,33 +366,33 @@ func (c *Client) writePump() {
 	fmt.Println("write pump running")
 	for {
 		chatPayload := <-c.send
-		fmt.Printf("sneding payload %v to client", chatPayload)
+		fmt.Printf("sneding payload %v to client %v\n", chatPayload, c)
 		c.conn.WriteJSON(chatPayload)
 	}
 }
 
 // ---------------------------------------
-func listeningChat(conn *websocket.Conn, msg WsChatPayload) {
-	// var chatResponse WsChatResponse
-	defer func() {
-		fmt.Println("chat Ws Conn Closed")
-	}()
-	for {
-		if msg.Label == "message" {
-			var pureMsg WsChatPayload
-			json.Unmarshal([]byte(msg.Content), &pureMsg)
-			processMsg(pureMsg)
-			fmt.Printf("payload received: %v\n", msg)
-		}
-	}
-}
+// func listeningChat(conn *websocket.Conn, msg WsChatPayload) {
+// 	// var chatResponse WsChatResponse
+// 	defer func() {
+// 		fmt.Println("chat Ws Conn Closed")
+// 	}()
+// 	for {
+// 		if msg.Label == "message" {
+// 			var pureMsg WsChatPayload
+// 			json.Unmarshal([]byte(msg.Content), &pureMsg)
+// 			processMsg(pureMsg)
+// 			fmt.Printf("payload received: %v\n", msg)
+// 		}
+// 	}
+// }
 
-func processMsg(msg WsChatPayload) {
-	rows, err := db.Prepare("INSERT INTO messages(senderID,receiverID,messageTime,content,seen) VALUES(?,?,?,?,?);")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	rows.Exec(msg.SenderId, msg.ReceiverId, time.Now(), msg.Content, false)
-	fmt.Println("msg saved successfully")
-}
+// func processMsg(msg WsChatPayload) {
+// 	rows, err := db.Prepare("INSERT INTO messages(senderID,receiverID,messageTime,content,seen) VALUES(?,?,?,?,?);")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	defer rows.Close()
+// 	rows.Exec(msg.SenderId, msg.ReceiverId, time.Now(), msg.Content, false)
+// 	fmt.Println("msg saved successfully")
+// }

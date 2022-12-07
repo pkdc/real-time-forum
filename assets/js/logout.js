@@ -35,6 +35,13 @@ const logoutHandler = function() {
 
             // display login and reg
             const navbar = document.querySelector(".navbar")
+            const screen = document.querySelector(".blankScreen")
+            screen.style.height = "100%"
+            let h1= document.createElement("h1")
+            h1.textContent="Welcome to Live Forum"
+            let h2 = document.createElement("h2")
+            h2.textContent= "Please SignIn Or Register By Clicking Any Of The Above Option"
+            screen.append(h1,h2)
             navbar.children[0].style.display = "block"
             navbar.children[1].style.display = "block"
             navbar.children[2].style.display = "none"

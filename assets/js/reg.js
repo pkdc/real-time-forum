@@ -69,12 +69,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 regPopup.style.display = "none";
                 
                 // update user list after a user reg
-                let uListPayloadObj = {};
-                uListPayloadObj["label"] = "login-reg-update";
-                uListPayloadObj["cookie_value"] = resp.cookie.sid;
-                console.log("reg UL sending: ", uListPayloadObj);
-                userListSocket.send(JSON.stringify(uListPayloadObj));
-
+                let uListPayload = {};
+                uListPayload["label"] = "login-reg-update";
+                uListPayload["cookie_value"] = resp.cookie.sid;
+                console.log("reg UL sending: ", uListPayload);
+                userListSocket.send(JSON.stringify(uListPayload));
+            
                 // user is online and avalible to chat
                 let chatPayloadObj = {};
                 chatPayloadObj["label"] = "user-online";

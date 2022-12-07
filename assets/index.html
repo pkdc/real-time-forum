@@ -30,10 +30,17 @@
                 <div class="logout" id="logoutBtn"></div>
             </li>
         </ul>
+      
+        <div class="blankScreen">
+            <h1>Welcome to Live Forum</h1>
+            <h2>Please SignIn Or Register By Clicking Any Of The Above Option</h2> 
+        </div>
     </header>
 
+    
     <!---home--->
     <div class="postPage">
+        <div class= "profile" style="display: none;"></div>
         <!-- popup page -->
         <div id="userPopUpPOne" class="userPopUpP">
             <div class="userPopUpP-content">
@@ -55,7 +62,7 @@
         <div class="hana">Friends contact</div>
         <div class="chatbox">
             <div class="col-1"> 
-                <div class = "msgArea"></div>  
+                <div id="msgArea" class = "msgArea"></div>  
             </div>
             <div class="col-2">
                 <h3> Friend List</h3>
@@ -65,6 +72,7 @@
             </div>
         </div>
     </div>
+
     <!-- end chat -->
     <script type="module" src="../assets/js/index.js"></script>
     <script src="../assets/js/popupform.js"></script>
