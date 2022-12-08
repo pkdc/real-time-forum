@@ -1,7 +1,9 @@
 import userListSocket from "./userList.js";
+import { chatSocket } from "./chat.js";
 // console.log(userListSocket);
 let regSocket = null; 
 const userList = document.querySelector(".user-list");
+const splitScreen = document.querySelector(".container")
 const navbar = document.querySelector(".navbar")
 const displayMsgDiv = document.createElement("div");
 const displayMsg = document.createElement("h2");
@@ -12,10 +14,10 @@ let RNicknameInput = null;
 let RAgeInput = null;
 let REmailInput = null;
 let RpwInput = null;
-let RgenderInputOpt1 = null;
-let RgenderInputOpt2 = null;
-let RgenderInputOpt3 = null;
-let RgenderInputOpt4 = null;
+let GenderOpt1 = null;
+let GenderOpt2 = null;
+let GenderOpt3 = null;
+let GenderOpt4 = null;
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -36,6 +38,12 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (resp.label === "reg") {
             console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
+            navbar.children[0].style.display = "none"
+            navbar.children[1].style.display = "none"
+            navbar.children[2].style.display = "block"
+            const signPage = document.querySelector("#userPopUpPOne")
+            signPage.style.display= "none"
+            splitScreen.style.display= "flex"
             console.log("msg: ", resp.content);
 
             if (resp.pass) {
@@ -51,10 +59,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 RAgeInput.value = "";
                 REmailInput.value = "";
                 RpwInput.value = "";
-                RgenderInputOpt1.checked = 0;
-                RgenderInputOpt2.checked = 0;
-                RgenderInputOpt3.checked = 0;
-                RgenderInputOpt4.checked = 0;
+                 GenderOpt1.checked = 0;
+                 GenderOpt2.checked = 0;
+                 GenderOpt3.checked = 0;
+                 GenderOpt4.checked = 0;
 
                 // close the popup
                 const regPopup = document.querySelector("#userPopUpPTwo");
@@ -66,6 +74,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("reg UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));
+            
+                // user is online and avalible to chat
+                let chatPayloadObj = {};
+                chatPayloadObj["label"] = "user-online";
+                console.log(`reg chat uid: ${resp.cookie.uid}`);
+                chatPayloadObj["sender_id"] = (resp.cookie.uid);
+                console.log("reg chat: ", chatPayloadObj);
+                chatSocket.send(JSON.stringify(chatPayloadObj));
             } else {
                 displayMsgDiv.classList.add("display-msg");
                 displayMsg.id = "reg-msg";
@@ -178,52 +194,74 @@ RpwInput.setAttribute("id", "pw");
 RpwInputDiv.append(RpwInput);
 
 //gender
-const RgenderDiv = document.createElement('div');
-const RgenderOptionDiv = document.createElement('div');
-const RgenderLabel = document.createElement("label");
-RgenderLabel.textContent= "Please choose your gender";
-RgenderLabel.setAttribute("for","gender");
-RgenderDiv.append(RgenderLabel);
-RgenderInputOpt1= document.createElement("input");
-RgenderInputOpt2= document.createElement("input");
-RgenderInputOpt3= document.createElement("input");
-RgenderInputOpt4= document.createElement("input");
-const RgenderLabelOpt1= document.createElement("label");
-const RgenderLabelOpt2= document.createElement("label");
-const RgenderLabelOpt3= document.createElement("label");
-const RgenderLabelOpt4= document.createElement("label");
-RgenderInputOpt1.setAttribute("type","radio");
-RgenderInputOpt2.setAttribute("type","radio");
-RgenderInputOpt3.setAttribute("type","radio");
-RgenderInputOpt4.setAttribute("type","radio");
-RgenderInputOpt1.setAttribute("name","gender_option");
-RgenderInputOpt2.setAttribute("name","gender_option");
-RgenderInputOpt3.setAttribute("name","gender_option");
-RgenderInputOpt4.setAttribute("name","gender_option");
-RgenderInputOpt1.setAttribute("id","male");
-RgenderInputOpt2.setAttribute("id","female");
-RgenderInputOpt3.setAttribute("id","other");
-RgenderInputOpt4.setAttribute("id","prefernot");
-RgenderInputOpt1.setAttribute("value","male");
-RgenderInputOpt2.setAttribute("value","female");
-RgenderInputOpt3.setAttribute("value","other");
-RgenderInputOpt4.setAttribute("value","prefernot");
-RgenderLabelOpt1.setAttribute("for","male");
-RgenderLabelOpt2.setAttribute("for","female");
-RgenderLabelOpt3.setAttribute("for","other");
-RgenderLabelOpt4.setAttribute("for","prefernot");
-RgenderLabelOpt1.textContent= "Male";
-RgenderLabelOpt2.textContent= "Female";
-RgenderLabelOpt3.textContent= "Other";
-RgenderLabelOpt4.textContent= "Prefer not to say";
-RgenderOptionDiv.append(
-    RgenderInputOpt1,RgenderLabelOpt1,
-    RgenderInputOpt2,RgenderLabelOpt2,
-    RgenderInputOpt3,RgenderLabelOpt3,
-    RgenderInputOpt4,RgenderLabelOpt4);
+const RgenderDiv = document.createElement('select');
+RgenderDiv.setAttribute("name", "gender_option")
+GenderOpt1 = document.createElement("option");
+GenderOpt2 = document.createElement("option");
+GenderOpt3 = document.createElement("option");
+GenderOpt4 = document.createElement("option");
+GenderOpt1.setAttribute("name", "gender_option");
+GenderOpt2.setAttribute("name", "gender_option");
+GenderOpt3.setAttribute("name", "gender_option");
+GenderOpt4.setAttribute("name", "gender_option");
+GenderOpt1.setAttribute("value", "Prefer not");
+GenderOpt2.setAttribute("value", "Female");
+GenderOpt3.setAttribute("value", "Male");
+GenderOpt4.setAttribute("value", "Other");
+GenderOpt1.textContent = "Prefer not";
+GenderOpt2.textContent = "Female";
+GenderOpt3.textContent = "Male";
+GenderOpt4.textContent = "Other";
+RgenderDiv.setAttribute("id", "genderOption");
+RgenderDiv.append(GenderOpt1,GenderOpt2,GenderOpt3,GenderOpt4)
 
-RgenderOptionDiv.setAttribute("id", "gender");
+// -----------------------
+// const RgenderDiv = document.createElement('div');
+// const RgenderOptionDiv = document.createElement('div');
+// const RgenderLabel = document.createElement("label");
+// RgenderLabel.textContent= "Please choose your gender";
+// RgenderLabel.setAttribute("for","gender");
+// RgenderDiv.append(RgenderLabel);
+// RgenderInputOpt1= document.createElement("input");
+// RgenderInputOpt2= document.createElement("input");
+// RgenderInputOpt3= document.createElement("input");
+// RgenderInputOpt4= document.createElement("input");
+// const RgenderLabelOpt1= document.createElement("label");
+// const RgenderLabelOpt2= document.createElement("label");
+// const RgenderLabelOpt3= document.createElement("label");
+// const RgenderLabelOpt4= document.createElement("label");
+// RgenderInputOpt1.setAttribute("type","radio");
+// RgenderInputOpt2.setAttribute("type","radio");
+// RgenderInputOpt3.setAttribute("type","radio");
+// RgenderInputOpt4.setAttribute("type","radio");
+// RgenderInputOpt1.setAttribute("name","gender_option");
+// RgenderInputOpt2.setAttribute("name","gender_option");
+// RgenderInputOpt3.setAttribute("name","gender_option");
+// RgenderInputOpt4.setAttribute("name","gender_option");
+// RgenderInputOpt1.setAttribute("id","male");
+// RgenderInputOpt2.setAttribute("id","female");
+// RgenderInputOpt3.setAttribute("id","other");
+// RgenderInputOpt4.setAttribute("id","prefernot");
+// RgenderInputOpt1.setAttribute("value","male");
+// RgenderInputOpt2.setAttribute("value","female");
+// RgenderInputOpt3.setAttribute("value","other");
+// RgenderInputOpt4.setAttribute("value","prefernot");
+// RgenderLabelOpt1.setAttribute("for","male");
+// RgenderLabelOpt2.setAttribute("for","female");
+// RgenderLabelOpt3.setAttribute("for","other");
+// RgenderLabelOpt4.setAttribute("for","prefernot");
+// RgenderLabelOpt1.textContent= "Male";
+// RgenderLabelOpt2.textContent= "Female";
+// RgenderLabelOpt3.textContent= "Other";
+// RgenderLabelOpt4.textContent= "Prefer not to say";
+// RgenderOptionDiv.append(
+//     RgenderInputOpt1,RgenderLabelOpt1,
+//     RgenderInputOpt2,RgenderLabelOpt2,
+//     RgenderInputOpt3,RgenderLabelOpt3,
+//     RgenderInputOpt4,RgenderLabelOpt4);
 
+// RgenderOptionDiv.setAttribute("id", "gender");
+//----------------------
 const regSubmitDiv = document.createElement('div');
 const regSubmit = document.createElement("button");
 regSubmit.textContent = "Register";
@@ -245,6 +283,5 @@ RegisterForm.append(
     RpwLabelDiv,
     RpwInputDiv,
     RgenderDiv,
-    RgenderOptionDiv,
     regSubmitDiv);
 export default RegisterForm;

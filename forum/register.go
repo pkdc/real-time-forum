@@ -30,14 +30,14 @@ type WsRegisterPayload struct {
 }
 
 type User struct {
-	UserId    int
-	Nickname  string
-	Age       int
-	Gender    string
-	FirstName string
-	LastName  string
-	Email     string
-	LoggedIn  bool
+	UserId    int `json:"userID"`
+	Nickname  string `json:"nickname"`
+	Age       int `json:"age"`
+	Gender    string `json:"gender"`
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Email     string `json:"email"`
+	LoggedIn  bool 
 }
 
 var (

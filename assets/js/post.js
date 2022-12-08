@@ -1,5 +1,6 @@
 let postSocket = null;
 const body = document.getElementsByTagName("BODY")[0]
+const DisplayPost = document.createElement("div")
 var commentPostId 
 let jsonFile
 document.addEventListener("DOMContentLoaded", function () {
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 function createPost(arr) {
+  
     document.querySelectorAll("#allPost").forEach(e => {
         e.remove();
     });
@@ -53,11 +55,9 @@ function createPost(arr) {
         titleButton.setAttribute("value", i)
         titleButton.setAttribute("type", "submit")
         titleButton.addEventListener("click", function (e) {
-            console.log("lastjsonfile", jsonFile)
-            let valu = e.explicitOriginalTarget.value
             const comment = document.querySelector(".comment")
             comment.style.height = "%100"
-            let chosenPost = document.querySelector(`#post-${valu}`)
+            let chosenPost = document.querySelector(`#post-${titleButton.value}`)
             console.log("post is choosen")
             let clone = chosenPost.cloneNode(true)
             const closeComments = document.createElement("button")
@@ -71,7 +71,7 @@ function createPost(arr) {
             })
             console.log("functions working***")
             let comments = CreateComments(jsonFile, i)
-            let comForm = CreateCommentForm(valu)
+            let comForm = CreateCommentForm(titleButton.value)
             comment.append(clone, comments, comForm, closeComments)
             comment.style.height = "100%";
         })
@@ -91,7 +91,6 @@ function createPost(arr) {
         // titleText.style.fontWeight= "900"
         const contentText = document.createElement("p")
         const categoryText = document.createElement("p")
-        categoryText.style.backgroundColor = "grey"
         categoryText.style.width = "10%"
         const userIdText = document.createElement("p")
         // const titletextNode = document.createTextNode(arr[i].postinfo.title) 
@@ -111,11 +110,12 @@ function createPost(arr) {
         postDiv.append(titleForm, contentDiv, categoryDiv, userIdDiv)
         allPost.append(postDiv)
     }
-    body.appendChild(allPost)
+    DisplayPost.appendChild(allPost)
 }
 const PostHandler = function (e) {
     e.preventDefault();
     const formFields = new FormData(e.target);
+    console.log("form entries", formFields.entries())
     const payloadObj = Object.fromEntries(formFields.entries());
     payloadObj["label"] = "post";
     console.log("checking target", payloadObj)
@@ -139,23 +139,16 @@ titleInput.setAttribute("id", "title");
 titleInputDiv.append(titleInput);
 //-------------------
 const CatDiv = document.createElement('div');
-const CatOptionDiv = document.createElement('div');
+const CatOptionDiv = document.createElement('select');
+CatOptionDiv.setAttribute("name", "category_option")
 const CatLabel = document.createElement("label");
 CatLabel.textContent = "Please choose category";
 CatLabel.setAttribute("for", "cat");
 CatDiv.append(CatLabel);
-const CatInputOpt1 = document.createElement("input");
-const CatInputOpt2 = document.createElement("input");
-const CatInputOpt3 = document.createElement("input");
-const CatInputOpt4 = document.createElement("input");
-const CatLabelOpt1 = document.createElement("label");
-const CatLabelOpt2 = document.createElement("label");
-const CatLabelOpt3 = document.createElement("label");
-const CatLabelOpt4 = document.createElement("label");
-CatInputOpt1.setAttribute("type", "radio");
-CatInputOpt2.setAttribute("type", "radio");
-CatInputOpt3.setAttribute("type", "radio");
-CatInputOpt4.setAttribute("type", "radio");
+const CatInputOpt1 = document.createElement("option");
+const CatInputOpt2 = document.createElement("option");
+const CatInputOpt3 = document.createElement("option");
+const CatInputOpt4 = document.createElement("option");
 CatInputOpt1.setAttribute("name", "category_option");
 CatInputOpt2.setAttribute("name", "category_option");
 CatInputOpt3.setAttribute("name", "category_option");
@@ -164,43 +157,21 @@ CatInputOpt1.setAttribute("id", "1");
 CatInputOpt2.setAttribute("id", "2");
 CatInputOpt3.setAttribute("id", "3");
 CatInputOpt4.setAttribute("id", "4");
-CatInputOpt1.setAttribute("value", "1");
-CatInputOpt2.setAttribute("value", "2");
-CatInputOpt3.setAttribute("value", "3");
-CatInputOpt4.setAttribute("value", "4");
-CatLabelOpt1.setAttribute("for", "1");
-CatLabelOpt2.setAttribute("for", "2");
-CatLabelOpt3.setAttribute("for", "3");
-CatLabelOpt4.setAttribute("for", "4");
-CatLabelOpt1.textContent = "1";
-CatLabelOpt2.textContent = "2";
-CatLabelOpt3.textContent = "3";
-CatLabelOpt4.textContent = "4";
-
-const CatOpt1Div = document.createElement("div");
-CatOpt1Div.id = "cat-div-1";
-const CatOpt2Div = document.createElement("div");
-CatOpt1Div.id = "cat-div-2";
-const CatOpt3Div = document.createElement("div");
-CatOpt1Div.id = "cat-div-3";
-const CatOpt4Div = document.createElement("div");
-CatOpt1Div.id = "cat-div-4";
-
-CatOpt1Div.append(CatInputOpt1, CatLabelOpt1);
-CatOpt2Div.append(CatInputOpt2, CatLabelOpt2);
-CatOpt3Div.append(CatInputOpt3, CatLabelOpt3);
-CatOpt4Div.append(CatInputOpt4, CatLabelOpt4);
-CatOptionDiv.append(CatOpt1Div, CatOpt2Div, CatOpt3Div, CatOpt4Div);
-
+CatInputOpt1.setAttribute("value", "Anthony");
+CatInputOpt2.setAttribute("value", "Burak");
+CatInputOpt3.setAttribute("value", "David");
+CatInputOpt4.setAttribute("value", "Godfrey");
+CatInputOpt1.textContent = "Anthony";
+CatInputOpt2.textContent = "Burak";
+CatInputOpt3.textContent = "David";
+CatInputOpt4.textContent = "Godfrey";
 CatOptionDiv.setAttribute("id", "category");
-//=-----------------------
-// pw label
+CatOptionDiv.append(CatInputOpt1,CatInputOpt2,CatInputOpt3,CatInputOpt4)
 const contLabelDiv = document.createElement('div');
 const contLabel = document.createElement('label');
 contLabel.textContent = "content:";
 contLabel.setAttribute("for", "content");
 contLabelDiv.append(contLabel);
-// password input
 const contInputDiv = document.createElement('div');
 const contInput = document.createElement('input');
 contInput.setAttribute("type", "text");
@@ -236,9 +207,7 @@ const commentHandler = function (e) {
 function CreateCommentForm(value) {
     const commentForm = document.createElement("form")
     commentForm.setAttribute("target", "_self")
-    console.log("this is before using handler")
     commentForm.addEventListener("submit", commentHandler);
-    console.log("this is after using handler")
     const commentLabelDiv = document.createElement('div');
     const commentLabel = document.createElement('label');
     commentLabel.textContent = "create a comment:";
@@ -315,4 +284,5 @@ function CreateComments(arr, value) {
 }
 
 // }
-export default PostForm;
+export default {PostForm,DisplayPost};
+
