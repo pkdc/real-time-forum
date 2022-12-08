@@ -145,7 +145,7 @@ func (h *hub) Run() {
 		rm := newRoom(roomReq.roomName, roomReq)
 		fmt.Printf("created room name: %v\n", roomReq.roomName)
 		go rm.run()
-		fmt.Printf("still fine\n")
+		// fmt.Printf("still fine\n")
 		fmt.Printf(" hub: %v\n", h)
 		fmt.Printf("new room in hub (before): %v\n", h.rooms[rm.roomName]) // deref ptr error
 		h.rooms[roomReq.roomName] = rm
@@ -196,9 +196,11 @@ func (r *Room) run() {
 		var chatRoomResponse WsChatPayload
 		select {
 		case chatRoomResponse = <-r.intoRoom:
-			fmt.Printf("in room chatRoomResponse: %v", chatRoomResponse)
+			fmt.Printf("in room chatRoomResponse: %v\n", chatRoomResponse)
 			// send to both clients when room receives msg
+			fmt.Printf("sending chatRoomResponse %v to client: %v thru conn A %v\n", chatRoomResponse, r.clientA, r.clientA.conn)
 			r.clientA.send <- chatRoomResponse
+			fmt.Printf("sending chatRoomResponse %v to client: %v thru conn B %v\n", chatRoomResponse, r.clientB, r.clientB.conn)
 			r.clientB.send <- chatRoomResponse
 		}
 	}
@@ -365,9 +367,9 @@ func (c *Client) writePump() {
 	}()
 	fmt.Println("write pump running")
 	for {
-		chatPayload := <-c.send
-		fmt.Printf("sneding payload %v to client %v\n", chatPayload, c)
-		c.conn.WriteJSON(chatPayload)
+		chatResponse := <-c.send
+		fmt.Printf("sneding payload %v to client %v\n", chatResponse, c)
+		c.conn.WriteJSON(chatResponse)
 	}
 }
 
