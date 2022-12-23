@@ -13,6 +13,8 @@ chatInputDiv.id = "chat-input-div";
 const chatInput = document.createElement("input");
 chatInputDiv.append(chatInput);
 
+let typingDotsArr, typingLeftDots, typingRightDots;
+
 // const sendBtn = document.createElement("button");
 // sendBtn.textContent = "Send";
 // sendBtn.id = "send-btn";
@@ -54,7 +56,22 @@ document.addEventListener("DOMContentLoaded", function (e) {
             // typingDiv.style.opacity = 1;
             // setTimeout(() => typingDiv.style.opacity = 0, 5000);
             typingDiv.classList.add("show");
-            setTimeout(() => typingDiv.classList.remove("show"), 5000);
+            typingDotsArr = [...document.querySelectorAll(".typing-dots")];
+            typingLeftDots = document.querySelector(".typing-left-dots");
+            typingRightDots = document.querySelector(".typing-right-dots");
+
+            const animationID = requestAnimationFrame(animateDots);
+            setTimeout(() => {
+                typingDiv.classList.remove("show");
+                cancelAnimationFrame(animationID);
+            }, 5000);
         }
     }
 })
+
+const animateDots = function() {
+    
+    // typingLeftDots.style.left += 1;
+    // typingRightDots.style.right += 1;
+    requestAnimationFrame(animateDots);
+}

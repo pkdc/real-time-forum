@@ -186,10 +186,18 @@ document.addEventListener("DOMContentLoaded", function (e) {
 
                 const typingDiv = document.createElement("div");
                 const typingText = document.createElement("p");
+                const typingLeftDots = document.createElement("p");
+                typingLeftDots.classList.add("typing-dots");
+                typingLeftDots.classList.add("typing-left-dots");
+                const typingRightDots = document.createElement("p");
+                typingRightDots.classList.add("typing-dots");
+                typingRightDots.classList.add("typing-right-dots");
                 typingDiv.classList.add("typing-div");
                 typingText.classList.add("typing-text");
-                typingDiv.append(typingText);
-
+                typingLeftDots.textContent = "✉";
+                typingRightDots.textContent = "✉";
+                typingDiv.append(typingLeftDots, typingText, typingRightDots);
+                
                 chatBox.append(chatFormDiv, typingDiv);
 
                 chatInput.addEventListener("input", function(e) {
