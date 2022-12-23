@@ -30,7 +30,19 @@ type WsLoginPayload struct {
 	// Conn          *websocket.Conn `json:"-"`
 }
 
-var hashDB []byte
+var pwHashDB []byte
+
+func loginFailed(conn *websocket.Conn) {
+	// login failed
+	fmt.Println("Login Failed")
+	var failedResponse WsLoginResponse
+	failedResponse.Label = "login"
+	failedResponse.Content = "Please check your credentials"
+	failedResponse.Pass = false
+	conn.WriteJSON(failedResponse)
+	return
+	// return false
+}
 
 func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -90,6 +102,7 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 	// // get user data from db
 	var logge bool
 	var logUser User
+	var not string
 	// auth user
 	fmt.Printf("%s trying to Login\n", loginPayload.NicknameEmail)
 	rows, err := db.Query(`SELECT *
@@ -101,29 +114,27 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		rows.Scan(&logUser.UserId, &logUser.Nickname, &logUser.Age, &logUser.Gender, &logUser.FirstName, &logUser.LastName, &logUser.Email, &hashDB, &logge)
+		rows.Scan(&logUser.UserId, &logUser.Nickname, &logUser.Age, &logUser.Gender, &logUser.FirstName, &logUser.LastName, &logUser.Email, &pwHashDB, &logge, &not) // bug in db not is before logge?
 	}
-	fmt.Println(logUser)
+	if logUser.UserId == 0 {
+		loginFailed(conn)
+		return
+	}
+	findCurUser(logUser.UserId)
+
 	// // test hash
 	// hash, err := bcrypt.GenerateFromPassword([]byte(pw), 10)
 	// fmt.Printf("nicknameEmailDB: %s , hashDB: %s\n", nicknameEmailDB, hashDB)
 
 	// // compare pw
-	err = bcrypt.CompareHashAndPassword(hashDB, []byte(loginPayload.Password))
+	err = bcrypt.CompareHashAndPassword(pwHashDB, []byte(loginPayload.Password))
 	// fmt.Printf("DB pw: %s, entered: %s\n", hashDB, loginPayload.password)
 	// fmt.Printf("DB pw: %s, entered: %s\n", hashDB, hash)
 
 	// Login failed
 	if err != nil {
-		// login failed
-		fmt.Println("Failed")
-		var failedResponse WsLoginResponse
-		failedResponse.Label = "login"
-		failedResponse.Content = "Please check your credentials"
-		failedResponse.Pass = false
-		conn.WriteJSON(failedResponse)
-		return // v important
-		// return false
+		loginFailed(conn)
+		return
 	} else {
 		// Login successfully
 		fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)

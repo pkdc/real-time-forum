@@ -1,35 +1,46 @@
 .container {
-    top: 0px;
-    right: 0vh;
+    right: 0vw;
     z-index: -0;
-    width: 50%;
-    height: 96vh;
+    width: 47%;
+    height: 84vh;
     float: right;
-    display: none;
+    opacity: 0;
     color: #fff;
-    position: sticky;
+    margin-top: 1%;
+    position: initial;
+    margin-right: 0.3%;
+    border-radius: 15px;
     align-items: center;
     flex-direction: column;
-    justify-content: center;
-    background-image: linear-gradient(to right, #1c00f2, #453f96);
-    /* overflow: hidden; */
+    background-image: linear-gradient(to right, #29292b, #453f96);
+    overflow: hidden;
 }
 
-.hana {
-    /* text-align:justify */
-    margin-top: 0;
-    padding-bottom: 5%;
+.container h1 {
+    font-size: 220%;
+    text-align: center;
+    background-clip: text;
+    margin-block-start: 1%;
+    color: rgb(8, 10, 9);
+    text-shadow: rgba(255, 255, 255, 0.9) 0px 3px 3px;
+}
+
+.friendListArea {
+    margin: 5%;
+    padding-bottom: 1px;
     text-align: justify;
     align-items: center;
+    position: relative;
 }
 
 /* this is the parent box for the chat & freind list */
 .chatbox {
-    width: 60%;
+    width: 90%;
     display: flex;
     min-width: 250px;
+    align-self: center;
+    border-radius: 15px;
     background: #b7babf;
-    /* overflow: hidden; */
 }
 
 
@@ -37,52 +48,43 @@
 .col-1 {
     flex: 1;
     display: none;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
     background: #66d1d8;
-    /* overflow-y: scroll; */
 }
 
 
 
 .msgArea {
     border: none;
-    padding: 5px;
-    width: 300px;
+    /* padding: 5px; */
+    width: auto;
     height: auto;
     min-height: 50px;
-    max-height: 600px;
+    /* max-height: 600px; */
+    max-height: 300px;
     overflow: scroll;
     /* font: 24px/36px sans-serif; */
+
+    margin-top: 2%;
+    color: white;
+    min-height: 10%;
+    /* max-width: 100%; */
+    padding-top: 5%;
+    padding-left: 3%;
+    /* overflow: scroll; */
+    padding-right: 3%;
+    /* max-height: 340px; */
+    padding-bottom: 5%;
+    border-radius: 15px;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
 }
-
-/* width */
-/* .msgArea::-webkit-scrollbar {
-    width: 20px;
-} */
-
-/* Handle 
-.msgArea::-webkit-scrollbar-thumb {
-    background: yellowgreen;
-}
-
-Track
-.msgArea::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 10px;
-}
-
-.msgArea::-webkit-resizer {
-    background: rgb(134, 112, 216);
-}
-
-Handle on hover
-.msgArea::-webkit-scrollbar-thumb:hover {
-    background: #b30000;
-} */
-
 
 
 .msg-row {
-    display: flex;
+    /* display: flex; */
+    display: grid;
     justify-content: flex-start;
     /* margin: 40px;  */
 
@@ -93,14 +95,18 @@ Handle on hover
     font-weight: 300;
     border-radius: 8px;
     padding: 20px, 40px;
+    word-wrap: break-word;
     background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
 }
+
 
 .msg-text h2 {
     font-size: 22px;
     font-weight: 400;
     margin-bottom: 10px;
 }
+
 
 .msg-img {
     width: 60px;
@@ -111,36 +117,66 @@ Handle on hover
 
 /* is the actual row of the user sent text */
 .msg-row2 {
-    display: flex;
+    /* display: flex; */
+    display: grid;
     justify-content: flex-end;
 }
 
 /* wright you mesage here */
-.col-1 input {
+/* .col-1 input { */
+.chatInput {
     border: 0;
-    width: 100%;
+    width: 95%;
     outline: none;
     color: #fff;
     font-size: 12px;
     font-weight: 300;
+    margin-left: 9px;
     padding: 20px 40px;
     background: #d80606;
+}
+
+button.submitMsg {
+    margin-left: 20%;
 }
 
 ::placeholder {
     color: rgb(95, 125, 167);
 }
 
+.closeChat {
+    position: relative;
+    left: 70%;
+    top: 92px;
+}
+
 /* ----------------------------------------------------------Friend List------------------------------- */
 .col-2 {
-    flex-basis: 250px;
-    background: #79b333;
+    /* flex-basis: 250px; */
+    /* background: #79b333; */
+    border: none;
+    width: auto;
+    height: auto;
+    min-height: 50px;
+    max-height: 300px;
+    /* overflow: scroll; */
+    margin-top: 2%;
+    color: white;
+    min-height: 10%;
+    padding-top: 5%;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 5%;
+    border-radius: 15px;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
 }
 
 .col-2 h3 {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 0px;
     font-weight: 400;
+    color: #838287;
 }
 
 .col-2 ul {
@@ -148,7 +184,19 @@ Handle on hover
     padding: 30px;
 }
 
+.user-list {
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    min-height: 10px;
+    max-height: 90px;
+    overflow: scroll;
+    display: grid;
+    background-color: orange;
+}
+
 .col-2 ul li {
+    display: inline-flex;
     list-style: none;
     padding: 5px;
 }
@@ -169,10 +217,15 @@ Handle on hover
     border-radius: 50%;
     margin-right: 10px;
     display: inline-block;
+    padding: 4px;
 }
 
 .col-2 ul li.online::before {
     background: greenyellow;
+}
+
+.nameButtons.notif {
+    background: red;
 }
 
 .col-2 ul li.offline::before {

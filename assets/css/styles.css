@@ -8,11 +8,16 @@
     /* overflow-y: hidden; */
 }
 
+html {
+    height: 100vh;
+    width: 100%;
+}
+
 body {
     /*THIS CSS SECTION IS FOR THE BODY OF THE MAIN PAGE*/
     flex-direction: column;
-    height: 100%;
-    /* overflow: hidden; */
+    height: 100vh;
+    overflow: hidden;
     background-color: rgb(250, 234, 214);
     /* For browsers that don't support gradients*/
     background: grey;
@@ -28,7 +33,7 @@ body {
 
 .blankScreen {
     z-index: 5;
-    height: 100%;
+    height: 90vh;
     width: 100%;
     position: absolute;
     -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
@@ -36,39 +41,51 @@ body {
 }
 
 .blankScreen {
-    background: rgb(111, 110, 110);
+
+    background-color: rgb(111, 110, 110);
+    background-image: url("/assets/images/PnyGaloping.gif");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: color-burn;
     transition: background 0.3s ease-out;
 }
 
 .blankScreen:hover {
     background: rgb(25, 25, 25);
+    background-image: url("/assets/images/Constalation2.gif");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: color-burn;
 }
 
-h1 {
+.blankScreen h1 {
     font-size: 450%;
     text-align: center;
     background-clip: text;
-    margin-block-start: 18%;
+    margin-block-start: 2%;
     color: rgb(21, 183, 75);
     text-shadow: rgba(255, 255, 255, 0.9) 0px 3px 3px;
-    /* margin-block-end: 1em; */
-    /* font-weight: bold; */
 }
 
-h2 {
+.chating-animation {
     display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* background-blend-mode: lighten; */
+}
+
+.blankScreen h2 {
     font-size: 117%;
-    padding-top: 15%;
-    font-weight: bold;
+    padding-top: 0%;
     text-align: center;
-    /* text-decoration-color: rgb(131, 188, 23); */
 }
 
 
 .navbar {
     margin: 0;
-    padding: 0;
-    padding: 20px;
+    /* padding: 0; */
+    height: 10vh;
+    /* padding: 20px; */
     overflow: hidden;
     list-style-type: none;
     background-color: #333;
@@ -92,20 +109,6 @@ li a:hover:not(.active) {
     transition: 0.7s;
     border-radius: 20%;
     background-color: #fff;
-    /*  margin-top: 30%;
-    transition-property: inherit;*/
-}
-
-/* THIS FILD IS NOT READY FOR USE YET */
-.comment {
-    top: 0;
-    left: 0;
-    z-index: 1;
-    height: 0%;
-    width: 100%;
-    transition: 0.5s;
-    overflow-y: hidden;
-    background-color: rgb(140, 9, 24);
 }
 
 #membershipButton {
@@ -125,9 +128,6 @@ li a:hover:not(.active) {
     padding-left: 9vh;
     filter: drop-shadow(18px +8px 15px #454442);
     background: linear-gradient(30deg, rgba(221, 216, 197, 1) 0%, rgba(201, 117, 49, 1) 38%, rgba(241, 241, 234, .1) 100%);
-    /* border-radius: 20px
-    border-style: dotted;
-    background: rgb(129, 119, 80); */
 }
 
 .curentPostTitle {
@@ -151,36 +151,7 @@ li a:hover:not(.active) {
     margin-bottom: 0;
 }
 
-.postPage {
-    width: 50%;
-    float: left;
-    height: 100%;
-    max-width: 50%;
-    padding-left: 2%;
-    overflow: hidden;
-    padding-right: 2%;
-    overflow-y: hidden;
-    /* top: 76px;
-    right: 0vh;
-    z-index: 1;
-    color: #fff;
-    display: flex;
-    position: sticky;
-    flex-direction:column;
-    background-image: linear-gradient(to right, #1c00f2, #453f96); */
-}
 
-#allPost {
-    max-width: 50%;
-    padding-left: 2%;
-    padding-right: 2%;
-}
-
-#category {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
 
 #category>div {
     margin: 5px;
@@ -202,8 +173,6 @@ li a:hover:not(.active) {
     padding-left: 0.5%;
     border-style: solid;
     background-color: rgb(209, 207, 207);
-    /* margin-bottom: 12px; */
-    /* text-align: center; */
 }
 
 /* .PostCategory>p {
@@ -225,15 +194,27 @@ li a:hover:not(.active) {
     display: none;
     overflow: auto;
     position: fixed;
+    align-items: center;
     background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.4);
 }
 
 .userPopUpP-content {
+     /* this is for the Register PopUp Form */
     width: 60%;
     margin: 50px auto;
     border: #a99567;
     border: 1px solid #999;
+}
+
+.formPage {
+    /* this is for both Sign In/Register PopUp Forms */
+    margin: 25px;
+    padding: 25px;
+    display: block;
+    background: #eee;
+    box-shadow: 0 2px 5px #f5f5f5;
+    /* float: left */
 }
 
 h2,
@@ -247,14 +228,6 @@ span {
     color: #666;
     display: block;
     padding: 0 0 5px;
-}
-
-.formPage {
-    margin: 25px;
-    padding: 25px;
-    background: #eee;
-    box-shadow: 0 2px 5px #f5f5f5;
-    /* float: left */
 }
 
 input,
@@ -319,8 +292,3 @@ button.button:hover {
 
 
 /* --------------- */
-
-.user-list {
-    height: 30px;
-    display: block;
-}

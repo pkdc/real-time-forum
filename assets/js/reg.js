@@ -1,7 +1,8 @@
 import userListSocket from "./userList.js";
 import { chatSocket } from "./chat.js";
+import { createProfile, updateChat } from "./login.js";
 // console.log(userListSocket);
-let regSocket = null; 
+let regSocket = null;
 const userList = document.querySelector(".user-list");
 const splitScreen = document.querySelector(".container")
 const navbar = document.querySelector(".navbar")
@@ -20,33 +21,49 @@ let GenderOpt3 = null;
 let GenderOpt4 = null;
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     regSocket = new WebSocket("ws://localhost:8080/regWs/");
     console.log("JS attempt to connect to reg");
     regSocket.onopen = () => console.log("connected-reg");
     regSocket.onclose = () => console.log("Bye-reg");
-    regSocket.onerror = (err) => console.log("Error!-reg",err);
+    regSocket.onerror = (err) => console.log("Error!-reg", err);
     regSocket.onmessage = (msg) => {
         const resp = JSON.parse(msg.data);
-        console.log({resp});
 
         if (resp.label === "Greet") {
-            console.log(resp.content);
             navbar.children[0].style.display = "block"
             navbar.children[1].style.display = "block"
             navbar.children[2].style.display = "none"
         } else if (resp.label === "reg") {
-            console.log("uid: ",resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
+            console.log("uid: ", resp.cookie.uid, "sid: ", resp.cookie.sid, "age: ", resp.cookie.max_age);
             document.cookie = `session=${resp.cookie.sid}; max-age=${resp.cookie.max_age}`;
+
             navbar.children[0].style.display = "none"
             navbar.children[1].style.display = "none"
             navbar.children[2].style.display = "block"
+            document.querySelector(".postPage").style.opacity = 1
+            document.querySelector(".container").style.opacity = 1
             const signPage = document.querySelector("#userPopUpPOne")
-            signPage.style.display= "none"
-            splitScreen.style.display= "flex"
-            console.log("msg: ", resp.content);
-
+            signPage.style.display = "none"
+            splitScreen.style.display = "flex"
             if (resp.pass) {
+                //create profile
+                let user = JSON.parse(resp.content)
+                const profile = document.querySelector(".profile")
+                const screen = document.querySelector(".blankScreen")
+                createProfile("p", user.userID, "id")
+                updateChat()
+                createProfile("p", user.nickname, "nickname")
+                createProfile("p", user.age, "age")
+                createProfile("p", user.gender, "gender")
+                createProfile("p", user.firstname, "name")
+                createProfile("p", user.lastname, "lastname")
+                createProfile("p", user.email, "email")
+                profile.style.display = "block"
+                screen.style.height = 0
+                while (screen.firstChild) {
+                    screen.removeChild(screen.firstChild)
+                }
                 // hide the login and reg btn, show the logout btn
                 navbar.children[0].style.display = "none"
                 navbar.children[1].style.display = "none"
@@ -59,22 +76,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 RAgeInput.value = "";
                 REmailInput.value = "";
                 RpwInput.value = "";
-                 GenderOpt1.checked = 0;
-                 GenderOpt2.checked = 0;
-                 GenderOpt3.checked = 0;
-                 GenderOpt4.checked = 0;
+                GenderOpt1.checked = 0;
+                GenderOpt2.checked = 0;
+                GenderOpt3.checked = 0;
+                GenderOpt4.checked = 0;
 
                 // close the popup
                 const regPopup = document.querySelector("#userPopUpPTwo");
                 regPopup.style.display = "none";
-                
+
                 // update user list after a user reg
                 let uListPayload = {};
                 uListPayload["label"] = "login-reg-update";
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("reg UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));
-            
+
                 // user is online and avalible to chat
                 let chatPayloadObj = {};
                 chatPayloadObj["label"] = "user-online";
@@ -92,12 +109,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-const regHandler = function(e) {
+const regHandler = function (e) {
     e.preventDefault();
     const formFields = new FormData(e.target);
     const payloadObj = Object.fromEntries(formFields.entries());
     payloadObj["label"] = "reg";
-    console.log({payloadObj});
     regSocket.send(JSON.stringify(payloadObj));
 
     displayMsg.textContent = "";
@@ -213,7 +229,7 @@ GenderOpt2.textContent = "Female";
 GenderOpt3.textContent = "Male";
 GenderOpt4.textContent = "Other";
 RgenderDiv.setAttribute("id", "genderOption");
-RgenderDiv.append(GenderOpt1,GenderOpt2,GenderOpt3,GenderOpt4)
+RgenderDiv.append(GenderOpt1, GenderOpt2, GenderOpt3, GenderOpt4)
 
 // -----------------------
 // const RgenderDiv = document.createElement('div');

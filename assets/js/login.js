@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const resp = JSON.parse(msg.data);
         const screen = document.querySelector(".blankScreen")
         if (resp.label === "greet") {
-            console.log(resp.content);
             navbar.children[0].style.display = "block"
             navbar.children[1].style.display = "block"
             navbar.children[2].style.display = "none"
@@ -31,16 +30,23 @@ document.addEventListener("DOMContentLoaded", function () {
             // update user list after a user login
 
             if (resp.pass) {
-                let user = JSON.parse(resp.content) 
-                createProfile("p",user.userID, "id")
-                createProfile("p",user.nickname, "nickname")
-                createProfile("p",user.age, "age")
-                createProfile("p",user.gender, "gender")
-                createProfile("p",user.firstname, "firstname")
-                createProfile("p",user.lastname, "lastname")
-                createProfile("p",user.email, "email")
+                let user = JSON.parse(resp.content)
+                createProfile("p", user.userID, "id")
+                updateChat()
+                createProfile("p", user.nickname, "nickname")
+                createProfile("p", user.age, "age")
+                createProfile("p", user.gender, "gender")
+                createProfile("p", user.firstname, "firstname")
+                createProfile("p", user.lastname, "lastname")
+                createProfile("p", user.email, "email")
                 profile.style.display = "block"
-                console.log(user)
+
+                // ------------------------------------------------------------------------------------------------
+                //this is the only place where i made changes and in logout.js
+                document.querySelector(".postPage").style.opacity = 1
+                document.querySelector(".container").style.opacity = 1
+                // ------------------------------------------------------------------------------------------------
+
                 const splitScreen = document.querySelector(".container")
                 const signPage = document.querySelector("#userPopUpPOne")
                 signPage.style.display = "none"
@@ -68,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 uListPayload["cookie_value"] = resp.cookie.sid;
                 console.log("login UL sending: ", uListPayload);
                 userListSocket.send(JSON.stringify(uListPayload));
-            
+
                 // user is online and avalible to chat
                 let chatPayloadObj = {};
                 chatPayloadObj["label"] = "user-online";
@@ -93,14 +99,19 @@ const loginHandler = function (e) {
     const formFields = new FormData(e.target);
     const payloadObj = Object.fromEntries(formFields.entries());
     payloadObj["label"] = "login";
-    console.log({ payloadObj });
     loginSocket.send(JSON.stringify(payloadObj));
-
     displayMsg.textContent = "";
 };
 
+export const updateChat = function () {
+    let userID = document.querySelector(".Profileid")
+    let chatpayloadObj = {}
+    chatpayloadObj["label"] = "updateChat";
+    chatpayloadObj["sender_id"] = parseInt(userID.textContent)
+    chatSocket.send(JSON.stringify(chatpayloadObj));
+};
 
-const loginForm = document.createElement("form");
+export const loginForm = document.createElement("form");
 loginForm.className = "formPage"
 loginForm.addEventListener("submit", loginHandler);
 
@@ -141,10 +152,13 @@ loginSubmit.setAttribute("type", "submit");
 loginSubmitDiv.append(loginSubmit);
 
 loginForm.append(displayMsgDiv, nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
-function createProfile(type, userAttr,str){
+export function createProfile(type, userAttr, str) {
+    let desc = document.createElement("p")
+    desc.textContent= str + ": " 
     let newelement = document.createElement(type)
-    newelement.textContent= userAttr
-    newelement.classList ="Profile"+ str
-    profile.append(newelement)
+    newelement.textContent = userAttr
+    newelement.classList = "Profile" + str
+    desc.append(newelement)
+    profile.append(desc)
 }
-export default loginForm;
+// export default {loginForm,updateChat, createProfile};

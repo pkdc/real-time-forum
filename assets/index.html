@@ -5,10 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="text/css" rel="stylesheet" href="../assets/css/styles.css">
-    <title>Document</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link type="text/css" rel="stylesheet" href="../assets/css/styles.css">
     <link type="text/css" rel="stylesheet" href="../assets/css/livemessage.css">
+    <link type="text/css" rel="stylesheet" href="../assets/css/h-Tags.css">
+    <link type="text/css" rel="stylesheet" href="../assets/css/forum.css">
+
+    <title>Document</title>
+
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
@@ -30,17 +35,13 @@
                 <div class="logout" id="logoutBtn"></div>
             </li>
         </ul>
-      
+
         <div class="blankScreen">
             <h1>Welcome to Live Forum</h1>
-            <h2>Please SignIn Or Register By Clicking Any Of The Above Option</h2> 
+            <img class="chating-animation" src="../assets/images/chating-animation.gif" alt="" />
+            <h2>Please SignIn Or Register By Clicking Any Of The Above Option</h2>
         </div>
-    </header>
 
-    
-    <!---home--->
-    <div class="postPage">
-        <div class= "profile" style="display: none;"></div>
         <!-- popup page -->
         <div id="userPopUpPOne" class="userPopUpP">
             <div class="userPopUpP-content">
@@ -53,26 +54,32 @@
             </div>
         </div>
         <!-- end popup page -->
+    </header>
+
+    <!-- <div class="fullWindow"> -->
+    <!---home--->
+    <div class="postPage">
+        <div class="profile"></div>
         <div class="comment"></div>
-  
+
     </div>
 
     <!-- this section is for the live chat ariea -->
     <div class="container">
-        <div class="hana">Friends contact</div>
+        <div class="friendListArea">Friends contact</div>
         <div class="chatbox">
-            <div class="col-1"> 
-                <div id="msgArea" class = "msgArea"></div>  
+            <div class="col-1">
+                <div id="msgArea" class="msgArea"></div>
             </div>
             <div class="col-2">
                 <h3> Friend List</h3>
-                <ul>
+                <div class="userListDiv">
                     <ul class="user-list"></ul>
-                </ul>
+                </div>
             </div>
         </div>
     </div>
-
+    <!-- </div> -->
     <!-- end chat -->
     <script type="module" src="../assets/js/index.js"></script>
     <script src="../assets/js/popupform.js"></script>

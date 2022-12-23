@@ -1,6 +1,6 @@
 // import chatForm from "./chat.js";
 import RegisterForm from "./reg.js";
-import loginForm from "./login.js";
+import { loginForm } from "./login.js";
 import Post from "./post.js";
 import logoutBtn from "./logout.js";
 import { chatForm } from "./chat.js";

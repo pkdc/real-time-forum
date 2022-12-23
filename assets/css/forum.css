@@ -1,0 +1,381 @@
+/* the main left section */
+.postPage {
+    opacity: 0;
+    width: 47%;
+    float: left;
+    height: 84vh;
+    max-width: 47%;
+    margin-top: 1%;
+    overflow: hidden;
+    margin-left: 0.3%;
+    padding-left: 0.3%;
+    padding-right: 0.3%;
+    border-radius: 15px;
+    flex-direction: column;
+    /* background-color: greenyellow; */
+    /* overflow-y: hidden; */
+}
+
+/* the section left section named profile */
+.profile {
+    padding: 2%;
+    height: 120vh;
+    color: white;
+    font-size: 2vw;
+    overflow: hidden;
+    max-height: 90px;
+    /* margin-top: 4.2%; */
+    min-height: 130px;
+    border-radius: 15px;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.Profileid {
+    width: auto;
+    height: auto;
+    padding: 6px;
+    color: brown;
+    display: block;
+    margin-left: 0%;
+    position: absolute;
+    text-align: center;
+    background: black;
+    margin-block-end: 0%;
+}
+
+.Profilenickname {
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 10%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: crimson;
+}
+
+.Profileage {
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 20%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: aqua;
+}
+
+.Profilegender {
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 30%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: blue;
+}
+
+.Profilefirstname {
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 0%;
+    margin-top: 4%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: blueviolet;
+}
+
+.Profilelastname {
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 10%;
+    margin-top: 4%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: chartreuse;
+}
+
+.Profileemail {
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 20%;
+    margin-top: 4%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: darkgreen;
+}
+
+
+/* ---------------------------------------------/ the third left section named just form /------------------------------------------- */
+
+.newPostFormSection {
+    padding: 5%;
+    margin-top: 1%;
+    max-width: 70%;
+    margin: auto;
+    color: white;
+    border-radius: 15px;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.newPostTitlesArea {
+    width: auto;
+    padding: 2%;
+    margin: auto;
+    text-align: left;
+    border-radius: 2px;
+}
+
+.newPostLabelArea {
+    font: bolder;
+}
+
+.newPostTitleInputDiv {
+    text-align: center;
+}
+
+.newPostInput {
+    width: 80%;
+    margin-bottom: 5%;
+}
+
+input#title {
+    color: rgb(222, 22, 22);
+}
+
+/* .newPostCatDiv{
+
+} */
+
+
+.categoryLableTitle {
+    text-align: left;
+}
+
+select#category {
+    color: cadetblue;
+}
+
+.newPostContentTitleDiv {
+    width: auto;
+    padding: 2%;
+    margin: auto;
+    text-align: left;
+    border-radius: 2px;
+}
+
+/* <div><label for="content">{
+    ;-----------> maybe somthing like newPostContentTitle
+}  */
+
+
+/* <div>{
+    ;-----------> maybe somthing like newPostContentInputArea
+} */
+
+/* <div>{
+    ;-----------> maybe somthing like newPostContentInputBox
+} */
+
+/* <div>{
+    ;-----------> maybe somthing like newPostSubmitButtonDiv
+} */
+
+/* <button>{
+    ;-----------> maybe somthing like newPostSubmitButton
+} */
+
+
+/* ---------------------------------------------/ the final section named Comment /----------------------------------------------------- */
+
+/* THIS FILD IS NOT READY FOR USE YET */
+.comment {
+    top: 55%;
+    left: -70%;
+    z-index: 1;
+    width: 50%;
+    height: auto;
+    min-height: 0%;
+    max-height: 35%;
+    transition: 0.5s;
+    overflow-y: scroll;
+    position: absolute;
+    border-radius: 10px;
+    background-color: gray;
+    background-color: rgba(0, 0, 0, .6);
+    color: white;
+    padding: 1%;
+}
+
+#allComments {
+    width: 80%;
+    height: auto;
+    margin: auto;
+    margin-top: 10px;
+    min-height: 85px;
+    max-height: 150px;
+    margin-left: 30px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background-color: beige;
+}
+
+.creatingCommentForm {
+    margin: auto;
+    width: 99%;
+}
+
+.creatingCommentRespondDiv {
+    text-decoration: underline;
+}
+
+.commentInputDiv {
+    margin: auto;
+    width: 70%;
+}
+
+.commentInput {
+    background: lightgray;
+    margin: auto;
+}
+
+.commentSubmitButtonDiv {
+    text-align: end;
+}
+
+.commentSubmitButton {
+    margin: auto;
+    width: auto;
+}
+
+.singleComment {
+    height: auto;
+    margin: 10px;
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 6px;
+    margin-left: 10px;
+    border-radius: 10px;
+    word-wrap: break-word;
+    background-color: bisque;
+}
+
+.singleCommentContent {
+    padding: 0%;
+    margin-left: 5px;
+    border-radius: 2px;
+}
+
+.singleCommentContent p {
+    padding: 2%;
+    margin: auto;
+}
+
+.singleCommentAuthor {
+    padding: 2%;
+    margin: auto;
+    text-align: right;
+}
+
+/* ---------------------------------------------/ the final section named just DIV /----------------------------------------------------- */
+
+/* <div>{
+} */
+
+#allPost {
+    margin: auto;
+    height: auto;
+    margin-top: 1%;
+    color: white;
+    max-width: 90%;
+    min-height: 10%;
+    padding-top: 1.5%;
+    padding-left: 1.5%;
+    overflow: scroll;
+    padding-right: 3%;
+    max-height: 325px;
+    padding-bottom: 5%;
+    border-radius: 15px;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.singlePostDiv {
+    margin: 2%;
+    padding: 2%;
+    border-radius: 3px;
+    background-color: azure;
+}
+
+
+.postTitle {
+    margin-bottom: 5px;
+    border-radius: 2px;
+    word-break: break-word;
+}
+
+.titleButtonForm {
+    font: caption;
+}
+
+.postContent {
+    padding: 0%;
+    margin-left: 5px;
+    border-radius: 2px;
+    word-wrap: break-word;
+    background-color: gainsboro;
+}
+
+.postContent p {
+    padding: 2%;
+    margin: auto;
+}
+
+.postCategoryId {
+    padding-top: 5px;
+    margin-left: 5px;
+    width: auto;
+}
+
+.postCategoryId p {
+    padding: 2%;
+    margin: auto;
+    text-align: right;
+}
+
+.postAuthorId {
+    size: 0vh;
+    height: 0px;
+    margin: 0px;
+}
+
+.postAuthorId p {
+    size: 0vh;
+    height: 0px;
+    margin: 0px;
+}
+
+@media only screen and (max-width: 700px) {
+
+    .profile {
+        min-height: 80px;
+        font-size: 3vw;
+    }
+
+}
