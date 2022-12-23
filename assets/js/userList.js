@@ -1,5 +1,5 @@
 // import throttle from '/assets/js/node_modules/lodash-es/throttle.js';
-import { chatSocket, targetUserId, timenow} from "./chat.js";
+import { chatSocket, targetUserId } from "./chat.js";
 const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
 const chatBox = document.querySelector(".col-1")
 const msgArea = document.querySelector(".msgArea")
@@ -171,15 +171,36 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 console.log("creating chat input")
                 const chatInput = document.createElement("textarea")
                 // chatInput.setAttribute("type", "text")
+                const chatFormDiv = document.createElement("div");
+                chatFormDiv.classList.add("chat-form-div");
                 const chatForm = document.createElement("form")
                 const submitChat = document.createElement("button")
                 chatForm.addEventListener("submit", SubChatHandler)
+                chatForm.id = "chat-form";
                 submitChat.setAttribute("type", "submit")
                 submitChat.classList = "submitMsg"
-                submitChat.textContent = "submit msg"
+                submitChat.textContent = "send"
                 chatInput.classList = "chatInput"
                 chatForm.append(chatInput, submitChat)
-                chatBox.append(chatForm)
+                chatFormDiv.append(chatForm)
+
+                const typingDiv = document.createElement("div");
+                const typingText = document.createElement("p");
+                typingDiv.classList.add("typing-div");
+                typingText.classList.add("typing-text");
+                typingDiv.append(typingText);
+
+                chatBox.append(chatFormDiv, typingDiv);
+
+                chatInput.addEventListener("input", function(e) {
+                    const profileid = document.querySelector(".Profileid");
+                    let typingPayloadObj = {};
+                    typingPayloadObj["label"] = "typing";
+                    typingPayloadObj["sender_id"] = parseInt(profileid.textContent)
+                    typingPayloadObj["receiver_id"] = parseInt(usID)
+                    console.log(`${typingPayloadObj["sender_id"]} is Typing, and sends to ${typingPayloadObj["receiver_id"]}`);
+                    chatSocket.send(JSON.stringify(typingPayloadObj));
+                });
             } else {
                 console.log("chatinput already exist")
             }
@@ -246,12 +267,7 @@ const SubChatHandler = function (e) {
     realTargetUser=usID
     let targetUser = document.querySelector(`#li${usID}`)
     userlist.insertBefore(targetUser, userlist.firstChild)
-    let timeOfMsg = document.createElement("p")
-    timeOfMsg.classList = "timeofmsg"
-    timeOfMsg.textContent=  timenow()
-    timeOfMsg.style.fontSize = "9px"
     msgrow.append(msgtext)
-    msgrow.append(timeOfMsg)
     msgArea.append(msgrow)
     // ***********************NEED TO UPDATE USERLIST *********************
     // let userlist = document.querySelector(".user-list")
