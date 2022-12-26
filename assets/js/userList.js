@@ -1,5 +1,5 @@
 // import throttle from '/assets/js/node_modules/lodash-es/throttle.js';
-import { chatSocket, targetUserId } from "./chat.js";
+import { chatSocket, targetUserId, genTypingDiv } from "./chat.js";
 const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
 const chatBox = document.querySelector(".col-1")
 const msgArea = document.querySelector(".msgArea")
@@ -184,35 +184,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 chatForm.append(chatInput, submitChat)
                 chatFormDiv.append(chatForm)
 
-                const typingDiv = document.createElement("div");
-                const typingText = document.createElement("p");
-                const typingLeftDot1 = document.createElement("p");
-                const typingLeftDot2 = document.createElement("p");
-                const typingLeftDot3 = document.createElement("p");
-                typingLeftDot1.classList.add("typing-dots");
-                typingLeftDot2.classList.add("typing-left-dots");
-                typingLeftDot3.classList.add("typing-dots");
-                typingLeftDot1.classList.add("typing-left-dots");
-                typingLeftDot2.classList.add("typing-dots");
-                typingLeftDot3.classList.add("typing-left-dots");
-                const typingRightDot1 = document.createElement("p");
-                const typingRightDot2 = document.createElement("p");
-                const typingRightDot3 = document.createElement("p");
-                typingRightDot1.classList.add("typing-dots");
-                typingRightDot2.classList.add("typing-right-dots");
-                typingRightDot3.classList.add("typing-dots");
-                typingRightDot1.classList.add("typing-right-dots");
-                typingRightDot2.classList.add("typing-dots");
-                typingRightDot3.classList.add("typing-right-dots");
-                typingDiv.classList.add("typing-div");
-                typingText.classList.add("typing-text");
-                typingLeftDot1.textContent = "·";
-                typingLeftDot2.textContent = "·";
-                typingLeftDot3.textContent = "·";
-                typingRightDot1.textContent = "·";
-                typingRightDot2.textContent = "·";
-                typingRightDot3.textContent = "·";
-                typingDiv.append(typingLeftDot1, typingLeftDot2, typingLeftDot3, typingText, typingRightDot1, typingRightDot2, typingRightDot3);
+                let typingDiv = genTypingDiv();
                 
                 chatBox.append(chatFormDiv, typingDiv);
 
@@ -231,6 +203,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
         }
     }
 })
+
 let prevScrollTop = 0;
 const loadMsgCallback = function () {
     return function () {

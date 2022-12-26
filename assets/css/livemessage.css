@@ -68,8 +68,13 @@
     color: red;
     font-size: 20px;
 }
-.typing-dots-div {
-
+.typing-left-dots-div {
+    display: flex;
+    justify-content: flex-end;
+}
+.typing-right-dots-div {
+    display: flex;
+    justify-content: flex-start;
 }
 .typing-dots {
     position: relative;
