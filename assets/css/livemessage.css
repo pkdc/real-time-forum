@@ -50,6 +50,7 @@
 #chat-form {
     display: flex;
     justify-content: space-around;
+    align-items: center;
 }
 
 .typing-div {
@@ -58,27 +59,34 @@
     margin: 1rem;
     font-size: 12px;
     opacity: 0;
-    position: relative;
+    /* position: relative; */
     /* font-size: 1rem; */
 }
 
 .typing-text {
+    position: relative;
     color: red;
+    font-size: 20px;
 }
+.typing-dots-div {
 
+}
 .typing-dots {
-    font-size: 30px;
+    position: relative;
+    font-size: 60px;
     padding: 0;
     margin: 0;
+    /* height: 50px;
+    width: 50px; */
     /* opacity: 1; */
 }
 
 .typing-left-dots {
-    left: 40%;
+    left: 50px;
 }
 
 .typing-right-dots {
-    right: 40%;
+    right: 50px;
 }
 
 .show {

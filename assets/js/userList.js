@@ -186,17 +186,33 @@ document.addEventListener("DOMContentLoaded", function (e) {
 
                 const typingDiv = document.createElement("div");
                 const typingText = document.createElement("p");
-                const typingLeftDots = document.createElement("p");
-                typingLeftDots.classList.add("typing-dots");
-                typingLeftDots.classList.add("typing-left-dots");
-                const typingRightDots = document.createElement("p");
-                typingRightDots.classList.add("typing-dots");
-                typingRightDots.classList.add("typing-right-dots");
+                const typingLeftDot1 = document.createElement("p");
+                const typingLeftDot2 = document.createElement("p");
+                const typingLeftDot3 = document.createElement("p");
+                typingLeftDot1.classList.add("typing-dots");
+                typingLeftDot2.classList.add("typing-left-dots");
+                typingLeftDot3.classList.add("typing-dots");
+                typingLeftDot1.classList.add("typing-left-dots");
+                typingLeftDot2.classList.add("typing-dots");
+                typingLeftDot3.classList.add("typing-left-dots");
+                const typingRightDot1 = document.createElement("p");
+                const typingRightDot2 = document.createElement("p");
+                const typingRightDot3 = document.createElement("p");
+                typingRightDot1.classList.add("typing-dots");
+                typingRightDot2.classList.add("typing-right-dots");
+                typingRightDot3.classList.add("typing-dots");
+                typingRightDot1.classList.add("typing-right-dots");
+                typingRightDot2.classList.add("typing-dots");
+                typingRightDot3.classList.add("typing-right-dots");
                 typingDiv.classList.add("typing-div");
                 typingText.classList.add("typing-text");
-                typingLeftDots.textContent = "✉";
-                typingRightDots.textContent = "✉";
-                typingDiv.append(typingLeftDots, typingText, typingRightDots);
+                typingLeftDot1.textContent = "·";
+                typingLeftDot2.textContent = "·";
+                typingLeftDot3.textContent = "·";
+                typingRightDot1.textContent = "·";
+                typingRightDot2.textContent = "·";
+                typingRightDot3.textContent = "·";
+                typingDiv.append(typingLeftDot1, typingLeftDot2, typingLeftDot3, typingText, typingRightDot1, typingRightDot2, typingRightDot3);
                 
                 chatBox.append(chatFormDiv, typingDiv);
 
