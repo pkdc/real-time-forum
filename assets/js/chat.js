@@ -23,7 +23,7 @@ let leftDot3Pos = 0;
 let rightDot3Pos = 0;
 let divRemoved = 0;
 const dotSpeed = 5;
-const dotDist = 250;
+const dotDist = 100;
 // const sendBtn = document.createElement("button");
 // sendBtn.textContent = "Send";
 // sendBtn.id = "send-btn";
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
             typingLeftDotsArr = [...document.querySelectorAll(".typing-left-dots")];
             typingRightDotsArr = [...document.querySelectorAll(".typing-right-dots")];
 
-            if (animationID !== null) {
+            if (animationID === null) {
                 animationID = requestAnimationFrame(animateDots);
             }
             setTimeout(() => {
