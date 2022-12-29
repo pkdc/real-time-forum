@@ -22,7 +22,8 @@ let rightDot2Pos = 0;
 let leftDot3Pos = 0;
 let rightDot3Pos = 0;
 let divRemoved = 0;
-
+const dotSpeed = 5;
+const dotDist = 250;
 // const sendBtn = document.createElement("button");
 // sendBtn.textContent = "Send";
 // sendBtn.id = "send-btn";
@@ -134,12 +135,14 @@ const reset = function() {
     rightDot2Pos = 0;
     leftDot3Pos = 0;
     rightDot3Pos = 0;
+	typingLeftDotsArr = [...document.querySelectorAll(".typing-left-dots")];
+    typingRightDotsArr = [...document.querySelectorAll(".typing-right-dots")];
 }
 
 const animateDots = function () {
 	// incSize += 0.01;
-	const typingLeftDotsDiv = document.querySelector(".typing-left-dots-div"); // added
-	const typingRightDotsDiv = document.querySelector(".typing-right-dots-div"); // added
+	const typingLeftDotsDiv = document.querySelector(".typing-left-dots-div");
+	const typingRightDotsDiv = document.querySelector(".typing-right-dots-div");
 
 	// console.log("left Dots Div:", typingLeftDotsDiv);
 	// console.log("right Dots Div:", typingRightDotsDiv);
@@ -147,17 +150,17 @@ const animateDots = function () {
 	// console.log("left Arr:", typingLeftDotsArr);
 	// console.log("right Arr:", typingRightDotsArr);
 	if (leftDot1Pos !== null && rightDot1Pos !== null) {
-		leftDot1Pos -= 0.5;
+		leftDot1Pos -= dotSpeed;
 		console.log("left 1:", leftDot1Pos);
 		typingLeftDotsArr[0].style.left = `${leftDot1Pos}px`;
 		// typingLeftDotsArr[0].style.fontWeight = `bold`;
 		// typingLeftDotsArr[0].style.fontSize = `${dotSize+incSize}px`;
-		rightDot1Pos += 0.5;
+		rightDot1Pos += dotSpeed;
 		console.log("right 1:", rightDot1Pos);
 		typingRightDotsArr[0].style.left = `${rightDot1Pos}px`;
 	}
 
-	if (rightDot2Pos !== null && leftDot2Pos !== null && (rightDot1Pos > 300 || rightDot1Pos === null) && (leftDot1Pos < -300 || leftDot1Pos === null)) {
+	if (rightDot2Pos !== null && leftDot2Pos !== null && (rightDot1Pos > dotDist || rightDot1Pos === null) && (leftDot1Pos < -dotDist || leftDot1Pos === null)) {
 		if (divRemoved <= 0) {
 			typingLeftDotsDiv.firstElementChild.remove();
 			typingRightDotsDiv.firstElementChild.remove();
@@ -165,42 +168,41 @@ const animateDots = function () {
 		}
 		leftDot1Pos = null;
 
-		leftDot2Pos -= 0.5;
+		leftDot2Pos -= dotSpeed;
 		console.log("left 2:", leftDot2Pos);
 		typingLeftDotsArr[1].style.left = `${leftDot2Pos}px`;
 
 		// typingRightDotsDiv.removeChild(typingRightDotsDiv.firstChild);
 		rightDot1Pos = null;
-		rightDot2Pos += 0.5;
+		rightDot2Pos += dotSpeed;
 		console.log("right 2:", rightDot2Pos);
 		typingRightDotsArr[1].style.left = `${rightDot2Pos}px`;
 
 	}
 
-	if (rightDot3Pos !== null && leftDot3Pos !== null && (rightDot2Pos > 300 || rightDot2Pos === null) && (leftDot2Pos < -300 || leftDot2Pos === null)) {
+	if (rightDot3Pos !== null && leftDot3Pos !== null && (rightDot2Pos > dotDist || rightDot2Pos === null) && (leftDot2Pos < -dotDist || leftDot2Pos === null)) {
 		if (divRemoved === 1) {
 			typingLeftDotsDiv.firstElementChild.remove();
 			typingRightDotsDiv.firstElementChild.remove();
 			divRemoved += 1;
 		}
 		leftDot2Pos = null;
-		leftDot3Pos -= 0.5;
+		leftDot3Pos -= dotSpeed;
 		console.log("left 3:", leftDot3Pos);
 		typingLeftDotsArr[2].style.left = `${leftDot3Pos}px`;
 
 		rightDot2Pos  = null;
-		rightDot3Pos += 0.5;
+		rightDot3Pos += dotSpeed;
 		console.log("right 3:", rightDot3Pos);
 		typingRightDotsArr[2].style.left = `${rightDot3Pos}px`;
 	}
-	if (rightDot3Pos > 300 && leftDot3Pos < -300) {
+	if (rightDot3Pos > dotDist && leftDot3Pos < -dotDist) {
 		// typingLeftDotsArr[2] && typingLeftDotsArr[2].remove();
 		// typingRightDotsArr[2] && typingRightDotsArr[2].remove();
 		const prevTypingDiv = document.querySelector(".typing-div");
 		typingLeftDotsDiv.remove();
 		typingRightDotsDiv.remove();
 		prevTypingDiv.remove();
-        reset();
 		console.log("prevTypingDiv:      ", prevTypingDiv)
 		leftDot3Pos = null;
 		rightDot3Pos = null;
@@ -209,6 +211,7 @@ const animateDots = function () {
 		const chatBox = document.querySelector(".col-1");
 		// chatBox.removeChild(chatBox.lastChild);
 		chatBox.append(typingDiv);
+		reset();
 	}
 	// typingRightDotsArr[0].style.fontWeight = `bold`;
 	// typingRightDotsArr[0].style.fontSize = `${dotSize+incSize}px`;
