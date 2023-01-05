@@ -26,11 +26,11 @@ const dotSpeed = 2;
 const dotDist = 200;
 let running = false;
 let textSender = "";
+let genCount = 0;
 // const sendBtn = document.createElement("button");
 // sendBtn.textContent = "Send";
 // sendBtn.id = "send-btn";
 // chatForm.append(chatInputDiv, sendBtn);
-
 
 document.addEventListener("DOMContentLoaded", function (e) {
     // chatSocket = new WebSocket("ws://localhost:8080/chatWs/");
@@ -73,7 +73,12 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 animationID = requestAnimationFrame(animateDots);
 				running = true;
             }
-        }
+        } else if (resp.label === "sender-stop-typing") {
+			const typingDiv = document.querySelector(".typing-div");
+			animationID = null;
+			running = false;
+			typingDiv.classList.remove("show");
+		}
     }
 })
 
@@ -81,10 +86,11 @@ export const genTypingDiv = function () {
 	console.log("gen");
 	const typingDiv = document.createElement("div");
 	typingDiv.classList.add("typing-div");
-	typingDiv.classList.add("show");
+	if (genCount >= 1) typingDiv.classList.add("show"); // show after regen, but don't show at the beginning
     const typingTextDiv = document.createElement("div");
 	const typingText = document.createElement("p");
     typingTextDiv.append(typingText);
+	genCount += 1;
 
 	const typingLeftDotsDiv = document.createElement("div");
 	typingLeftDotsDiv.classList.add("typing-left-dots-div");
@@ -202,14 +208,13 @@ const animateDots = function () {
 				typingRightDotsDiv.firstElementChild.remove();
 				pairsOfDotsRemoved += 1;
 			}
-
 			const prevTypingDiv = document.querySelector(".typing-div");
-			typingLeftDotsDiv.remove();
-			typingRightDotsDiv.remove();
+			// typingLeftDotsDiv.remove();
+			// typingRightDotsDiv.remove();
 			prevTypingDiv.remove();
 			console.log("prevTypingDiv:      ", prevTypingDiv);
-			leftDot3Pos = null;
-			rightDot3Pos = null;
+			// leftDot3Pos = null;
+			// rightDot3Pos = null;
 			console.log("regen");
 			const typingDiv = genTypingDiv();
 			const chatBox = document.querySelector(".col-1");

@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 chatBox.append(chatFormDiv, typingDiv);
 
                 chatInput.addEventListener("input", function(e) {
+                    // console.log("input event");
                     const profileid = document.querySelector(".Profileid");
                     let typingPayloadObj = {};
                     typingPayloadObj["label"] = "typing";
@@ -196,6 +197,16 @@ document.addEventListener("DOMContentLoaded", function (e) {
                     typingPayloadObj["receiver_id"] = parseInt(usID)
                     console.log(`${typingPayloadObj["sender_id"]} is Typing, and sends to ${typingPayloadObj["receiver_id"]}`);
                     chatSocket.send(JSON.stringify(typingPayloadObj));
+                });
+                chatInput.addEventListener("blur", function(e) {
+                    console.log("blur event");
+                    const profileid = document.querySelector(".Profileid");
+                    let stopTypingPayloadObj = {};
+                    stopTypingPayloadObj["label"] = "stop-typing";
+                    stopTypingPayloadObj["sender_id"] = parseInt(profileid.textContent)
+                    stopTypingPayloadObj["receiver_id"] = parseInt(usID)
+                    console.log(`${stopTypingPayloadObj["sender_id"]} has stopped Typing, and stop sending to ${stopTypingPayloadObj["receiver_id"]}`);
+                    chatSocket.send(JSON.stringify(stopTypingPayloadObj));
                 });
             } else {
                 console.log("chatinput already exist")
