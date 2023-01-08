@@ -59,31 +59,41 @@
     margin: 1rem;
     font-size: 12px;
     opacity: 0;
+    color: white;
     /* position: relative; */
     /* font-size: 1rem; */
 }
 
 .typing-text {
+    padding: 33% 0;
     position: relative;
-    color: red;
+    color: white;
     font-size: 20px;
+    height: 100px;
+    text-align: center;
 }
 .typing-left-dots-div {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    height: 100px;
 }
 .typing-right-dots-div {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    height: 100px;
 }
 .typing-dots {
-    position: relative;
-    font-size: 60px;
     padding: 0;
     margin: 0;
+    position: absolute;
     /* height: 50px;
     width: 50px; */
-    /* opacity: 1; */
+    opacity: 1;
+    color: white;
 }
 
 .typing-left-dots {

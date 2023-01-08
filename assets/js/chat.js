@@ -21,6 +21,12 @@ let leftDot2Pos = 0;
 let rightDot2Pos = 0;
 let leftDot3Pos = 0;
 let rightDot3Pos = 0;
+let dot1Opacity = 1;
+let dot2Opacity = 1;
+let dot3Opacity = 1;
+let dot1Size = 15;
+let dot2Size = 15;
+let dot3Size = 15;
 let pairsOfDotsRemoved = 0;
 const dotSpeed = 2;
 const dotDist = 200;
@@ -126,14 +132,14 @@ export const genTypingDiv = function () {
 	typingRightDotsDiv.append(typingRightDot1, typingRightDot2, typingRightDot3);
 
 	typingText.classList.add("typing-text");
-	typingLeftDot1.textContent = "·";
-	typingLeftDot2.textContent = "·";
-	typingLeftDot3.textContent = "·";
+	typingLeftDot1.textContent = "(";
+	typingLeftDot2.textContent = "(";
+	typingLeftDot3.textContent = "(";
 	typingText.textContent = `${textSender} is typing`;
 	// typingText.textContent = `I am typing`; 
-	typingRightDot1.textContent = "·";
-	typingRightDot2.textContent = "·";
-	typingRightDot3.textContent = "·";
+	typingRightDot1.textContent = ")";
+	typingRightDot2.textContent = ")";
+	typingRightDot3.textContent = ")";
 	typingDiv.append(typingLeftDotsDiv, typingTextDiv, typingRightDotsDiv);
 
 	return typingDiv;
@@ -147,6 +153,12 @@ const reset = function() {
     rightDot2Pos = 0;
     leftDot3Pos = 0;
     rightDot3Pos = 0;
+	dot1Opacity = 1;
+	dot2Opacity = 1;
+	dot3Opacity = 1;
+	dot1Size = 15;
+	dot2Size = 15;
+	dot3Size = 15;
 	typingLeftDotsArr = [...document.querySelectorAll(".typing-left-dots")];
     typingRightDotsArr = [...document.querySelectorAll(".typing-right-dots")];
 }
@@ -156,13 +168,19 @@ const animateDots = function () {
 	const typingRightDotsDiv = document.querySelector(".typing-right-dots-div");
 	if (running === true) {
 		if (leftDot1Pos !== null && rightDot1Pos !== null) {
+			dot1Opacity -= 0.01;
+			dot1Size += 0.5;
 			leftDot1Pos -= dotSpeed;
 			console.log("left 1:", leftDot1Pos);
 			typingLeftDotsArr[0].style.left = `${leftDot1Pos}px`;
+			typingLeftDotsArr[0].style.opacity = dot1Opacity;
+			typingLeftDotsArr[0].style.fontSize = `${dot1Size}px`;
 
 			rightDot1Pos += dotSpeed;
 			console.log("right 1:", rightDot1Pos);
 			typingRightDotsArr[0].style.left = `${rightDot1Pos}px`;
+			typingRightDotsArr[0].style.opacity = dot1Opacity;
+			typingRightDotsArr[0].style.fontSize = `${dot1Size}px`;
 		}
 
 		if (
@@ -177,15 +195,20 @@ const animateDots = function () {
 				pairsOfDotsRemoved += 1;
 			}
 			leftDot1Pos = null;
-
+			dot2Opacity -= 0.01;
+			dot2Size += 0.5;
 			leftDot2Pos -= dotSpeed;
 			console.log("left 2:", leftDot2Pos);
 			typingLeftDotsArr[1].style.left = `${leftDot2Pos}px`;
+			typingLeftDotsArr[1].style.opacity = dot2Opacity;
+			typingLeftDotsArr[1].style.fontSize = `${dot2Size}px`;
 
 			rightDot1Pos = null;
 			rightDot2Pos += dotSpeed;
 			console.log("right 2:", rightDot2Pos);
 			typingRightDotsArr[1].style.left = `${rightDot2Pos}px`;
+			typingRightDotsArr[1].style.opacity = dot2Opacity;
+			typingRightDotsArr[1].style.fontSize = `${dot2Size}px`;
 		}
 
 		if (
@@ -200,14 +223,20 @@ const animateDots = function () {
 				pairsOfDotsRemoved += 1;
 			}
 			leftDot2Pos = null;
+			dot3Opacity -= 0.01;
+			dot3Size += 0.5;
 			leftDot3Pos -= dotSpeed;
 			console.log("left 3:", leftDot3Pos);
 			typingLeftDotsArr[2].style.left = `${leftDot3Pos}px`;
+			typingLeftDotsArr[2].style.opacity = dot3Opacity;
+			typingLeftDotsArr[2].style.fontSize = `${dot3Size}px`;
 
 			rightDot2Pos = null;
 			rightDot3Pos += dotSpeed;
 			console.log("right 3:", rightDot3Pos);
 			typingRightDotsArr[2].style.left = `${rightDot3Pos}px`;
+			typingRightDotsArr[2].style.opacity = dot3Opacity;
+			typingRightDotsArr[2].style.fontSize = `${dot3Size}px`;
 		}
 		if (rightDot3Pos > dotDist && leftDot3Pos < -dotDist) {
 			if (pairsOfDotsRemoved === 2) {
