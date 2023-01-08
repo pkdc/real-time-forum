@@ -27,6 +27,7 @@ const dotDist = 200;
 let running = false;
 let textSender = "";
 let genCount = 0;
+let begin = true;
 // const sendBtn = document.createElement("button");
 // sendBtn.textContent = "Send";
 // sendBtn.id = "send-btn";
@@ -58,26 +59,32 @@ document.addEventListener("DOMContentLoaded", function (e) {
         //     userlist.insertBefore(targetUser, userlist.firstChild)
         } else if (resp.label === "sender-typing") {
             // display typing-in-progress
-            // const chatBox = document.querySelector(".chatbox");
-            const typingDiv = document.querySelector(".typing-div");
-            const typingText = document.querySelector(".typing-text");
-            console.log(`${resp.sender} with id ${resp.userID} is typing... to ${resp.contactID}`);
-            textSender = resp.sender;
-			typingText.textContent = `${textSender} is typing`;
-			console.log("fired");
-            typingDiv.classList.add("show");
-            // typingDotsArr = [...document.querySelectorAll(".typing-dots")];
-            typingLeftDotsArr = [...document.querySelectorAll(".typing-left-dots")];
-            typingRightDotsArr = [...document.querySelectorAll(".typing-right-dots")];
-            if (animationID === null && running === false) {
+			if (animationID === null && running === false) {
+				console.log("fired");
+				// const chatBox = document.querySelector(".chatbox");
+				const typingDiv = document.querySelector(".typing-div");
+				typingDiv.classList.add("show");
+
+				console.log(`${resp.sender} with id ${resp.userID} is typing... to ${resp.contactID}`);
+				const typingText = document.querySelector(".typing-text");
+				textSender = resp.sender;
+				typingText.textContent = `${textSender} is typing`;
+				
+				if (begin === true) {
+					typingLeftDotsArr = [...document.querySelectorAll(".typing-left-dots")];
+					typingRightDotsArr = [...document.querySelectorAll(".typing-right-dots")];
+					begin = false;
+				}
                 animationID = requestAnimationFrame(animateDots);
 				running = true;
             }
         } else if (resp.label === "sender-stop-typing") {
-			const typingDiv = document.querySelector(".typing-div");
-			animationID = null;
-			running = false;
-			typingDiv.classList.remove("show");
+			if (animationID !== null && running === true) {
+				running = false;
+				animationID = null;
+				const typingDiv = document.querySelector(".typing-div");
+				typingDiv.classList.remove("show");
+			}
 		}
     }
 })
@@ -86,7 +93,7 @@ export const genTypingDiv = function () {
 	console.log("gen");
 	const typingDiv = document.createElement("div");
 	typingDiv.classList.add("typing-div");
-	if (genCount >= 1) typingDiv.classList.add("show"); // show after regen, but don't show at the beginning
+	if (genCount) typingDiv.classList.add("show"); // show after regen, but don't show at the beginning
     const typingTextDiv = document.createElement("div");
 	const typingText = document.createElement("p");
     typingTextDiv.append(typingText);
@@ -200,7 +207,7 @@ const animateDots = function () {
 			rightDot2Pos = null;
 			rightDot3Pos += dotSpeed;
 			console.log("right 3:", rightDot3Pos);
-			typingRightDotsArr[2].style.left = `${rightDot3Pos}px`; // why undefined when inputting during the 2nd/3rd loop?
+			typingRightDotsArr[2].style.left = `${rightDot3Pos}px`;
 		}
 		if (rightDot3Pos > dotDist && leftDot3Pos < -dotDist) {
 			if (pairsOfDotsRemoved === 2) {
@@ -209,8 +216,6 @@ const animateDots = function () {
 				pairsOfDotsRemoved += 1;
 			}
 			const prevTypingDiv = document.querySelector(".typing-div");
-			// typingLeftDotsDiv.remove();
-			// typingRightDotsDiv.remove();
 			prevTypingDiv.remove();
 			console.log("prevTypingDiv:      ", prevTypingDiv);
 			// leftDot3Pos = null;
@@ -221,7 +226,6 @@ const animateDots = function () {
 			chatBox.append(typingDiv);
 			reset();
 		}
-
 		requestAnimationFrame(animateDots);
 	}
 };
