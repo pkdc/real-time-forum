@@ -66,6 +66,7 @@
 
 .typing-text {
     padding: 33% 0;
+    display: block;
     position: relative;
     color: white;
     font-size: 20px;
@@ -73,35 +74,41 @@
     text-align: center;
 }
 .typing-left-dots-div {
+    margin: 0 10px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     position: relative;
     height: 100px;
+    width: 100px;
 }
 .typing-right-dots-div {
+    margin: 0 10px;
     display: flex;
-    justify-content: flex-start;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
     align-items: center;
     position: relative;
     height: 100px;
+    width: 100px;
 }
 .typing-dots {
     padding: 0;
     margin: 0;
-    position: absolute;
+    position: relative;
     /* height: 50px;
     width: 50px; */
     opacity: 1;
     color: white;
+    font-size: 35px;
 }
 
 .typing-left-dots {
-    left: 50px;
+    left: 0px;
 }
 
 .typing-right-dots {
-    right: 50px;
+    right: 0px;
 }
 
 .show {
@@ -205,7 +212,8 @@
 button.submitMsg {
     /* margin-left: 20%; */
     border-radius: 15px;
-    margin-bottom: 5%;
+    margin: 0.2em;
+    padding: 1.5em 0.2em;
 }
 
 ::placeholder {
