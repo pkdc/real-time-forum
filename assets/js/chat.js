@@ -29,7 +29,7 @@ let dot2Size = 60;
 let dot3Size = 60;
 let pairsOfDotsRemoved = 0;
 const dotSpeed = 1;
-const dotIncSize = 0; // not increasing atm
+const dotIncSize = 1;
 const dotDist = 100;
 let running = false;
 let textSender = "";
@@ -181,12 +181,14 @@ const animateDots = function () {
 			typingLeftDotsArr[0].style.left = `${leftDot1Pos}px`;
 			typingLeftDotsArr[0].style.opacity = dot1Opacity;
 			typingLeftDotsArr[0].style.fontSize = `${dot1Size}px`;
+			// typingLeftDotsArr[0].style.display = `inline-block`;
 
 			rightDot1Pos += dotSpeed;
 			console.log("right 1:", rightDot1Pos);
 			typingRightDotsArr[0].style.left = `${rightDot1Pos}px`;
 			typingRightDotsArr[0].style.opacity = dot1Opacity;
 			typingRightDotsArr[0].style.fontSize = `${dot1Size}px`;
+			// typingRightDotsArr[0].style.display = `inline-block`;
 		}
 
 		if (
