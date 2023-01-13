@@ -35,6 +35,8 @@ let running = false;
 let textSender = "";
 let genCount = 0;
 let begin = true;
+let aniDuration = 2000;
+let startTimestamp = null;
 // const sendBtn = document.createElement("button");
 // sendBtn.textContent = "Send";
 // sendBtn.id = "send-btn";
@@ -86,8 +88,8 @@ document.addEventListener("DOMContentLoaded", function (e) {
 					typingRightDotsArr = [...document.querySelectorAll(".typing-right-dots")];
 					begin = false;
 				}
-                animationID = requestAnimationFrame(animateDots);
-				running = true;
+                running = true;  // must be before the rAF below
+				animationID = requestAnimationFrame(animateDots);
             }
         } else if (resp.label === "sender-stop-typing") {
 			if (animationID !== null && running === true) {
@@ -95,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
 				animationID = null;
 				const typingDiv = document.querySelector(".typing-div");
 				typingDiv.classList.remove("show");
-				typingDiv.willChange
+				// typingDiv.willChange
 			}
 		}
     }
@@ -169,7 +171,18 @@ const reset = function() {
     typingRightDotsArr = [...document.querySelectorAll(".typing-right-dots")];
 }
 
-const animateDots = function () {
+const animateDots = function (timestamp) {
+	console.log("timestamp", timestamp);
+	console.log("start timestamp", startTimestamp);
+	if (startTimestamp === null) startTimestamp = timestamp;
+	if (timestamp >= startTimestamp + aniDuration) {
+		animationID = null;
+		running = false;
+		const typingDiv = document.querySelector(".typing-div");
+		typingDiv.classList.remove("show");
+		startTimestamp = null;
+		return;
+	}
 	const typingLeftDotsDiv = document.querySelector(".typing-left-dots-div");
 	const typingRightDotsDiv = document.querySelector(".typing-right-dots-div");
 	if (running === true) {
