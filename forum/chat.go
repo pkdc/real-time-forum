@@ -1,25 +1,21 @@
 package forum
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
-type Clients struct {
-	conn   *websocket.Conn
-	userID int
-}
-
 type WsChatResponse struct {
 	Label     string `json:"label"`
 	Content   string `json:"content"`
-	UserID    string `json:"userID"`
-	ContactID string `json:"contactID"`
+	UserID    int    `json:"userID"`
+	ContactID int    `json:"contactID"`
 }
 
 type MessageArray struct {
@@ -30,14 +26,19 @@ type MessageArray struct {
 type WsChatPayload struct {
 	Label       string `json:"label"`
 	Content     string `json:"content"`
-	ReceiverId  int    `json:"receiver_id"` // for chat
 	SenderId    int    `json:"sender_id"`
+	ReceiverId  int    `json:"receiver_id"`
+	Online      bool   `json:"online"` // whether the receiver is online
 	MessageTime string `json:"message_time"`
 	Noti        bool   `json:"noti"`
 	Right       bool   `json:"right_side"`
+	// CookieValue string `json:"cookie_value"`
 }
 
-var chatPayloadChan = make(chan WsChatPayload)
+var (
+	chatPayloadChan = make(chan WsChatPayload)
+	chatWsMap       = make(map[int]*websocket.Conn)
+)
 
 func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -46,6 +47,7 @@ func chatWsEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("Chat Connected")
+
 	readChatPayloadFromWs(conn)
 }
 
@@ -53,38 +55,109 @@ func readChatPayloadFromWs(conn *websocket.Conn) {
 	defer func() {
 		fmt.Println("Chat Ws Conn Closed")
 	}()
+
 	var chatPayload WsChatPayload
 	for {
 		err := conn.ReadJSON(&chatPayload)
-		if err == nil {
-			fmt.Printf("Sending chatPayload thru chan: %v\n", chatPayload)
-			listeningChat(conn, chatPayload)
-			chatPayloadChan <- chatPayload
+
+		if err == nil && chatPayload.Label == "chat" {
+			processMsg(chatPayload)
+			if userListWsMap[chatPayload.ReceiverId] != nil {
+				chatPayloadChan <- chatPayload
+			}
+		} else if err == nil && chatPayload.Label == "updateChat" {
+			// saving websocket to map
+			chatWsMap[chatPayload.SenderId] = conn
 		}
 	}
 }
 
-func listeningChat(conn *websocket.Conn, msg WsChatPayload) {
-	// var chatResponse WsChatResponse
-	defer func() {
-		fmt.Println("chat Ws Conn Closed")
-	}()
+func ProcessAndReplyChat() {
 	for {
-		if msg.Label == "message" {
-			var pureMsg WsChatPayload
-			json.Unmarshal([]byte(msg.Content), &pureMsg)
-			processMsg(pureMsg)
-			fmt.Printf("payload received: %v\n", msg)
+		receivedChatPayload := <-chatPayloadChan
+
+		var responseChatPayload WsChatResponse
+
+		responseChatPayload.Label = "msgIncoming"
+		responseChatPayload.UserID = receivedChatPayload.ReceiverId
+		responseChatPayload.ContactID = receivedChatPayload.SenderId
+		responseChatPayload.Content = receivedChatPayload.Content
+		receiverConn := chatWsMap[receivedChatPayload.ReceiverId]
+		err := receiverConn.WriteJSON(responseChatPayload)
+		updateUList()
+		if err != nil {
+			fmt.Println("failed to send message")
 		}
 	}
 }
 
 func processMsg(msg WsChatPayload) {
+	newNotif := true
+	fmt.Println("msg:", msg)
 	rows, err := db.Prepare("INSERT INTO messages(senderID,receiverID,messageTime,content,seen) VALUES(?,?,?,?,?);")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
-	rows.Exec(msg.SenderId, msg.ReceiverId, time.Now(), msg.Content, false)
+	timeofmsg:=(time.Now()).Format(time.Stamp)
+	rows.Exec(msg.SenderId, msg.ReceiverId, timeofmsg, msg.Content, false)
 	fmt.Println("msg saved successfully")
+	notif := FindNotification(msg.ReceiverId)
+	fmt.Println("OLD NOTIFICATION ARRAY", notif)
+	if notif != nil {
+		for _, not := range notif {
+			if not == msg.SenderId {
+				newNotif = false
+				break
+			}
+		}
+	}
+	fmt.Println("notification bool:", newNotif)
+	if newNotif {
+		var newArr []int
+		newArr = append(newArr, notif...)
+		newArr = append(newArr, msg.SenderId)
+		slcNotif := make([]string, len(newArr))
+		for i := 0; i < len(newArr); i++ {
+			str := strconv.Itoa(newArr[i])
+			slcNotif[i] = str
+		}
+		newNotificationString := strings.Join(slcNotif, ",")
+		rows2, err := db.Prepare("UPDATE users SET notifications = ? WHERE userID = ?;")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer rows2.Close()
+		rows2.Exec(newNotificationString, msg.ReceiverId)
+		fmt.Println(len(newNotificationString), "notif string", newNotificationString)
+	}
+}
+
+func FindNotification(userID int) []int {
+	notifi := ""
+	rows, err := db.Query("SELECT notifications FROM users WHERE userID =?", userID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&notifi)
+	}
+	fmt.Println("notifi:", notifi)
+	if notifi == "" {
+		fmt.Println("CANT FOUND NOTIFICATION")
+		return nil
+	}
+	arr := strings.Split(notifi, ",")
+	in := make([]int, len(arr))
+	for i := 0; i < len(arr); i++ {
+		integ, err := strconv.Atoi(arr[i])
+		if err != nil {
+			log.Fatal(err)
+		}
+		in[i] = integ
+
+	}
+	fmt.Println("array of int", in)
+	return in
 }

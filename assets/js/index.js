@@ -1,9 +1,10 @@
 // import chatForm from "./chat.js";
 import RegisterForm from "./reg.js";
-import loginForm from "./login.js";
-import PostForm from "./post.js";
+import { loginForm } from "./login.js";
+import Post from "./post.js";
 import logoutBtn from "./logout.js";
-import chatForm from "./chat.js";
+import { chatForm } from "./chat.js";
+
 const chatBox = document.querySelector(".col-1")
 const loginArea = document.querySelector("#userPopUpPOne")
 const loginInputs = loginArea.firstElementChild
@@ -17,7 +18,8 @@ loginInputs.append(loginForm)
 reginInputs.append(RegisterForm)
 loginArea.append(loginInputs)
 regArea.append(reginInputs)
-postPage.append(PostForm)
+postPage.append(Post.PostForm)
+postPage.append(Post.DisplayPost)
 chatBox.append(chatForm)
 // const chatBox = document.createElement("div")
 // chatBox.append(chatForm);

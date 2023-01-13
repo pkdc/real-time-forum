@@ -1,103 +1,192 @@
 .container {
-    position: sticky;
-    float: right;
-    top: 0px;
-    right: 0vh;
+    right: 0vw;
     z-index: -0;
-    width: 50%;
-    height: 100vh;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    width: 47%;
+    height: 84vh;
+    float: right;
+    opacity: 0;
     color: #fff;
-    /* overflow:hidden; */
-    background-image: linear-gradient(to right, #1c00f2, #453f96);
+    margin-top: 1%;
+    position: initial;
+    margin-right: 0.3%;
+    border-radius: 15px;
+    border-style: double;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, .6);
+    /* background-image: linear-gradient(to right, #29292b, #453f96); */
+    overflow: hidden;
 }
 
-.hana {
-    /* text-align:justify */
-    margin-top: 0;
-    padding-bottom: 10%;
+.container h1 {
+    font-size: 220%;
+    text-align: center;
+    background-clip: text;
+    margin-block-start: 1%;
+    color: rgb(8, 10, 9);
+    text-shadow: rgba(255, 255, 255, 0.9) 0px 3px 3px;
+}
+
+.friendListArea {
+    margin: 5%;
+    padding-bottom: 1px;
     text-align: justify;
     align-items: center;
+    position: relative;
 }
 
-
+/* this is the parent box for the chat & freind list */
 .chatbox {
-    background: #1d61c2;
-    width: 60%;
-    min-width: 250px;
+    width: 90%;
     display: flex;
+    min-width: 250px;
+    align-self: center;
+    border-radius: 15px;
+    border-style: double;
+    background: #b7babf;
 }
 
-/* The main chat area */
 
+/* The main chat area (colum 1) */
 .col-1 {
     flex: 1;
-    display:none;
-    /* display:none; */
+    display: none;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-right-style: double;
+    background-color: rgba(0, 0, 0, .6);
 }
 
-.col-2 {
-    flex-basis: 250px;
-    background: #3874c9;
+.usernamediv {
+    margin-top: 10px;
+    margin-left: 5px;
 }
+
+
+.msgArea {
+    border: none;
+    /* padding: 5px; */
+    width: auto;
+    height: auto;
+    min-height: 50px;
+    /* max-height: 600px; */
+    max-height: 300px;
+    overflow: scroll;
+    /* font: 24px/36px sans-serif; */
+
+    margin-top: 2%;
+    color: white;
+    min-height: 10%;
+    /* max-width: 100%; */
+    padding-top: 5%;
+    padding-left: 3%;
+    /* overflow: scroll; */
+    padding-right: 3%;
+    /* max-height: 340px; */
+    padding-bottom: 5%;
+    border-radius: 15px;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
+}
+
 
 .msg-row {
-    display: flex;
+    /* display: flex; */
+    display: grid;
     justify-content: flex-start;
     /* margin: 40px;  */
 
 }
 
 .msg-text {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px, 40px;
-    border-radius: 8px;
     flex-basis: 70%;
     font-weight: 300;
+    border-radius: 8px;
+    padding: 20px, 40px;
+    word-wrap: break-word;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
 }
 
+
 .msg-text h2 {
-    font-weight: 400;
     font-size: 22px;
+    font-weight: 400;
     margin-bottom: 10px;
 }
 
+
 .msg-img {
-    height: 60px;
     width: 60px;
-    border-radius: 50%;
+    height: 60px;
     margin: 0 20px px;
+    border-radius: 50%;
 }
 
+/* is the actual row of the user sent text */
 .msg-row2 {
-    display:flex;
+    /* display: flex; */
+    display: grid;
     justify-content: flex-end;
 }
 
-.col-1 input {
+/* wright you mesage here */
+/* .col-1 input { */
+.chatInput {
     border: 0;
+    width: 95%;
     outline: none;
-    padding: 20px 40px;
-    background: #3874c9;
     color: #fff;
-    width: 100%;
     font-size: 12px;
     font-weight: 300;
+    margin-left: 9px;
+    padding: 20px 40px;
+    border-style: double;
+    background: #7d7777;
+    border: 2px solid #1c87c9;
+}
+
+button.submitMsg {
+    margin-left: 20%;
 }
 
 ::placeholder {
-    color: #fff;
+    color: rgb(95, 125, 167);
 }
 
+.closeChat {
+    position: relative;
+    left: 70%;
+    top: 110px;
+}
 
+/* ----------------------------------------------------------Friend List------------------------------- */
+.col-2 {
+    /* flex-basis: 250px; */
+    /* background: #79b333; */
+    border: none;
+    width: auto;
+    height: auto;
+    min-height: 50px;
+    max-height: 300px;
+    /* overflow: scroll; */
+    margin-top: 2%;
+    color: white;
+    min-height: 10%;
+    padding-top: 5%;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 5%;
+    border-radius: 15px;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
+}
 
 .col-2 h3 {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 0px;
     font-weight: 400;
+    color: #838287;
 }
 
 .col-2 ul {
@@ -105,32 +194,49 @@
     padding: 30px;
 }
 
+.user-list {
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    min-height: 10px;
+    max-height: 130px;
+    overflow: scroll;
+    display: grid;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, .6);
+}
+
 .col-2 ul li {
+    display: inline-flex;
     list-style: none;
     padding: 5px;
 }
 
 .col-2 ul li img {
     height: 25px;
-    float: inline-end;
-    /* flex-direction: column; */
-    justify-content: center;
     margin-top: -2%;
-
+    float: inline-end;
+    justify-content: center;
+    /* flex-direction: column; */
 }
 
 .col-2 ul li::before {
     content: '';
     width: 10px;
     height: 10px;
-    border-radius: 50%;
     background: red;
-    display: inline-block;
+    border-radius: 50%;
     margin-right: 10px;
+    display: inline-block;
+    padding: 4px;
 }
 
 .col-2 ul li.online::before {
     background: greenyellow;
+}
+
+.nameButtons.notif {
+    background: red;
 }
 
 .col-2 ul li.offline::before {

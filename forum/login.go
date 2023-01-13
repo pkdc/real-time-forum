@@ -1,6 +1,7 @@
 package forum
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -29,12 +30,19 @@ type WsLoginPayload struct {
 	// Conn          *websocket.Conn `json:"-"`
 }
 
-var (
-	userIDDB   int
-	nicknameDB string
-	emailDB    string
-	hashDB     []byte
-)
+var pwHashDB []byte
+
+func loginFailed(conn *websocket.Conn) {
+	// login failed
+	fmt.Println("Login Failed")
+	var failedResponse WsLoginResponse
+	failedResponse.Label = "login"
+	failedResponse.Content = "ERROR - Please check your credentials"
+	failedResponse.Pass = false
+	conn.WriteJSON(failedResponse)
+	return
+	// return false
+}
 
 func LoginWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -91,16 +99,13 @@ func listenToLoginWs(conn *websocket.Conn) {
 
 func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 	fmt.Printf("login u: %s: , login pw: %s\n", loginPayload.NicknameEmail, loginPayload.Password)
-
 	// // get user data from db
-	var userIDDB int
-	var nicknameDB string
-	var emailDB string
-	var hashDB []byte
-
+	var logge bool
+	var logUser User
+	var not string
 	// auth user
 	fmt.Printf("%s trying to Login\n", loginPayload.NicknameEmail)
-	rows, err := db.Query(`SELECT userID, nickname, email, password 
+	rows, err := db.Query(`SELECT *
 							FROM users
 							WHERE nickname = ?
 							OR email = ?`, loginPayload.NicknameEmail, loginPayload.NicknameEmail)
@@ -109,41 +114,43 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		rows.Scan(&userIDDB, &nicknameDB, &emailDB, &hashDB)
+		rows.Scan(&logUser.UserId, &logUser.Nickname, &logUser.Age, &logUser.Gender, &logUser.FirstName, &logUser.LastName, &logUser.Email, &pwHashDB, &logge, &logUser.ProfilePicture, &not) // bug in db not is before logge?
 	}
+	if logUser.UserId == 0 {
+		loginFailed(conn)
+		return
+	}
+	fmt.Println(logUser.LoggedIn,"CHECKING PICTURE-----------", logUser.ProfilePicture)
+	findCurUser(logUser.UserId)
 
 	// // test hash
 	// hash, err := bcrypt.GenerateFromPassword([]byte(pw), 10)
 	// fmt.Printf("nicknameEmailDB: %s , hashDB: %s\n", nicknameEmailDB, hashDB)
 
 	// // compare pw
-	err = bcrypt.CompareHashAndPassword(hashDB, []byte(loginPayload.Password))
+	err = bcrypt.CompareHashAndPassword(pwHashDB, []byte(loginPayload.Password))
 	// fmt.Printf("DB pw: %s, entered: %s\n", hashDB, loginPayload.password)
 	// fmt.Printf("DB pw: %s, entered: %s\n", hashDB, hash)
 
 	// Login failed
 	if err != nil {
-		// login failed
-		fmt.Println("Failed")
-		var failedResponse WsLoginResponse
-		failedResponse.Label = "login"
-		failedResponse.Content = "Please check your credentials"
-		failedResponse.Pass = false
-		conn.WriteJSON(failedResponse)
-		return // v important
-		// return false
+		loginFailed(conn)
+		return
 	} else {
 		// Login successfully
 		fmt.Printf("%s (name from DB) Login successfully\n", loginPayload.NicknameEmail)
-
 		// update login status in users
-
+		currentUser, err := json.Marshal(logUser)
+		if err != nil {
+			log.Fatal(err)
+		}
 		var successResponse WsLoginResponse
 		successResponse.Label = "login"
 		// no need the form is closed after success
 		// successResponse.Content = fmt.Sprintf("%s Login successfully", nicknameDB)
+		successResponse.Content = string(currentUser)
 		successResponse.Pass = true
-		successResponse.Cookie = genCookie(conn, userIDDB)
+		successResponse.Cookie = genCookie(conn, logUser.UserId)
 		conn.WriteJSON(successResponse)
 		return
 	}
