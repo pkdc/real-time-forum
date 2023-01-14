@@ -35,8 +35,8 @@ let running = false;
 let textSender = "";
 let genCount = 0;
 let begin = true;
-let aniDuration = 2000;
-let startTimestamp = null;
+let aniCountdown = 2000;
+let startCountDownTimestamp = null;
 // const sendBtn = document.createElement("button");
 // sendBtn.textContent = "Send";
 // sendBtn.id = "send-btn";
@@ -67,6 +67,11 @@ document.addEventListener("DOMContentLoaded", function (e) {
         //     console.log("targetuser:", targetUser)
         //     userlist.insertBefore(targetUser, userlist.firstChild)
         } else if (resp.label === "sender-typing") {
+			// update from what time the countdown begins, when the sender inputs
+			// startTimestamp is null at the beginning, but
+			// startTimestamp is not null after the rAF loop has started
+			if (startCountDownTimestamp !== null) startCountDownTimestamp = performance.now(); 
+
             // display typing-in-progress
 			const chatboxOpened = document.querySelector("#chatbox-" + resp.userID);
 			const chatboxClosed = document.querySelector("#chatbox");
@@ -173,14 +178,15 @@ const reset = function() {
 
 const animateDots = function (timestamp) {
 	console.log("timestamp", timestamp);
-	console.log("start timestamp", startTimestamp);
-	if (startTimestamp === null) startTimestamp = timestamp;
-	if (timestamp >= startTimestamp + aniDuration) {
+	console.log("start countdown timestamp", startCountDownTimestamp);
+	if (startCountDownTimestamp === null) startCountDownTimestamp = timestamp;
+	if (timestamp >= startCountDownTimestamp + aniCountdown) { // expires
 		animationID = null;
 		running = false;
 		const typingDiv = document.querySelector(".typing-div");
 		typingDiv.classList.remove("show");
-		startTimestamp = null;
+		startCountDownTimestamp = null;
+		// rAFStartTimestamp = null;
 		return;
 	}
 	const typingLeftDotsDiv = document.querySelector(".typing-left-dots-div");
