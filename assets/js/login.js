@@ -30,15 +30,22 @@ document.addEventListener("DOMContentLoaded", function () {
             // update user list after a user login
 
             if (resp.pass) {
+
                 let user = JSON.parse(resp.content)
-                createProfile("p", user.userID, "id")
+                console.log(user)
+                let pictureArea = document.querySelector(".profileImage")
+                let picture = document.createElement("img")
+                picture.src = "./assets/images/" + user.pp + ".png"
+                picture.className = "userProfilImage"
+                pictureArea.appendChild(picture)
+                createProfile("p", user.userID, "ID")
                 updateChat()
-                createProfile("p", user.nickname, "nickname")
-                createProfile("p", user.age, "age")
-                createProfile("p", user.gender, "gender")
-                createProfile("p", user.firstname, "firstname")
-                createProfile("p", user.lastname, "lastname")
-                createProfile("p", user.email, "email")
+                createProfile("p", user.nickname, "Nickname")
+                createProfile("p", user.age, "Age")
+                createProfile("p", user.gender, "Gender")
+                createProfile("p", user.firstname, "Firstname")
+                createProfile("p", user.lastname, "Last-Name")
+                createProfile("p", user.email, "Email")
                 profile.style.display = "block"
 
                 // ------------------------------------------------------------------------------------------------
@@ -87,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayMsgDiv.classList.add("display-msg");
                 displayMsg.id = "login-msg";
                 displayMsg.textContent = `${resp.content}`;
+                displayMsg.style.color = "red"
                 displayMsgDiv.append(displayMsg);
             }
         }
@@ -104,7 +112,7 @@ const loginHandler = function (e) {
 };
 
 export const updateChat = function () {
-    let userID = document.querySelector(".Profileid")
+    let userID = document.querySelector(".ProfileID")
     let chatpayloadObj = {}
     chatpayloadObj["label"] = "updateChat";
     chatpayloadObj["sender_id"] = parseInt(userID.textContent)
@@ -127,7 +135,7 @@ const nameInputDiv = document.createElement('div');
 nameInput = document.createElement('input');
 nameInput.setAttribute("type", "text");
 nameInput.setAttribute("name", "name");
-nameInput.setAttribute("id", "name");
+nameInput.setAttribute("id", "signInName");
 nameInput.setAttribute("placeholder", "eg: deathstar123 or abc@def.com")
 nameInputDiv.append(nameInput);
 
@@ -153,12 +161,17 @@ loginSubmitDiv.append(loginSubmit);
 
 loginForm.append(displayMsgDiv, nameLabelDiv, nameInputDiv, pwLabelDiv, pwInputDiv, loginSubmitDiv);
 export function createProfile(type, userAttr, str) {
+    let div = document.createElement("div")
+    div.className = "childOfProfile"
+
     let desc = document.createElement("p")
-    desc.textContent= str + ": " 
+    desc.textContent = str + ": "
     let newelement = document.createElement(type)
     newelement.textContent = userAttr
     newelement.classList = "Profile" + str
-    desc.append(newelement)
-    profile.append(desc)
+    desc.style.display = "inline-block"
+    newelement.style.display = "inline-block"
+    div.append(desc, newelement)
+    profile.append(div)
 }
 // export default {loginForm,updateChat, createProfile};

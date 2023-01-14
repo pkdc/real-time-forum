@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
             let msgtext = document.createElement("p")
             let timeOfMsg = document.createElement("p")
             timeOfMsg.classList = "timeofmsg"
-            timeOfMsg.textContent=  timenow()
+            timeOfMsg.textContent = timenow()
             timeOfMsg.style.fontSize = "9px"
             msgrow.className = "msg-row"
             msgtext.className = "msg-text"

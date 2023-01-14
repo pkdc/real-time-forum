@@ -20,8 +20,9 @@ func createUsersTable() {
 		lastname VARCHAR(30),
 		email VARCHAR(50),
 		password VARCHAR(100),
-		notifications VARCHAR(100),
-		loggedIn BOOLEAN);`)
+		loggedIn BOOLEAN,
+		profilepicture VARCHAR(100),
+		notifications VARCHAR(100));`)
 	if err != nil {
 		log.Fatal(err)
 	}

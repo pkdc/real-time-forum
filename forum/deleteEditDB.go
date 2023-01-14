@@ -35,7 +35,7 @@ func DeleteAllPosts() {
 }
 
 func DeleteAllUsers() {
-	stmt, err := db.Prepare("DELETE FROM users;")
+	stmt, err := db.Prepare("DELETE FROM users ;")
 	if err != nil {
 		log.Fatal(err)
 	}

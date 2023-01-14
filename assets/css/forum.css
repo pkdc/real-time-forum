@@ -16,121 +16,142 @@
     /* overflow-y: hidden; */
 }
 
+.profileImage {
+
+    width: 99px;
+    float: left;
+    height: 99px;
+    color: white;
+    margin-top: 4vh;
+    overflow: hidden;
+    border-radius: 50%;
+    border-style: double;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.userProfilImage {
+    width: 99px;
+    float: left;
+    height: 99px;
+}
+
+.userProfilImageReg {
+    margin-top: 5px;
+    width: 99px;
+    height: 99px;
+}
+
+.profileTitle {
+    font-size: 3vh;
+    text-align: center;
+    font-family: Big Caslon;
+    /* position: relative; */
+}
+
 /* the section left section named profile */
 .profile {
-    padding: 2%;
-    height: 120vh;
+    width: 50%;
+    height: 20vh;
     color: white;
-    font-size: 2vw;
-    overflow: hidden;
-    max-height: 90px;
-    /* margin-top: 4.2%; */
-    min-height: 130px;
+    overflow: scroll;
     border-radius: 15px;
     border-style: double;
     background-color: rgba(0, 0, 0, .6);
 }
 
-.Profileid {
-    width: auto;
+.childOfProfile {
+    /* height: 11%; */
+    /* height: 2vh; */
+    padding-left: 5%;
+}
+
+.childOfProfile p {
+    height: 15%;
+    /* font-size: small; */
+}
+
+.childOfProfile p:first-child {
+    color: black;
+    font-weight: bold;
+    font-size: initial;
+    margin-bottom: 0px;
     height: auto;
-    padding: 6px;
+}
+
+.childOfProfile p:nth-child(2) {
+    margin-bottom: 0px;
+    font-weight: bold;
+    font-size: small;
+    height: auto;
+}
+
+
+.Profileid {
     color: brown;
-    display: block;
-    margin-left: 0%;
-    position: absolute;
-    text-align: center;
-    background: black;
-    margin-block-end: 0%;
+    margin-bottom: auto;
+    font-size: 15px;
+    margin-left: 5px;
 }
 
 .Profilenickname {
-    width: auto;
-    height: auto;
-    padding: 0px;
-    display: block;
-    margin-left: 10%;
-    position: absolute;
-    text-align: center;
-    margin-block-end: 0%;
-    color: crimson;
+    color: brown;
+    margin-bottom: auto;
+    font-size: 15px;
+    margin-left: 5px;
 }
 
 .Profileage {
-    width: auto;
-    height: auto;
-    padding: 0px;
-    display: block;
-    margin-left: 20%;
-    position: absolute;
-    text-align: center;
-    margin-block-end: 0%;
-    color: aqua;
+    color: brown;
+    margin-bottom: auto;
+    font-size: 15px;
+    margin-left: 5px;
 }
 
 .Profilegender {
-    width: auto;
-    height: auto;
-    padding: 0px;
-    display: block;
-    margin-left: 30%;
-    position: absolute;
-    text-align: center;
-    margin-block-end: 0%;
-    color: blue;
+    color: brown;
+    margin-bottom: auto;
+    font-size: 15px;
+    margin-left: 5px;
 }
 
 .Profilefirstname {
-    width: auto;
-    height: auto;
-    padding: 0px;
-    display: block;
-    margin-left: 0%;
-    margin-top: 4%;
-    position: absolute;
-    text-align: center;
-    margin-block-end: 0%;
-    color: blueviolet;
+    color: brown;
+    margin-bottom: auto;
+    font-size: 15px;
+    margin-left: 5px;
 }
 
 .Profilelastname {
-    width: auto;
-    height: auto;
-    padding: 0px;
-    display: block;
-    margin-left: 10%;
-    margin-top: 4%;
-    position: absolute;
-    text-align: center;
-    margin-block-end: 0%;
-    color: chartreuse;
+    color: brown;
+    margin-bottom: auto;
+    font-size: 15px;
+    margin-left: 5px;
 }
 
 .Profileemail {
-    width: auto;
-    height: auto;
-    padding: 0px;
-    display: block;
-    margin-left: 20%;
-    margin-top: 4%;
-    position: absolute;
-    text-align: center;
-    margin-block-end: 0%;
-    color: darkgreen;
+    color: brown;
+    margin-bottom: auto;
+    font-size: 15px;
+    margin-left: 5px;
 }
 
 
 /* ---------------------------------------------/ the third left section named just form /------------------------------------------- */
 
 .newPostFormSection {
-    padding: 5%;
-    margin-top: 1%;
+    padding-left: 5%;
+    padding-top: 1%;
+    padding-bottom: 1.5%;
+    height: 33%;
+    font-size: 2vh;
     max-width: 70%;
     margin: auto;
     color: white;
     border-radius: 15px;
     border-style: double;
     background-color: rgba(0, 0, 0, .6);
+    margin-top: 1%;
+    overflow: scroll;
 }
 
 .newPostTitlesArea {
@@ -151,7 +172,7 @@
 
 .newPostInput {
     width: 80%;
-    margin-bottom: 5%;
+    margin-bottom: 2.5%;
 }
 
 input#title {
@@ -184,13 +205,14 @@ select#category {
 }  */
 
 
-/* <div>{
-    ;-----------> maybe somthing like newPostContentInputArea
-} */
+.newPostContentInputArea {
+    margin: 0%;
+}
 
-/* <div>{
-    ;-----------> maybe somthing like newPostContentInputBox
-} */
+.newPostContentInputBox {
+    width: 90%;
+    margin-bottom: 2.5%;
+}
 
 /* <div>{
     ;-----------> maybe somthing like newPostSubmitButtonDiv
@@ -257,6 +279,8 @@ select#category {
 
 .commentSubmitButtonDiv {
     text-align: end;
+    display: inline;
+    float: right;
 }
 
 .commentSubmitButton {
@@ -348,21 +372,22 @@ select#category {
 }
 
 .postCategoryId {
-    padding-top: 5px;
+    /* padding-top: 5px;
     margin-left: 5px;
-    width: auto;
+    width: auto; */
+    max-inline-size: fit-content;
+    padding-top: 1px;
+    position: initial;
+    display: flex;
+
 }
 
 .postCategoryId p {
-    padding: 2%;
     margin: auto;
-    text-align: right;
 }
 
-.postAuthorId {
-    size: 0vh;
-    height: 0px;
-    margin: 0px;
+.postAuthorId p {
+    color: black;
 }
 
 .postAuthorId p {
@@ -374,8 +399,8 @@ select#category {
 @media only screen and (max-width: 700px) {
 
     .profile {
-        min-height: 80px;
-        font-size: 3vw;
+        min-height: 90px;
+        /* font-size: 3vw; */
     }
 
 }

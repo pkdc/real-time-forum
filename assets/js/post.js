@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const comment = document.querySelector(".comment")
                 let newCom = CreateComments(jsonFile, parseInt(commentPostId) - 1)
                 //    comment.append(newCom)
-                console.log("NEWCOM",newCom)
+                console.log("NEWCOM", newCom)
                 comment.insertBefore(newCom, comment.children[1])
             }
         } else if (resp.label === "showComment") {
@@ -110,7 +110,13 @@ function createPost(arr) {
         contentDiv.append(contentText)
         categoryDiv.append(categoryText)
         userIdDiv.append(userIdText)
-        postDiv.append(titleForm, contentDiv, categoryDiv, userIdDiv)
+        categoryDiv.style.display = "inline-block"
+        userIdDiv.style.display = "inline-block"
+        userIdDiv.style.float = "right"
+        const bottomline = document.createElement("div");
+        bottomline.className = "bottomline";
+        bottomline.append(categoryDiv, userIdDiv);
+        postDiv.append(titleForm, contentDiv, bottomline)
         allPost.append(postDiv)
     }
     DisplayPost.appendChild(allPost)
@@ -120,8 +126,8 @@ const PostHandler = function (e) {
     const formFields = new FormData(e.target);
     const payloadObj = Object.fromEntries(formFields.entries());
     payloadObj["label"] = "post";
-    let profid = document.querySelector(".Profileid").textContent
-    payloadObj["userID"] = document.querySelector(".Profileid").textContent
+    let profid = document.querySelector(".ProfileID").textContent
+    payloadObj["userID"] = document.querySelector(".ProfileID").textContent
     console.log("checking target", payloadObj)
     postSocket.send(JSON.stringify(payloadObj));
 };
@@ -159,24 +165,54 @@ const CatInputOpt1 = document.createElement("option");
 const CatInputOpt2 = document.createElement("option");
 const CatInputOpt3 = document.createElement("option");
 const CatInputOpt4 = document.createElement("option");
+const CatInputOpt5 = document.createElement("option");
+const CatInputOpt6 = document.createElement("option");
+const CatInputOpt7 = document.createElement("option");
+const CatInputOpt8 = document.createElement("option");
+const CatInputOpt9 = document.createElement("option");
+const CatInputOpt10 = document.createElement("option");
 CatInputOpt1.setAttribute("name", "category_option");
 CatInputOpt2.setAttribute("name", "category_option");
 CatInputOpt3.setAttribute("name", "category_option");
 CatInputOpt4.setAttribute("name", "category_option");
+CatInputOpt5.setAttribute("name", "category_option");
+CatInputOpt6.setAttribute("name", "category_option");
+CatInputOpt7.setAttribute("name", "category_option");
+CatInputOpt8.setAttribute("name", "category_option");
+CatInputOpt9.setAttribute("name", "category_option");
+CatInputOpt10.setAttribute("name", "category_option");
 CatInputOpt1.setAttribute("id", "1");
 CatInputOpt2.setAttribute("id", "2");
 CatInputOpt3.setAttribute("id", "3");
 CatInputOpt4.setAttribute("id", "4");
-CatInputOpt1.setAttribute("value", "Anthony");
-CatInputOpt2.setAttribute("value", "Burak");
-CatInputOpt3.setAttribute("value", "David");
-CatInputOpt4.setAttribute("value", "Godfrey");
-CatInputOpt1.textContent = "Anthony";
-CatInputOpt2.textContent = "Burak";
-CatInputOpt3.textContent = "David";
-CatInputOpt4.textContent = "Godfrey";
+CatInputOpt5.setAttribute("id", "5");
+CatInputOpt6.setAttribute("id", "6");
+CatInputOpt7.setAttribute("id", "7");
+CatInputOpt8.setAttribute("id", "8");
+CatInputOpt9.setAttribute("id", "9");
+CatInputOpt10.setAttribute("id", "10");
+CatInputOpt1.setAttribute("value", "HTML");
+CatInputOpt2.setAttribute("value", "CSS");
+CatInputOpt3.setAttribute("value", "JAVASCRIPT");
+CatInputOpt4.setAttribute("value", "GOLANG");
+CatInputOpt5.setAttribute("value", "DOCKER");
+CatInputOpt6.setAttribute("value", "PHP");
+CatInputOpt7.setAttribute("value", "WEBSOCKET");
+CatInputOpt8.setAttribute("value", "SQL");
+CatInputOpt9.setAttribute("value", "PYTHON");
+CatInputOpt10.setAttribute("value", "MISCELLANEOUS");
+CatInputOpt1.textContent = "HTML";
+CatInputOpt2.textContent = "CSS";
+CatInputOpt3.textContent = "JAVASCRIPT";
+CatInputOpt4.textContent = "GOLANG";
+CatInputOpt5.textContent = "DOCKER";
+CatInputOpt6.textContent = "PHP";
+CatInputOpt7.textContent = "WEBSOCKET";
+CatInputOpt8.textContent = "SQL";
+CatInputOpt9.textContent = "PYTHON";
+CatInputOpt10.textContent = "MISCELLANEOUS";
 CatOptionDiv.setAttribute("id", "category");
-CatOptionDiv.append(CatInputOpt1, CatInputOpt2, CatInputOpt3, CatInputOpt4)
+CatOptionDiv.append(CatInputOpt1, CatInputOpt2, CatInputOpt3, CatInputOpt4, CatInputOpt5, CatInputOpt6, CatInputOpt7, CatInputOpt8, CatInputOpt9, CatInputOpt10)
 
 const contLabelDiv = document.createElement('div');
 contLabelDiv.className = "newPostContentTitleDiv"
@@ -208,7 +244,7 @@ const commentHandler = function (e) {
     const payloadObjCom = {}
     payloadObj["label"] = "Createcomment";
     payloadObj["postID"] = (parseInt(e.submitter.value) + 1) + ""
-    payloadObj["userID"] = document.querySelector(".Profileid").textContent
+    payloadObj["userID"] = document.querySelector(".ProfileID").textContent
     payloadObjCom["comment"] = e.target[0].value
     let strCom = JSON.stringify(payloadObjCom)
     payloadObj["commentOfPost"] = strCom

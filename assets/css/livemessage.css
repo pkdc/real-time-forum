@@ -10,9 +10,11 @@
     position: initial;
     margin-right: 0.3%;
     border-radius: 15px;
+    border-style: double;
     align-items: center;
     flex-direction: column;
-    background-image: linear-gradient(to right, #29292b, #453f96);
+    background-color: rgba(0, 0, 0, .6);
+    /* background-image: linear-gradient(to right, #29292b, #453f96); */
     overflow: hidden;
 }
 
@@ -40,6 +42,7 @@
     min-width: 250px;
     align-self: center;
     border-radius: 15px;
+    border-style: double;
     background: #b7babf;
 }
 
@@ -50,9 +53,14 @@
     display: none;
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
-    background: #66d1d8;
+    border-right-style: double;
+    background-color: rgba(0, 0, 0, .6);
 }
 
+.usernamediv {
+    margin-top: 10px;
+    margin-left: 5px;
+}
 
 
 .msgArea {
@@ -133,7 +141,9 @@
     font-weight: 300;
     margin-left: 9px;
     padding: 20px 40px;
-    background: #d80606;
+    border-style: double;
+    background: #7d7777;
+    border: 2px solid #1c87c9;
 }
 
 button.submitMsg {
@@ -147,7 +157,7 @@ button.submitMsg {
 .closeChat {
     position: relative;
     left: 70%;
-    top: 92px;
+    top: 110px;
 }
 
 /* ----------------------------------------------------------Friend List------------------------------- */
@@ -189,10 +199,11 @@ button.submitMsg {
     width: 100%;
     height: auto;
     min-height: 10px;
-    max-height: 90px;
+    max-height: 130px;
     overflow: scroll;
     display: grid;
-    background-color: orange;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, .6);
 }
 
 .col-2 ul li {
