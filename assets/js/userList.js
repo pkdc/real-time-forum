@@ -1,5 +1,5 @@
 // import throttle from '/assets/js/node_modules/lodash-es/throttle.js';
-import { chatSocket, targetUserId, timenow } from "./chat.js";
+import { chatSocket, targetUserId, timenow, genTypingDiv } from "./chat.js";
 const userListSocket = new WebSocket("ws://localhost:8080/userListWs/")
 const chatBox = document.querySelector(".col-1")
 const msgArea = document.querySelector(".msgArea")
@@ -293,15 +293,43 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 console.log("creating chat input")
                 const chatInput = document.createElement("textarea")
                 // chatInput.setAttribute("type", "text")
+                const chatFormDiv = document.createElement("div");
+                chatFormDiv.classList.add("chat-form-div");
                 const chatForm = document.createElement("form")
                 const submitChat = document.createElement("button")
                 chatForm.addEventListener("submit", SubChatHandler)
+                chatForm.id = "chat-form";
                 submitChat.setAttribute("type", "submit")
                 submitChat.classList = "submitMsg"
-                submitChat.textContent = "submit msg"
+                submitChat.textContent = "send"
                 chatInput.classList = "chatInput"
                 chatForm.append(chatInput, submitChat)
-                chatBox.append(chatForm)
+                chatFormDiv.append(chatForm)
+
+                let typingDiv = genTypingDiv();
+                
+                chatBox.append(chatFormDiv, typingDiv);
+
+                chatInput.addEventListener("input", function(e) {
+                    // console.log("input event");
+                    const profileid = document.querySelector(".ProfileID");
+                    let typingPayloadObj = {};
+                    typingPayloadObj["label"] = "typing";
+                    typingPayloadObj["sender_id"] = parseInt(profileid.textContent)
+                    typingPayloadObj["receiver_id"] = parseInt(usID)
+                    console.log(`${typingPayloadObj["sender_id"]} is Typing, and sends to ${typingPayloadObj["receiver_id"]}`);
+                    chatSocket.send(JSON.stringify(typingPayloadObj));
+                });
+                chatInput.addEventListener("blur", function(e) {
+                    console.log("blur event");
+                    const profileid = document.querySelector(".ProfileID");
+                    let stopTypingPayloadObj = {};
+                    stopTypingPayloadObj["label"] = "stop-typing";
+                    stopTypingPayloadObj["sender_id"] = parseInt(profileid.textContent)
+                    stopTypingPayloadObj["receiver_id"] = parseInt(usID)
+                    console.log(`${stopTypingPayloadObj["sender_id"]} has stopped Typing, and stop sending to ${stopTypingPayloadObj["receiver_id"]}`);
+                    chatSocket.send(JSON.stringify(stopTypingPayloadObj));
+                });
             } else {
                 console.log("chatinput already exist")
             }
@@ -364,7 +392,6 @@ const SubChatHandler = function (e) {
     timeOfMsg.textContent = timenow()
     timeOfMsg.style.fontSize = "9px"
     msgrow.append(msgtext)
-    msgrow.append(timeOfMsg)
     msgArea.append(msgrow)
     // ***********************NEED TO UPDATE USERLIST *********************
     // let userlist = document.querySelector(".user-list")

@@ -184,21 +184,17 @@ input#title {
 } */
 
 
-.categoryLableTitle {
-    text-align: left;
-}
+/* .categoryLableTitle{
+    
+} */
 
 select#category {
     color: cadetblue;
 }
 
-.newPostContentTitleDiv {
-    width: auto;
-    padding: 2%;
-    margin: auto;
-    text-align: left;
-    border-radius: 2px;
-}
+/* .newPostContentTitleDiv{
+    
+} */
 
 /* <div><label for="content">{
     ;-----------> maybe somthing like newPostContentTitle
@@ -350,8 +346,6 @@ select#category {
 
 .postTitle {
     margin-bottom: 5px;
-    border-radius: 2px;
-    word-break: break-word;
 }
 
 .titleButtonForm {
