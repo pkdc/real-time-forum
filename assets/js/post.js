@@ -145,9 +145,9 @@ titleLabel.setAttribute("for", "title");
 titleLabelDiv.append(titleLabel);
 const titleInputDiv = document.createElement('div');
 titleInputDiv.className = "newPostTitleInputDiv"
-const titleInput = document.createElement('input');
+const titleInput = document.createElement('textarea');
 titleInput.className = "newPostInput"
-titleInput.setAttribute("type", "text");
+titleInput.setAttribute("maxlength", 60);
 titleInput.setAttribute("name", "title");
 titleInput.setAttribute("id", "title");
 titleInputDiv.append(titleInput);
@@ -223,9 +223,8 @@ contLabel.setAttribute("for", "content");
 contLabelDiv.append(contLabel);
 const contInputDiv = document.createElement('div');
 contInputDiv.className = "newPostContentInputArea"
-const contInput = document.createElement('input');
+const contInput = document.createElement('textarea');
 contInput.className = "newPostContentInputBox"
-contInput.setAttribute("type", "text");
 contInput.setAttribute("name", "content");
 contInput.setAttribute("id", "content");
 contInputDiv.append(contInput);
@@ -310,6 +309,7 @@ function CreateComments(arr, value) {
         const allComments = document.createElement("div")
         allComments.id = "allComments"
         for (let i = 0; i < comJson.length; i++) {
+            console.log("cominfo", comJson[i].comInfo)
             const comDiv = document.createElement("div")
             const comContentDiv = document.createElement("div");
             const comUserIdDiv = document.createElement("div");
@@ -324,7 +324,7 @@ function CreateComments(arr, value) {
             let commenTextNode = document.createTextNode(comJson[i].comInfo.comment)
             // let commenTextNode = document.createTextNode(" comment")
             // let comUserIdtextNode = document.createTextNode(comJson[i].comInfo.userID)
-            let comUserIdtextNode = document.createTextNode(" userID ")
+            let comUserIdtextNode = document.createTextNode(comJson[i].comInfo.userID)
             commentText.appendChild(commenTextNode)
             comUserIdText.appendChild(comUserIdtextNode)
             comContentDiv.append(commentText)

@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // update user list after a user login
 
             if (resp.pass) {
-
+              
                 let user = JSON.parse(resp.content)
                 console.log(user)
                 let pictureArea = document.querySelector(".profileImage")

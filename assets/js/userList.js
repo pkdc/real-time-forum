@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
                     chatBoxButton.addEventListener("click", function (e) {
                         if (open == false) {
                             open = true
-                            chatBoxButton.className = "nameButtons"
                             usID = chatBoxButton.value
                             usname.textContent = chatBoxButton.textContent
                             chatBox.id = `chatbox-${usID}`
@@ -141,94 +140,94 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 console.log("this is all response after logged in as a newUser", resp)
                 if ((resp.online_users).length != numberOfUsers) {
                     let inde = regNewUser(resp.online_users)
-                    if (typeof (inde) == "number") {
-                        console.log("found this index:", inde)
-                        let newus = resp.online_users[inde]
-                        console.log("newuser:", newus)
-                        const uList = document.querySelector(".user-list");
-                        let nickname = newus.nickname
-                        let status = newus.status
-                        let userID = newus.userID
-                        let noti = newus.noti
-                        arrayOfUsers.push(userID)
-                        numberOfUsers = (resp.online_users).length
-                        const nicknameItem = document.createElement("li");
-                        nicknameItem.id = "li" + userID
-                        const chatBoxButton = document.createElement("button")
-                        chatBoxButton.className = "nameButtons"
-                        const chatBoxForm = document.createElement("form")
-                        chatBoxForm.addEventListener("submit", showChatHandler)
-                        chatBoxButton.setAttribute("type", "submit")
-                        chatBoxButton.value = userID
-                        chatBoxButton.id = `ContactID-${userID}`
-                        chatBoxButton.addEventListener("click", function (e) {
-                            if (open == false) {
-                                open = true
-                                usID = chatBoxButton.value
-                                usname.textContent = chatBoxButton.textContent
-                                chatBox.id = `chatbox-${usID}`
-                                chatBox.style.display = "block"
-                                window.onclick = function (event) {
-                                    // console.log("buttonhere clicked")
-                                    // scr()
-                                    open = false
-                                    if (event.target.className == "closeChat") {
-                                        chatBox.style.display = "none"
-                                        chatBox.id = "chatbox"
-                                        loadMsg = false
-                                        while (msgArea.firstChild) {
-                                            msgArea.removeChild(msgArea.firstChild)
-                                        }
+                    if (typeof(inde) == "number") {
+                    console.log("found this index:", inde)
+                    let newus = resp.online_users[inde]
+                    console.log("newuser:", newus)
+                    const uList = document.querySelector(".user-list");
+                    let nickname = newus.nickname
+                    let status = newus.status
+                    let userID = newus.userID
+                    let noti = newus.noti
+                    arrayOfUsers.push(userID)
+                    numberOfUsers = (resp.online_users).length
+                    const nicknameItem = document.createElement("li");
+                    nicknameItem.id = "li" + userID
+                    const chatBoxButton = document.createElement("button")
+                    chatBoxButton.classList = "nameButtons"
+                    const chatBoxForm = document.createElement("form")
+                    chatBoxForm.addEventListener("submit", showChatHandler)
+                    chatBoxButton.setAttribute("type", "submit")
+                    chatBoxButton.value = userID
+                    chatBoxButton.id = `ContactID-${userID}`
+                    chatBoxButton.addEventListener("click", function (e) {
+                        if (open == false) {
+                            open = true
+                            usID = chatBoxButton.value
+                            usname.textContent = chatBoxButton.textContent
+                            chatBox.id = `chatbox-${usID}`
+                            chatBox.style.display = "block"
+                            window.onclick = function (event) {
+                                // console.log("buttonhere clicked")
+                                // scr()
+                                open = false
+                                if (event.target.className == "closeChat") {
+                                    chatBox.style.display = "none"
+                                    chatBox.id = "chatbox"
+                                    loadMsg = false
+                                    while (msgArea.firstChild) {
+                                        msgArea.removeChild(msgArea.firstChild)
                                     }
                                 }
                             }
-                            if (open == true) {
-                                usID = chatBoxButton.value
-                                chatBox.id = `chatbox-${usID}`
-                                usname.textContent = chatBoxButton.textContent
-                                loadMsg = false
-                                while (msgArea.firstChild) {
-                                    msgArea.removeChild(msgArea.firstChild)
-                                }
+                        }
+                        if (open == true) {
+                            usID = chatBoxButton.value
+                            chatBox.id = `chatbox-${usID}`
+                            usname.textContent = chatBoxButton.textContent
+                            loadMsg = false
+                            while (msgArea.firstChild) {
+                                msgArea.removeChild(msgArea.firstChild)
                             }
-
-                        })
-                        chatBoxForm.append(chatBoxButton)
-                        let userNick = document.querySelector(".ProfileNickname") // reg userNick is null
-                        chatBoxButton.textContent = `${nickname}`;
-                        if (chatBoxButton.textContent == userNick.textContent) {
-                            arr = noti.split(",")
-                            nicknameItem.style.display = "none"
-                        }
-                        if (status == false) {
-                            nicknameItem.classList = "offline"
-                        } else {
-                            nicknameItem.classList = "online"
                         }
 
-                        nicknameItem.append(chatBoxForm)
-                        uList.insertBefore(nicknameItem, uList.children[inde + 1])
-                        // if button already exists do not create another
-
-                        if (document.querySelector(".closeChat")) {
-
-                        } else {
-
-                            const closeChatBox = document.createElement("button")
-                            closeChatBox.textContent = "End Chat"
-                            closeChatBox.classList = "closeChat"
-                            chatBox.append(closeChatBox)
-                        }
-
-                        console.log("CHECKING IMPORTED USER-1", realTargetUser)
-                        if (realTargetUser != null) {
-                            console.log("CHECKING IMPORTED USER-2", realTargetUser)
-                            // let userlist = document.querySelector(".user-list")
-                            // let targetUser = document.querySelector(`#li${realTargetUser}`)
-                            // userlist.insertBefore(targetUser, userlist.firstChild)
-                        }
-
+                    })
+                    chatBoxForm.append(chatBoxButton)
+                    let userNick = document.querySelector(".ProfileNickname") // reg userNick is null
+                    chatBoxButton.textContent = `${nickname}`;
+                    if (chatBoxButton.textContent == userNick.textContent) {
+                        arr = noti.split(",")
+                        nicknameItem.style.display = "none"
                     }
+                    if (status == false) {
+                        nicknameItem.classList = "offline"
+                    } else {
+                        nicknameItem.classList = "online"
+                    }
+
+                    nicknameItem.append(chatBoxForm)
+                    uList.insertBefore(nicknameItem, uList.children[inde + 1])
+                    // if button already exists do not create another
+
+                    if (document.querySelector(".closeChat")) {
+
+                    } else {
+
+                        const closeChatBox = document.createElement("button")
+                        closeChatBox.textContent = "End Chat"
+                        closeChatBox.classList = "closeChat"
+                        chatBox.append(closeChatBox)
+                    }
+
+                    console.log("CHECKING IMPORTED USER-1", realTargetUser)
+                    if (realTargetUser != null) {
+                        console.log("CHECKING IMPORTED USER-2", realTargetUser)
+                        // let userlist = document.querySelector(".user-list")
+                        // let targetUser = document.querySelector(`#li${realTargetUser}`)
+                        // userlist.insertBefore(targetUser, userlist.firstChild)
+                    }
+
+                }
                 }
                 for (const { nickname, status, userID, msgcheck, noti } of resp.online_users) {
                     arrayOfUsers.push(userID)
@@ -256,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
             // scr()
 
             if (msgArea.firstElementChild == null) {
-                msgArea.addEventListener("scroll", () => { throttle(loadMsgCallback, 200) });
+                msgArea.addEventListener("scroll", () => {throttle(loadMsgCallback, 200)});
             }
             let js = JSON.parse(resp.content)
             if (js != null) {
@@ -278,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
                     singleMsg.append(msgContent)
                     singleMsg.append(timeOfMsg)
                     msgArea.insertBefore(singleMsg, msgArea.firstChild)
-
+                    
                     // msgArea.append(singleMsg)
                 }
                 if (first == 0) {
@@ -287,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 } else {
                     msgArea.scrollTop = msgArea.scrollHeight - prevScrollHeight
                 }
-                console.log(msgArea.scrollTop)
+                console.log(msgArea.scrollTop)    
             }
             if (document.querySelector(".chatInput") == null) {
                 console.log("creating chat input")
@@ -338,13 +337,13 @@ document.addEventListener("DOMContentLoaded", function (e) {
 })
 
 const loadMsgCallback = function () {
-    console.log("scrolling", msgArea.scrollTop)
-    if (msgArea.scrollTop <= 200) {
-        // console.log(`Loading msg ... msgArea.scrollTop = ${msgArea.scrollTop} load msg when value <= 20 `);
-        loadMsg = true
-        loadPrevMsgsHandler();
-
-    }
+        console.log("scrolling", msgArea.scrollTop)
+        if (msgArea.scrollTop <= 200) {
+            // console.log(`Loading msg ... msgArea.scrollTop = ${msgArea.scrollTop} load msg when value <= 20 `);
+            loadMsg = true
+            loadPrevMsgsHandler();
+            
+        }  
 }
 
 const loadPrevMsgsHandler = function () {
@@ -392,6 +391,7 @@ const SubChatHandler = function (e) {
     timeOfMsg.textContent = timenow()
     timeOfMsg.style.fontSize = "9px"
     msgrow.append(msgtext)
+    msgrow.append(timeOfMsg)
     msgArea.append(msgrow)
     // ***********************NEED TO UPDATE USERLIST *********************
     // let userlist = document.querySelector(".user-list")
@@ -417,11 +417,9 @@ function checkArr(arr, userArr) {
 function notiDisplay(arr) {
 
     for (let i = 0; i < arr.length; i++) {
-        console.log("notification:", arr)
         let x = document.querySelector("#ContactID-" + arr[i])
         if (x != null) {
             let k = document.querySelector(`#chatbox-${arr[i]}`)
-            console.log("K:", k)
             if (k == null) {
                 x.classList.add("notif")
             }

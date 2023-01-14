@@ -131,7 +131,8 @@ func processMsg(msg WsChatPayload) {
 		log.Fatal(err)
 	}
 	defer rows.Close()
-	rows.Exec(msg.SenderId, msg.ReceiverId, time.Now(), msg.Content, false)
+	timeofmsg:=(time.Now()).Format(time.Stamp)
+	rows.Exec(msg.SenderId, msg.ReceiverId, timeofmsg, msg.Content, false)
 	fmt.Println("msg saved successfully")
 	notif := FindNotification(msg.ReceiverId)
 	fmt.Println("OLD NOTIFICATION ARRAY", notif)

@@ -148,11 +148,6 @@ li a:hover:not(.active) {
 }
 
 
-#category {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
 
 #category>div {
     margin: 5px;
