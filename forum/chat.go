@@ -14,9 +14,8 @@ import (
 type WsChatResponse struct {
 	Label     string `json:"label"`
 	Content   string `json:"content"`
-	UserID    int    `json:"userID"` // sender
-	Sender    string `json:"sender"`
-	ContactID int    `json:"contactID"` // receiver
+	UserID    int    `json:"userID"`
+	ContactID int    `json:"contactID"`
 }
 
 type MessageArray struct {
@@ -69,13 +68,6 @@ func readChatPayloadFromWs(conn *websocket.Conn) {
 		} else if err == nil && chatPayload.Label == "updateChat" {
 			// saving websocket to map
 			chatWsMap[chatPayload.SenderId] = conn
-		} else if err == nil && (chatPayload.Label == "typing" || chatPayload.Label == "stop-typing") {
-			fmt.Printf("typing: chatPayload sender id: %d\n", chatPayload.SenderId)
-			fmt.Printf("typing: chatPayload ReceiverId: %d\n", chatPayload.ReceiverId)
-			// receiver is online
-			if userListWsMap[chatPayload.ReceiverId] != nil {
-				chatPayloadChan <- chatPayload
-			}
 		}
 	}
 }
@@ -86,40 +78,16 @@ func ProcessAndReplyChat() {
 
 		var responseChatPayload WsChatResponse
 
-		if receivedChatPayload.Label == "chat" {
-			responseChatPayload.Label = "msgIncoming"
-			responseChatPayload.UserID = receivedChatPayload.SenderId
-			responseChatPayload.ContactID = receivedChatPayload.ReceiverId
-			responseChatPayload.Content = receivedChatPayload.Content
-			receiverConn := chatWsMap[receivedChatPayload.ReceiverId]
-			err := receiverConn.WriteJSON(responseChatPayload)
-			updateUList()
-			if err != nil {
-				fmt.Println("failed to send message")
-			}
-		} else if receivedChatPayload.Label == "typing" {
-			findCurUser(receivedChatPayload.SenderId)
-			responseChatPayload.Label = "sender-typing"
-			responseChatPayload.UserID = receivedChatPayload.SenderId
-			responseChatPayload.ContactID = receivedChatPayload.ReceiverId
-			responseChatPayload.Sender = curUser.Nickname
-			fmt.Printf("typing: responseChatPayload sender id: %d\n", responseChatPayload.UserID)
-			fmt.Printf("typing: responseChatPayload sender name: %s\n", responseChatPayload.Sender)
-			fmt.Printf("typing: responseChatPayload ReceiverId: %d\n", responseChatPayload.ContactID)
-			receiverConn := chatWsMap[receivedChatPayload.ReceiverId]
-			err := receiverConn.WriteJSON(responseChatPayload)
-			if err != nil {
-				fmt.Println("failed to send message")
-			}
-		} else if receivedChatPayload.Label == "stop-typing" {
-			responseChatPayload.Label = "sender-stop-typing"
-			receiverConn := chatWsMap[receivedChatPayload.ReceiverId]
-			err := receiverConn.WriteJSON(responseChatPayload)
-			if err != nil {
-				fmt.Println("failed to send message")
-			}
+		responseChatPayload.Label = "msgIncoming"
+		responseChatPayload.UserID = receivedChatPayload.ReceiverId
+		responseChatPayload.ContactID = receivedChatPayload.SenderId
+		responseChatPayload.Content = receivedChatPayload.Content
+		receiverConn := chatWsMap[receivedChatPayload.ReceiverId]
+		err := receiverConn.WriteJSON(responseChatPayload)
+		updateUList()
+		if err != nil {
+			fmt.Println("failed to send message")
 		}
-
 	}
 }
 
@@ -131,7 +99,8 @@ func processMsg(msg WsChatPayload) {
 		log.Fatal(err)
 	}
 	defer rows.Close()
-	rows.Exec(msg.SenderId, msg.ReceiverId, time.Now(), msg.Content, false)
+	timeofmsg:=(time.Now()).Format(time.Stamp)
+	rows.Exec(msg.SenderId, msg.ReceiverId, timeofmsg, msg.Content, false)
 	fmt.Println("msg saved successfully")
 	notif := FindNotification(msg.ReceiverId)
 	fmt.Println("OLD NOTIFICATION ARRAY", notif)

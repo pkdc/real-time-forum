@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -280,10 +279,8 @@ func displayChatInfo(sendID, recID int) []MessageArray {
 	defer rows.Close()
 	for rows.Next() {
 		var oneMsg WsChatPayload
-		var msgTime time.Time
 		var msgID int
-		rows.Scan(&msgID, &(oneMsg.SenderId), &(oneMsg.ReceiverId), &msgTime, &(oneMsg.Content), &(oneMsg.Noti))
-		oneMsg.MessageTime = msgTime.String()
+		rows.Scan(&msgID, &(oneMsg.SenderId), &(oneMsg.ReceiverId), &(oneMsg.MessageTime), &(oneMsg.Content), &(oneMsg.Noti))
 		// rows2, err := db.Prepare("UPDATE users SET seen = ? WHERE msgID = ?;")
 		// if err != nil {
 		// 	log.Fatal(err)

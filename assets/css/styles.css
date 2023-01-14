@@ -118,6 +118,10 @@ li a:hover:not(.active) {
     justify-content: center;
 }
 
+.show {
+    opacity: 0.7;
+}
+
 #curentPost {
     width: 50%;
     padding-top: 1vh;
@@ -148,11 +152,6 @@ li a:hover:not(.active) {
 }
 
 
-#category {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
 
 #category>div {
     margin: 5px;
@@ -201,7 +200,7 @@ li a:hover:not(.active) {
 }
 
 .userPopUpP-content {
-     /* this is for the Register PopUp Form */
+    /* this is for the Register PopUp Form */
     width: 60%;
     margin: 50px auto;
     border: #a99567;
