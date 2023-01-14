@@ -16,142 +16,121 @@
     /* overflow-y: hidden; */
 }
 
-.profileImage {
-
-    width: 99px;
-    float: left;
-    height: 99px;
-    color: white;
-    margin-top: 4vh;
-    overflow: hidden;
-    border-radius: 50%;
-    border-style: double;
-    background-color: rgba(0, 0, 0, .6);
-}
-
-.userProfilImage {
-    width: 99px;
-    float: left;
-    height: 99px;
-}
-
-.userProfilImageReg {
-    margin-top: 5px;
-    width: 99px;
-    height: 99px;
-}
-
-.profileTitle {
-    font-size: 3vh;
-    text-align: center;
-    font-family: Big Caslon;
-    /* position: relative; */
-}
-
 /* the section left section named profile */
 .profile {
-    width: 50%;
-    height: 20vh;
+    padding: 2%;
+    height: 120vh;
     color: white;
-    overflow: scroll;
+    font-size: 2vw;
+    overflow: hidden;
+    max-height: 90px;
+    /* margin-top: 4.2%; */
+    min-height: 130px;
     border-radius: 15px;
     border-style: double;
     background-color: rgba(0, 0, 0, .6);
 }
 
-.childOfProfile {
-    /* height: 11%; */
-    /* height: 2vh; */
-    padding-left: 5%;
-}
-
-.childOfProfile p {
-    height: 15%;
-    /* font-size: small; */
-}
-
-.childOfProfile p:first-child {
-    color: black;
-    font-weight: bold;
-    font-size: initial;
-    margin-bottom: 0px;
-    height: auto;
-}
-
-.childOfProfile p:nth-child(2) {
-    margin-bottom: 0px;
-    font-weight: bold;
-    font-size: small;
-    height: auto;
-}
-
-
 .Profileid {
+    width: auto;
+    height: auto;
+    padding: 6px;
     color: brown;
-    margin-bottom: auto;
-    font-size: 15px;
-    margin-left: 5px;
+    display: block;
+    margin-left: 0%;
+    position: absolute;
+    text-align: center;
+    background: black;
+    margin-block-end: 0%;
 }
 
 .Profilenickname {
-    color: brown;
-    margin-bottom: auto;
-    font-size: 15px;
-    margin-left: 5px;
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 10%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: crimson;
 }
 
 .Profileage {
-    color: brown;
-    margin-bottom: auto;
-    font-size: 15px;
-    margin-left: 5px;
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 20%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: aqua;
 }
 
 .Profilegender {
-    color: brown;
-    margin-bottom: auto;
-    font-size: 15px;
-    margin-left: 5px;
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 30%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: blue;
 }
 
 .Profilefirstname {
-    color: brown;
-    margin-bottom: auto;
-    font-size: 15px;
-    margin-left: 5px;
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 0%;
+    margin-top: 4%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: blueviolet;
 }
 
 .Profilelastname {
-    color: brown;
-    margin-bottom: auto;
-    font-size: 15px;
-    margin-left: 5px;
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 10%;
+    margin-top: 4%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: chartreuse;
 }
 
 .Profileemail {
-    color: brown;
-    margin-bottom: auto;
-    font-size: 15px;
-    margin-left: 5px;
+    width: auto;
+    height: auto;
+    padding: 0px;
+    display: block;
+    margin-left: 20%;
+    margin-top: 4%;
+    position: absolute;
+    text-align: center;
+    margin-block-end: 0%;
+    color: darkgreen;
 }
 
 
 /* ---------------------------------------------/ the third left section named just form /------------------------------------------- */
 
 .newPostFormSection {
-    padding-left: 5%;
-    padding-top: 1%;
-    padding-bottom: 1.5%;
-    height: 33%;
-    font-size: 2vh;
+    padding: 5%;
+    margin-top: 1%;
     max-width: 70%;
     margin: auto;
     color: white;
     border-radius: 15px;
     border-style: double;
     background-color: rgba(0, 0, 0, .6);
-    margin-top: 1%;
-    overflow: scroll;
 }
 
 .newPostTitlesArea {
@@ -171,8 +150,8 @@
 }
 
 .newPostInput {
-    width: 80%;
-    margin-bottom: 2.5%;
+    width: auto;
+    margin-bottom: 5%;
 }
 
 input#title {
@@ -184,35 +163,29 @@ input#title {
 } */
 
 
-.categoryLableTitle {
-    text-align: left;
-}
+/* .categoryLableTitle{
+    
+} */
 
 select#category {
     color: cadetblue;
 }
 
-.newPostContentTitleDiv {
-    width: auto;
-    padding: 2%;
-    margin: auto;
-    text-align: left;
-    border-radius: 2px;
-}
+/* .newPostContentTitleDiv{
+    
+} */
 
 /* <div><label for="content">{
     ;-----------> maybe somthing like newPostContentTitle
 }  */
 
+/* <div>{
+    ;-----------> maybe somthing like newPostContentInputArea
+} */
 
-.newPostContentInputArea {
-    margin: 0%;
-}
-
-.newPostContentInputBox {
-    width: 90%;
-    margin-bottom: 2.5%;
-}
+/* <div>{
+    ;-----------> maybe somthing like newPostContentInputBox
+} */
 
 /* <div>{
     ;-----------> maybe somthing like newPostSubmitButtonDiv
@@ -279,8 +252,6 @@ select#category {
 
 .commentSubmitButtonDiv {
     text-align: end;
-    display: inline;
-    float: right;
 }
 
 .commentSubmitButton {
@@ -350,8 +321,6 @@ select#category {
 
 .postTitle {
     margin-bottom: 5px;
-    border-radius: 2px;
-    word-break: break-word;
 }
 
 .titleButtonForm {
@@ -372,22 +341,21 @@ select#category {
 }
 
 .postCategoryId {
-    /* padding-top: 5px;
+    padding-top: 5px;
     margin-left: 5px;
-    width: auto; */
-    max-inline-size: fit-content;
-    padding-top: 1px;
-    position: initial;
-    display: flex;
-
+    width: auto;
 }
 
 .postCategoryId p {
+    padding: 2%;
     margin: auto;
+    text-align: right;
 }
 
-.postAuthorId p {
-    color: black;
+.postAuthorId {
+    size: 0vh;
+    height: 0px;
+    margin: 0px;
 }
 
 .postAuthorId p {
@@ -399,8 +367,8 @@ select#category {
 @media only screen and (max-width: 700px) {
 
     .profile {
-        min-height: 90px;
-        /* font-size: 3vw; */
+        min-height: 80px;
+        font-size: 3vw;
     }
 
 }

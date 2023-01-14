@@ -20,9 +20,8 @@ func createUsersTable() {
 		lastname VARCHAR(30),
 		email VARCHAR(50),
 		password VARCHAR(100),
-		loggedIn BOOLEAN,
-		profilepicture VARCHAR(100),
-		notifications VARCHAR(100));`)
+		notifications VARCHAR(100),
+		loggedIn BOOLEAN);`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,7 +78,7 @@ func createMessageTable() {
 	(messageID INTEGER PRIMARY KEY AUTOINCREMENT,
 		senderID INTEGER,
 		receiverID INTEGER,
-		messageTIme VARCHAR(2000),
+		messageTIme DATETIME,
 		content VARCHAR(2000),
 		seen BOOLEAN,
 		FOREIGN KEY(senderID) REFERENCES users(userID),

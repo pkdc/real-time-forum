@@ -10,11 +10,9 @@
     position: initial;
     margin-right: 0.3%;
     border-radius: 15px;
-    border-style: double;
     align-items: center;
     flex-direction: column;
-    background-color: rgba(0, 0, 0, .6);
-    /* background-image: linear-gradient(to right, #29292b, #453f96); */
+    background-image: linear-gradient(to right, #29292b, #453f96);
     overflow: hidden;
 }
 
@@ -42,25 +40,92 @@
     min-width: 250px;
     align-self: center;
     border-radius: 15px;
-    border-style: double;
     background: #b7babf;
 }
 
+.chat-form-div {
+    
+}
 
+#chat-form {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.typing-div {
+    display: flex;
+    justify-content: center;
+    margin: 1rem;
+    font-size: 12px;
+    opacity: 0;
+    color: white;
+    /* position: relative; */
+    /* font-size: 1rem; */
+}
+
+.typing-text {
+    padding: 33% 0;
+    display: block;
+    position: relative;
+    color: white;
+    font-size: 20px;
+    height: 100px;
+    text-align: center;
+}
+.typing-left-dots-div {
+    margin: 0 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    height: 100px;
+    width: 100px;
+}
+.typing-right-dots-div {
+    margin: 0 10px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    height: 100px;
+    width: 100px;
+}
+.typing-dots {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    /* height: 50px;
+    width: 50px; */
+    opacity: 1;
+    color: white;
+    font-size: 35px;
+}
+
+.typing-left-dots {
+    left: 0px;
+}
+
+.typing-right-dots {
+    right: 0px;
+}
+
+.show {
+    opacity: 1;
+}
+/* .hide {
+    opacity: 0;
+} */
 /* The main chat area (colum 1) */
 .col-1 {
     flex: 1;
     display: none;
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
-    border-right-style: double;
-    background-color: rgba(0, 0, 0, .6);
+    background: #66d1d8;
 }
 
-.usernamediv {
-    margin-top: 10px;
-    margin-left: 5px;
-}
 
 
 .msgArea {
@@ -141,13 +206,14 @@
     font-weight: 300;
     margin-left: 9px;
     padding: 20px 40px;
-    border-style: double;
-    background: #7d7777;
-    border: 2px solid #1c87c9;
+    background: #d80606;
 }
 
 button.submitMsg {
-    margin-left: 20%;
+    /* margin-left: 20%; */
+    border-radius: 15px;
+    margin: 0.2em;
+    padding: 1.5em 0.2em;
 }
 
 ::placeholder {
@@ -157,13 +223,14 @@ button.submitMsg {
 .closeChat {
     position: relative;
     left: 70%;
-    top: 110px;
+    top: 92px;
 }
 
 /* ----------------------------------------------------------Friend List------------------------------- */
 .col-2 {
     /* flex-basis: 250px; */
     /* background: #79b333; */
+
     border: none;
     width: auto;
     height: auto;
@@ -196,14 +263,12 @@ button.submitMsg {
 
 .user-list {
     padding: 10px;
-    width: 100%;
     height: auto;
-    min-height: 10px;
-    max-height: 130px;
+    min-height: 90px;
+    max-height: 180px;
     overflow: scroll;
     display: grid;
-    border-radius: 15px;
-    background-color: rgba(0, 0, 0, .6);
+    background-color: orange;
 }
 
 .col-2 ul li {

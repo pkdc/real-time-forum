@@ -37,7 +37,7 @@ func loginFailed(conn *websocket.Conn) {
 	fmt.Println("Login Failed")
 	var failedResponse WsLoginResponse
 	failedResponse.Label = "login"
-	failedResponse.Content = "ERROR - Please check your credentials"
+	failedResponse.Content = "Please check your credentials"
 	failedResponse.Pass = false
 	conn.WriteJSON(failedResponse)
 	return
@@ -114,13 +114,12 @@ func ProcessAndReplyLogin(conn *websocket.Conn, loginPayload WsLoginPayload) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		rows.Scan(&logUser.UserId, &logUser.Nickname, &logUser.Age, &logUser.Gender, &logUser.FirstName, &logUser.LastName, &logUser.Email, &pwHashDB, &logge, &logUser.ProfilePicture, &not) // bug in db not is before logge?
+		rows.Scan(&logUser.UserId, &logUser.Nickname, &logUser.Age, &logUser.Gender, &logUser.FirstName, &logUser.LastName, &logUser.Email, &pwHashDB, &logge, &not) // bug in db not is before logge?
 	}
 	if logUser.UserId == 0 {
 		loginFailed(conn)
 		return
 	}
-	fmt.Println(logUser.LoggedIn,"CHECKING PICTURE-----------", logUser.ProfilePicture)
 	findCurUser(logUser.UserId)
 
 	// // test hash
