@@ -6,3 +6,6 @@ This project can be split into 3 main parts:
 Registration and Login
 Posts and Comments
 Private Messages
+
+Contributor:
+anthony-dsouza, buraksyagmur, GOrlandi1, pkdc 
